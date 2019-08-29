@@ -4,10 +4,11 @@ namespace fize\db\realization\mysql\mode;
 
 
 use fize\db\realization\mysql\Db;
-use fize\db\middleware\pdo\Middleware;
+use fize\db\middleware\Pdo as Middleware;
 
 /**
  * PDO方式(推荐使用)MySQL数据库模型类
+ * @package fize\db\realization\mysql\mode
  */
 class Pdo extends Db
 {
@@ -38,6 +39,15 @@ class Pdo extends Db
         if (!empty($charset)) {
             $dsn .= ";charset={$charset}";
         }
-        $this->construct($dsn, $user, $pwd, $opts);
+        $this->pdoConstruct($dsn, $user, $pwd, $opts);
+    }
+
+    /**
+     * 析构时关闭PDO
+     */
+    public function __destruct()
+    {
+        $this->pdoDestruct();
+        parent::__destruct();
     }
 }

@@ -52,7 +52,7 @@ class Query extends Base
      * 对当前对象解析一个数组条件
      * @param array $value 数组组成的条件
      */
-    protected function analyzeArrayQuery(array $value)
+    protected function analyzeArrayParams(array $value)
     {
         if(is_string($value[0]))
         {
@@ -71,7 +71,7 @@ class Query extends Base
                     return;
             }
         }
-        parent::analyzeArrayQuery($value);
+        parent::analyzeArrayParams($value);
     }
 
     /**

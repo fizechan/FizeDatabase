@@ -9,7 +9,8 @@ use mysqli as Driver;
 use Exception;
 
 /**
- * MySQLi数据库模型类
+ * MySQLi方式MySQL数据库模型类
+ * @package fize\db\realization\mysql\mode
  */
 class Mysqli extends Db
 {
@@ -18,7 +19,7 @@ class Mysqli extends Db
      * 使用的mysqli对象
      * @var Driver
      */
-    private $_driver = null;
+    private $driver = null;
 
     /**
      * 构造
@@ -41,25 +42,25 @@ class Mysqli extends Db
         $this->tablePrefix = $prefix;
         $port = (int)$port;  //mysqli有对类型进行了检查
         if ($real) {
-            $this->_driver = new Driver();
-            $this->_driver->init();
+            $this->driver = new Driver();
+            $this->driver->init();
             //real_connect之前只能使用options、ssl_set，其他方法无效
             foreach ($opts as $key => $value) {
-                $this->_driver->options($key, $value);
+                $this->driver->options($key, $value);
             }
             if (isset($ssl_set['ENABLE']) && $ssl_set['ENABLE'] == true) {
-                $this->_driver->ssl_set($ssl_set['KEY'], $ssl_set['CERT'], $ssl_set['CA'], $ssl_set['CAPATH'], $ssl_set['CIPHER']);
+                $this->driver->ssl_set($ssl_set['KEY'], $ssl_set['CERT'], $ssl_set['CA'], $ssl_set['CAPATH'], $ssl_set['CIPHER']);
             }
-            $this->_driver->real_connect($host, $user, $pwd, $dbname, $port, $socket, $flags);
+            $this->driver->real_connect($host, $user, $pwd, $dbname, $port, $socket, $flags);
         } else {
-            $this->_driver = new Driver($host, $user, $pwd, $dbname, $port, $socket);
+            $this->driver = new Driver($host, $user, $pwd, $dbname, $port, $socket);
         }
 
-        if ($this->_driver->connect_errno) {
-            throw new Exception($this->_driver->connect_error, $this->_driver->connect_errno);
+        if ($this->driver->connect_errno) {
+            throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
         }
 
-        $this->_driver->set_charset($charset);
+        $this->driver->set_charset($charset);
     }
 
     /**
@@ -67,10 +68,10 @@ class Mysqli extends Db
      */
     public function __destruct()
     {
-        $thread_id = $this->_driver->thread_id;
-        $this->_driver->kill($thread_id);
-        $this->_driver->close();
-        $this->_driver = null;
+        $thread_id = $this->driver->thread_id;
+        $this->driver->kill($thread_id);
+        $this->driver->close();
+        $this->driver = null;
     }
 
     /**
@@ -79,7 +80,7 @@ class Mysqli extends Db
      */
     public function prototype()
     {
-        return $this->_driver;
+        return $this->driver;
     }
 
     /**
@@ -92,12 +93,12 @@ class Mysqli extends Db
     public function multiQuery(array $querys)
     {
         $sql = implode(";", $querys);
-        if ($this->_driver->multi_query($sql)) {
+        if ($this->driver->multi_query($sql)) {
             $array_outer = [];
             do {
-                $result = $this->_driver->store_result();
+                $result = $this->driver->store_result();
                 if($result === false){
-                    throw new Exception($this->_driver->connect_error, $this->_driver->connect_errno);
+                    throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
                 }
                 $array_inner = [];
                 while ($row = $result->fetch_assoc()) {
@@ -105,10 +106,10 @@ class Mysqli extends Db
                 }
                 $result->free();
                 $array_outer[] = $array_inner;
-            } while ($this->_driver->more_results() && $this->_driver->next_result());
+            } while ($this->driver->more_results() && $this->driver->next_result());
             return $array_outer;
         } else {
-            throw new Exception($this->_driver->connect_error, $this->_driver->connect_errno);
+            throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
         }
     }
 
@@ -121,7 +122,7 @@ class Mysqli extends Db
     protected function parseValue($value)
     {
         if (is_string($value)) {
-            $value = "'" . $this->_driver->escape_string($value) . "'";
+            $value = "'" . $this->driver->escape_string($value) . "'";
         } elseif (is_bool($value)) {
             $value = $value ? '1' : '0';
         } elseif (is_null($value)) {
@@ -140,10 +141,10 @@ class Mysqli extends Db
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
-        $stmt = $this->_driver->prepare($sql);
+        $stmt = $this->driver->prepare($sql);
 
         if(!$stmt){
-            throw new Exception($this->_driver->connect_error, $this->_driver->connect_errno);
+            throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
         }
 
         if (!empty($params)) {
@@ -172,7 +173,7 @@ class Mysqli extends Db
         $result = $stmt->execute();
 
         if($result === false){
-            throw new Exception($this->_driver->connect_error, $this->_driver->connect_errno);
+            throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
         }
 
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
@@ -211,7 +212,7 @@ class Mysqli extends Db
      */
     public function startTrans()
     {
-        $this->_driver->begin_transaction();
+        $this->driver->begin_transaction();
     }
 
     /**
@@ -220,7 +221,7 @@ class Mysqli extends Db
      */
     public function commit()
     {
-        $this->_driver->commit();
+        $this->driver->commit();
     }
 
     /**
@@ -229,6 +230,6 @@ class Mysqli extends Db
      */
     public function rollback()
     {
-        $this->_driver->rollback();
+        $this->driver->rollback();
     }
 }

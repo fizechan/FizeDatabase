@@ -4,11 +4,12 @@ namespace fize\db\realization\mysql\mode;
 
 
 use fize\db\realization\mysql\Db;
-use fize\db\middleware\odbc\Middleware;
+use fize\db\middleware\Odbc as Middleware;
 
 /**
  * ODBC方式MySQL数据库模型类
  * 注意ODBC返回的类型都为字符串格式(null除外)
+ * @package fize\db\realization\mysql\mode
  */
 class Odbc extends Db
 {
@@ -37,7 +38,16 @@ class Odbc extends Db
         if (!empty($port)) {
             $dsn .= ";PORT={$port}";
         }
-        $this->construct($dsn, $user, $pwd);
+        $this->odbcConstruct($dsn, $user, $pwd);
+    }
+
+    /**
+     * 析构时关闭ODBC
+     */
+    public function __destruct()
+    {
+        $this->odbcDestruct();
+        parent::__destruct();
     }
 
     /**
@@ -70,14 +80,14 @@ class Odbc extends Db
     {
         $result = $this->queryOdbc($sql, $params, $callback);
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->_driver->exec("SELECT @@IDENTITY");
-            $id = $this->_driver->result(1);
+            $this->driver->exec("SELECT @@IDENTITY");
+            $id = $this->driver->result(1);
             return $id; //返回自增ID
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {
-            $this->_driver->exec("SELECT ROW_COUNT()");
-            $rows = $this->_driver->result(1);
+            $this->driver->exec("SELECT ROW_COUNT()");
+            $rows = $this->driver->result(1);
             return (int)$rows; //返回受影响条数
         }
     }

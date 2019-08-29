@@ -3,7 +3,10 @@
 
 namespace fize\db\definition;
 
-
+/**
+ * 数据库使用模式
+ * @package fize\db\definition
+ */
 interface Mode
 {
     /**

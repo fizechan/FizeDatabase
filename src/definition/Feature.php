@@ -4,27 +4,28 @@
 namespace fize\db\definition;
 
 /**
- * 数据库特征项trait
+ * 数据库特征项
+ * @package fize\db\definition
  */
 trait Feature
 {
 
     /**
-     * 格式化数据表名称，继承类根据实际使用数据库来进行重写
-     * @param string $str 待格式化字符串
+     * 格式化数据表名称
+     * @param string $str 待格式化字符串，原则上$str是否已格式化应是黑盒未知的。
      * @return string
      */
-    protected function _table_($str)
+    protected function formatTable($str)
     {
         return $str;
     }
 
     /**
-     * 格式化字段名称，继承类根据实际使用数据库来进行重写
-     * @param string $str 待格式化字符串
+     * 格式化字段名称
+     * @param string $str 待格式化字符串，原则上$str是否已格式化应是黑盒未知的。
      * @return string
      */
-    protected function _field_($str)
+    protected function formatField($str)
     {
         return $str;
     }

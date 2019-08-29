@@ -4,6 +4,7 @@ namespace fize\db\realization\mysql;
 
 
 use fize\db\definition\Mode as ModeInterface;
+use fize\db\realization\mysql\mode\Adodb;
 use fize\db\realization\mysql\mode\Odbc;
 use fize\db\realization\mysql\mode\Mysqli;
 use fize\db\realization\mysql\mode\Pdo;
@@ -14,6 +15,11 @@ use fize\db\exception\DbException;
  */
 class Mode implements ModeInterface
 {
+
+    public static function adodb()
+    {
+        return new Adodb();
+    }
 
     /**
      * odbc方式构造
@@ -85,6 +91,9 @@ class Mode implements ModeInterface
         $option = $options['option'];
         $db = null;
         switch ($options['mode']) {
+            case 'adodb':
+                $db = self::adodb();
+                break;
             case 'odbc':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $port = isset($option['port']) ? $option['port'] : '';
