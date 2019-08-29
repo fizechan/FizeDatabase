@@ -9,8 +9,15 @@
         }
     ],
     "require": {
-		"php": ">=7.0.0"
-	},
+		"php": ">=7.0.0",
+        "ext-com_dotnet": "*",
+        "ext-odbc": "*",
+        "ext-pdo": "*",
+        "ext-sqlsrv": "*",
+        "ext-mysqli": "*",
+        "ext-pgsql": "*",
+        "ext-sqlite3": "*"
+    },
 	"autoload": {
         "psr-4": {
             "fize\\db\\": "src"
