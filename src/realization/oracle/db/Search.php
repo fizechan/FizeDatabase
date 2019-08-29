@@ -18,7 +18,7 @@ trait Search
         }
         $this->top(1);
         $this->buildSQL("SELECT");
-        $result = $this->query($this->_sql, $this->_params);
+        $result = $this->query($this->sql, $this->params);
         if ($result === false) {
             return false;  //错误
         }

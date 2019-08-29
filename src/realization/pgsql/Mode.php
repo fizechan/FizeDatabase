@@ -48,11 +48,11 @@ class Mode implements ModeInterface
      * @param string $socket 指定应使用的套接字或命名管道，选填，默认不指定
      * @param array $ssl_set 设置SSL选项，选填，为数组参数，其下有参数ENABLE、KEY、CERT、CA、CAPATH、CIPHER，如果ENABLE为true，则其余参数都需要填写
      * @param int $flags 设置连接参数，选填，如MYSQLI_CLIENT_SSL等
-     * @return Mysqli
+     * @return Pgsql
      */
-    public static function mysqli($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
+    public static function pgsql($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
     {
-        return new Mysqli($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+        return new Pgsql($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
     }
 
     /**
@@ -92,7 +92,7 @@ class Mode implements ModeInterface
                 $driver = isset($option['driver']) ? $option['driver'] : null;
                 $db = self::odbc($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $driver);
                 break;
-            case 'mysqli':
+            case 'pgsql':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $port = isset($option['port']) ? $option['port'] : '';
                 $charset = isset($option['charset']) ? $option['charset'] : 'utf8';
@@ -101,7 +101,7 @@ class Mode implements ModeInterface
                 $socket = isset($option['socket']) ? $option['socket'] : null;
                 $ssl_set = isset($option['ssl_set']) ? $option['ssl_set'] : [];
                 $flags = isset($option['flags']) ? $option['flags'] : null;
-                $db = self::mysqli($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+                $db = self::pgsql($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
                 break;
             case 'pdo':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';

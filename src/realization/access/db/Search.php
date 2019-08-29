@@ -13,19 +13,19 @@ trait Search
      * 指定每页记录集数量，为0时表示不指定，全部返回。
      * @var int
      */
-    protected $_size = 0;
+    protected $size = 0;
 
     /**
      * 指定游标指针位移，为null时不指定，不移动。
      * @var int
      */
-    protected $_offset = null;
+    protected $offset = null;
 
     /**
      * TOP语句
      * @var string
      */
-    protected $_top = "";
+    protected $top = "";
 
     /**
      * 设置TOP,支持链式调用
@@ -34,7 +34,7 @@ trait Search
      */
     public function top($rows)
     {
-        $this->_top = $rows;
+        $this->top = $rows;
         return $this;
     }
 
@@ -46,8 +46,8 @@ trait Search
      */
     public function limit($rows, $offset = null)
     {
-        $this->_size = $rows;
-        $this->_offset = $offset;
+        $this->size = $rows;
+        $this->offset = $offset;
         return $this;
     }
 
@@ -59,7 +59,7 @@ trait Search
     {
         $this->top(1);
         $this->buildSQL("SELECT");
-        $result = $this->query($this->_sql, $this->_params);
+        $result = $this->query($this->sql, $this->params);
         if (is_array($result) && isset($result[0])) {
             return $result[0];
         } else {

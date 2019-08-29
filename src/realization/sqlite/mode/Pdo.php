@@ -20,7 +20,7 @@ class Pdo extends Db
      */
     public function __construct($filename, $prefix = "")
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         $dsn = "sqlite:{$filename}";
         $this->construct($dsn, '', '');
     }

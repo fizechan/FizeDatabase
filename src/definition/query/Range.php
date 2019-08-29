@@ -58,10 +58,10 @@ trait Range
         if ($bind === false) {  // exists语句的False值等同于None，做兼容性处理
             $bind = null;
         }
-        $obj = $this->_obj;  //暂存当前操作对象
-        $this->_obj = null;
+        $obj = $this->obj;  //暂存当前操作对象
+        $this->obj = null;
         $query = $this->exp("EXISTS ({$expression})", $bind);
-        $this->_obj = $obj;  // 还原obj
+        $this->obj = $obj;  // 还原obj
         return $query;
     }
 
@@ -76,10 +76,10 @@ trait Range
         if ($bind === false) {  // exists语句的False值等同于None，做兼容性处理
             $bind = null;
         }
-        $obj = $this->_obj;  //暂存当前操作对象
-        $this->_obj = null;
+        $obj = $this->obj;  //暂存当前操作对象
+        $this->obj = null;
         $query = $this->exp("NOT EXISTS ({$expression})", $bind);
-        $this->_obj = $obj;  // 还原obj
+        $this->obj = $obj;  // 还原obj
         return $query;
     }
 

@@ -30,7 +30,7 @@ class Sqlite3 extends Db
      */
     public function __construct($filename, $prefix = "", $flags = 2, $encryption_key = null, $busy_timeout = 30000)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         $this->_driver = new Driver($filename, $flags, $encryption_key);
         $this->_driver->busyTimeout($busy_timeout);
     }

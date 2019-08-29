@@ -17,7 +17,7 @@ trait Boost
     public function replace(array $data)
     {
         $this->buildSQL("REPLACE", $data);
-        $id = $this->query($this->_sql, $this->_params);
+        $id = $this->query($this->sql, $this->params);
         return $id;
     }
 
@@ -31,7 +31,7 @@ trait Boost
 			return false; //TRUNCATE不允许有条件语句
 		}
 		$this->buildSQL("TRUNCATE");
-		return $this->query($this->_sql) === false ? false : true;
+		return $this->query($this->sql) === false ? false : true;
 	}
 
     /**
@@ -69,9 +69,9 @@ trait Boost
     public function insertAll(array $data_set, array $fields = null)
     {
 		$params = [];
-		$sql = "INSERT INTO `{$this->_tablePrefix}{$this->_tableName}`{$this->parseInsertAllDatas($data_set, $fields, $params)}";
-		$this->_sql = $sql;
-		$this->_params = $params;
+		$sql = "INSERT INTO `{$this->tablePrefix}{$this->tableName}`{$this->parseInsertAllDatas($data_set, $fields, $params)}";
+		$this->sql = $sql;
+		$this->params = $params;
 		return $this->query($sql, $params);
     }
 }

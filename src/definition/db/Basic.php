@@ -54,7 +54,7 @@ trait Basic
     public function insert(array $data)
     {
         $this->buildSQL("INSERT", $data);
-        $id = $this->query($this->_sql, $this->_params);
+        $id = $this->query($this->sql, $this->params);
         return $id;
     }
 
@@ -66,7 +66,7 @@ trait Basic
     public function fetch(callable $func)
     {
         $this->buildSQL("SELECT");
-        $this->query($this->_sql, $this->_params, $func);
+        $this->query($this->sql, $this->params, $func);
     }
 
     /**
@@ -76,7 +76,7 @@ trait Basic
     public function delete()
     {
         $this->buildSQL("DELETE");
-        return $this->query($this->_sql, $this->_params);
+        return $this->query($this->sql, $this->params);
     }
 
     /**
@@ -87,6 +87,6 @@ trait Basic
     public function update($data)
     {
         $this->buildSQL('UPDATE', $data);
-        return $this->query($this->_sql, $this->_params);
+        return $this->query($this->sql, $this->params);
     }
 }

@@ -13,7 +13,7 @@ trait Boost
      * 自MSSQL2012开始支持“OFFSET 1 ROWS FETCH NEXT 3 ROWS ONLY”语句
      * @var bool
      */
-    protected $_new_feature = false;
+    protected $new_feature = false;
 
     /**
      * 设置是否支持新特性
@@ -21,7 +21,7 @@ trait Boost
      */
     public function newFeature($bool)
     {
-        $this->_new_feature = $bool;
+        $this->new_feature = $bool;
     }
 
     /**
@@ -34,7 +34,7 @@ trait Boost
     public function paginate($page, $size = 10)
     {
         $result = parent::paginate($page, $size);
-        if (!$this->_new_feature) {
+        if (!$this->new_feature) {
             $rows = [];
             foreach ($result['rows'] as $row) {
                 unset($row['_RN_']);

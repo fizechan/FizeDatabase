@@ -25,7 +25,7 @@ class Odbc extends Db
      */
     public function __construct($db_file, $pwd = null, $prefix = "", $driver = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
             $driver = "{Microsoft Access Driver (*.mdb, *.accdb)}";
         }

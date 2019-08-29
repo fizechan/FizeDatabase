@@ -11,7 +11,7 @@ trait Union
      * UNION语句
      * @var string
      */
-    protected $_union = "";
+    protected $union = "";
 
     /**
      * UNION语句,支持链式调用
@@ -21,7 +21,7 @@ trait Union
      */
     public function union($sql, $union_type = "UNION")
     {
-        $this->_union .= " {$union_type} {$sql}";
+        $this->union .= " {$union_type} {$sql}";
         return $this;
     }
 

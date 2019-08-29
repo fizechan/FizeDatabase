@@ -35,12 +35,12 @@ trait Search
         if ($cache) {
             $sql = $this->getLastSql(true);
             if (!isset(self::$cache_rows[$sql])) {
-                self::$cache_rows[$sql] = $this->query($this->_sql, $this->_params);
+                self::$cache_rows[$sql] = $this->query($this->sql, $this->params);
             }
             return self::$cache_rows[$sql];
         }
 
-        $result = $this->query($this->_sql, $this->_params);
+        $result = $this->query($this->sql, $this->params);
         return $result;
     }
 

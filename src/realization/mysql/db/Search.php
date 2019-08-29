@@ -18,7 +18,7 @@ trait Search
     {
         $this->limit(1);
         $this->buildSQL("SELECT");
-        $result = $this->query($this->_sql, $this->_params);
+        $result = $this->query($this->sql, $this->params);
         if(is_array($result) && isset($result[0])){
             return $result[0];
         }else{

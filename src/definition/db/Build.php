@@ -15,13 +15,13 @@ trait Build
      * 最后组装的SQL语句
      * @var string
      */
-    protected $_sql = "";
+    protected $sql = "";
 
     /**
      * 语句中所有按顺序绑定的参数
      * @var array
      */
-    protected $_params = [];
+    protected $params = [];
 
     /**
      * 获取最后运行的SQL
@@ -32,15 +32,15 @@ trait Build
     public function getLastSql($real = false)
     {
         if ($real) {
-            $temp = explode('?', $this->_sql);
+            $temp = explode('?', $this->sql);
             $last_sql = "";
             for ($i = 0; $i < count($temp) - 1; $i++) {
-                $last_sql .= $temp[$i] . $this->parseValue($this->_params[$i]);
+                $last_sql .= $temp[$i] . $this->parseValue($this->params[$i]);
             }
             $last_sql .= $temp[count($temp) - 1];
             return $last_sql;
         } else {
-            return $this->_sql;
+            return $this->sql;
         }
     }
 
@@ -96,22 +96,22 @@ trait Build
     protected function clear()
     {
         //以下注释请不要删除，用于提示不需要重置的条件
-        //$this->_tablePrefix = "";
-        //$this->_tableName = "";
-        //$this->_sql = "";
-        //$this->_params = [];
+        //$this->tablePrefix = "";
+        //$this->tableName = "";
+        //$this->sql = "";
+        //$this->params = [];
 
         //清空一次性条件
-        $this->_alias = "";
-        $this->_join = "";
-        $this->_where = "";
-        $this->_group = "";
-        $this->_having = "";
-        $this->_field = "";
-        $this->_order = "";
-        $this->_union = "";
-        $this->_whereParams = [];
-        $this->_havingParams = [];
+        $this->alias = "";
+        $this->join = "";
+        $this->where = "";
+        $this->group = "";
+        $this->having = "";
+        $this->field = "";
+        $this->order = "";
+        $this->union = "";
+        $this->whereParams = [];
+        $this->havingParams = [];
     }
 
     /**
@@ -127,52 +127,52 @@ trait Build
     {
         switch ($action) {
             case "DELETE" : //删除
-                $sql = "DELETE FROM {$this->_table_($this->_tablePrefix. $this->_tableName)}";
-                $this->_params = $this->_whereParams + $this->_havingParams;
+                $sql = "DELETE FROM {$this->_table_($this->tablePrefix. $this->tableName)}";
+                $this->params = $this->whereParams + $this->havingParams;
                 break;
             case "INSERT" : //添加
                 $params = [];
-                $sql = "INSERT INTO {$this->_table_($this->_tablePrefix. $this->_tableName)}{$this->parseInsertDatas($data, $params)}";
-                $this->_params = $params;
+                $sql = "INSERT INTO {$this->_table_($this->tablePrefix. $this->tableName)}{$this->parseInsertDatas($data, $params)}";
+                $this->params = $params;
                 break;
             case "SELECT" : //查询
                 if (empty($this->_field)) {
-                    $this->_field = "*";
+                    $this->field = "*";
                 }
-                $sql = "SELECT {$this->_field} FROM {$this->_table_($this->_tablePrefix. $this->_tableName)}";
-                $this->_params = $this->_whereParams + $this->_havingParams;
+                $sql = "SELECT {$this->field} FROM {$this->_table_($this->tablePrefix. $this->tableName)}";
+                $this->params = $this->whereParams + $this->havingParams;
                 break;
             case "UPDATE" : //更新
                 $data_params = [];
-                $sql = "UPDATE {$this->_table_($this->_tablePrefix. $this->_tableName)} SET {$this->parseUpdateDatas($data, $data_params)}";
-                $this->_params = array_merge($data_params, $this->_whereParams, $this->_havingParams);
+                $sql = "UPDATE {$this->_table_($this->tablePrefix. $this->tableName)} SET {$this->parseUpdateDatas($data, $data_params)}";
+                $this->params = array_merge($data_params, $this->whereParams, $this->havingParams);
                 break;
             default :
                 //仅需要支持DELETE、INSERT、REPLACE、SELECT、UPDATE，防止其他语句进入
                 throw new DbException("Illegal SQL statement: {$action}");
         }
         if (in_array($action, ['DELETE', 'SELECT', 'UPDATE'])) {
-            if (!empty($this->_alias)) {
-                $sql .= " AS {$this->_field_($this->_alias)}";
+            if (!empty($this->alias)) {
+                $sql .= " AS {$this->_field_($this->alias)}";
             }
-            if (!empty($this->_join)) {
-                $sql .= " {$this->_join}";
+            if (!empty($this->join)) {
+                $sql .= " {$this->join}";
             }
-            if (!empty($this->_where)) {
-                $sql .= " WHERE {$this->_where}";
+            if (!empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
             }
-            if (!empty($this->_group)) {
-                $sql .= " GROUP BY {$this->_group}";
+            if (!empty($this->group)) {
+                $sql .= " GROUP BY {$this->group}";
             }
-            if (!empty($this->_having)) {
-                $sql .= " HAVING {$this->_having}";
+            if (!empty($this->having)) {
+                $sql .= " HAVING {$this->having}";
             }
-            $sql .= $this->_union;
-            if (!empty($this->_order)) {
-                $sql .= " ORDER BY {$this->_order}";
+            $sql .= $this->union;
+            if (!empty($this->order)) {
+                $sql .= " ORDER BY {$this->order}";
             }
         }
-        $this->_sql = $sql;
+        $this->sql = $sql;
         if ($clear) {
             $this->clear();
         }

@@ -25,7 +25,7 @@ class Adodb extends Db
      */
     public function __construct($db_file, $pwd = null, $prefix = "", $driver = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         if (is_null($driver)) {
             $driver = "Microsoft.ACE.OLEDB.12.0";
         }

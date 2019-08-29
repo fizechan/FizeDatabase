@@ -16,9 +16,9 @@ trait Build
     protected function clear()
     {
         parent::clear();
-        $this->_limit = "";
-        $this->_lock = false;
-        $this->_lock_sql = "";
+        $this->limit = "";
+        $this->lock = false;
+        $this->lock_sql = "";
     }
 
     /**
@@ -32,21 +32,21 @@ trait Build
     {
         if ($action == 'REPLACE') {
             $params = [];
-            $sql = "REPLACE INTO {$this->_table_($this->_tablePrefix. $this->_tableName)}{$this->parseInsertDatas($data, $params)}";
-            $this->_sql = $sql;
-            $this->_params = $params;
+            $sql = "REPLACE INTO {$this->_table_($this->tablePrefix. $this->tableName)}{$this->parseInsertDatas($data, $params)}";
+            $this->sql = $sql;
+            $this->params = $params;
             return $sql; //REPLACE语句已完整
         } elseif ($action == 'TRUNCATE') {
-            $sql = "TRUNCATE TABLE {$this->_table_($this->_tablePrefix . $this->_tableName)}";
-            $this->_sql = $sql;
+            $sql = "TRUNCATE TABLE {$this->_table_($this->tablePrefix . $this->tableName)}";
+            $this->sql = $sql;
             return $sql; //TRUNCATE语句已完整
         } else {
             $sql = parent::buildSQL($action, $data, false);
         }
-        if (!empty($this->_limit)) {
-            $sql .= " LIMIT {$this->_limit}";
+        if (!empty($this->limit)) {
+            $sql .= " LIMIT {$this->limit}";
         }
-        $this->_sql = $sql;
+        $this->sql = $sql;
         if ($clear) {
             $this->clear();
         }

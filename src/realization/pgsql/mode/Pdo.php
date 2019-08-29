@@ -27,7 +27,7 @@ class Pdo extends Db
      */
     public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = null, $charset = "utf8", array $opts = [], $socket = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         $dsn = "mysql:host={$host};dbname={$dbname}";
         if (!empty($port)) {
             $dsn .= ";port={$port}";

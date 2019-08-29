@@ -38,7 +38,7 @@ class Mysqli extends Db
      */
     public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         $port = (int)$port;  //mysqli有对类型进行了检查
         if ($real) {
             $this->_driver = new Driver();

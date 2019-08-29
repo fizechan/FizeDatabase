@@ -11,7 +11,7 @@ trait Join
      * JOIN语句
      * @var string
      */
-    protected $_join = "";
+    protected $join = "";
 
     /**
      * JOIN条件,可以使用所有JOIN变种,支持链式调用
@@ -34,12 +34,12 @@ trait Join
         } else {
             $ttable = $this->_table_($table);
         }
-        $this->_join .= " {$type} {$ttable}";
+        $this->join .= " {$type} {$ttable}";
         if (!is_null($on)) {
-            $this->_join .= " ON {$on}";
+            $this->join .= " ON {$on}";
         }
         if (!is_null($using)) {
-            $this->_join .= " USING({$this->_field_($using)})";
+            $this->join .= " USING({$this->_field_($using)})";
         }
         return $this;
     }

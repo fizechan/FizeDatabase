@@ -30,7 +30,7 @@ class Odbc extends Db
      */
     public function __construct($filename, $prefix = "", $long_names = 0, $time_out = 1000, $no_txn = 0, $sync_pragma = "NORMAL", $step_api = 0, $driver = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
             $driver = "SQLite3 ODBC Driver";
         }

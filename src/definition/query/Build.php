@@ -7,13 +7,13 @@ namespace fize\db\definition\query;
  */
 trait Build
 {
-    protected $_obj = null;
+    protected $obj = null;
 
-    protected $_bind = [];
+    protected $bind = [];
 
-    protected $_combine_logic = "AND";
+    protected $combine_logic = "AND";
 
-    protected $_sql = "";
+    protected $sql = "";
 
     /**
      * 构造
@@ -25,12 +25,12 @@ trait Build
     public function __construct($obj = null, $_sql = "", array $_bind = [])
     {
         if (is_string($obj)) {
-            $this->_obj = $this->_field_($obj);
+            $this->obj = $this->_field_($obj);
         } else {
-            $this->_obj = $obj;
+            $this->obj = $obj;
         }
-        $this->_sql = $_sql;
-        $this->_bind = $_bind;
+        $this->sql = $_sql;
+        $this->bind = $_bind;
     }
 
     /**
@@ -47,7 +47,7 @@ trait Build
         if ($logic === false) {
             $logic = "OR";
         }
-        $this->_combine_logic = strtoupper($logic);
+        $this->combine_logic = strtoupper($logic);
         return $this;
     }
 
@@ -60,9 +60,9 @@ trait Build
     public function obj($obj)
     {
         if (is_string($obj)) {
-            $this->_obj = $this->_field_($obj);
+            $this->obj = $this->_field_($obj);
         } else {
-            $this->_obj = $obj;
+            $this->obj = $obj;
         }
         return $this;
     }
@@ -87,24 +87,24 @@ trait Build
      */
     protected function _addPart($statement, $bind = null)
     {
-        if ($this->_sql == "") {
-            if ($this->_obj == null) {
-                $this->_sql = $statement;
+        if ($this->sql == "") {
+            if ($this->obj == null) {
+                $this->sql = $statement;
             } else {
-                $this->_sql = $this->_obj . " " . $statement;
+                $this->sql = $this->obj . " " . $statement;
             }
         } else {
-            if ($this->_obj == null) {
-                $this->_sql .= " " . $this->_combine_logic . " " . $statement;
+            if ($this->obj == null) {
+                $this->sql .= " " . $this->combine_logic . " " . $statement;
             } else {
-                $this->_sql .= " " . $this->_combine_logic . " " . $this->_obj . " " . $statement;
+                $this->sql .= " " . $this->combine_logic . " " . $this->obj . " " . $statement;
             }
         }
         if (!is_null($bind)) {
             if (is_array($bind)) {
-                $this->_bind = array_merge($this->_bind, $bind);
+                $this->bind = array_merge($this->bind, $bind);
             } else {
-                $this->_bind[] = $bind;
+                $this->bind[] = $bind;
             }
         }
     }
@@ -115,7 +115,7 @@ trait Build
      */
     public function sql()
     {
-        return $this->_sql;
+        return $this->sql;
     }
 
     /**
@@ -124,6 +124,6 @@ trait Build
      */
     public function params()
     {
-        return $this->_bind;
+        return $this->bind;
     }
 }

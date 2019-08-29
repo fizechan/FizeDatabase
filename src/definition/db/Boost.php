@@ -19,17 +19,17 @@ trait Boost
     {
         $sql_temp = $this->buildSQL("SELECT", [], false);
         //var_dump($sql_temp);
-        $sql_for_count = substr_replace($sql_temp, "COUNT(*)", 7, strlen($this->_field));
-        if(!empty($this->_order)){  //消除ORDER BY 语句对COUNT语句的影响问题
-            $sql_for_count = str_replace(" ORDER BY {$this->_order}", "", $sql_for_count);
+        $sql_for_count = substr_replace($sql_temp, "COUNT(*)", 7, strlen($this->field));
+        if(!empty($this->order)){  //消除ORDER BY 语句对COUNT语句的影响问题
+            $sql_for_count = str_replace(" ORDER BY {$this->order}", "", $sql_for_count);
         }
         //var_dump($sql_for_count);
-        $rows_for_count = $this->query($sql_for_count, $this->_params);
+        $rows_for_count = $this->query($sql_for_count, $this->params);
         $count = (int)array_values($rows_for_count[0])[0];  //第一列第一个值
         $this->page($page, $size);
         $this->buildSQL("SELECT");
         //var_dump($this->_sql);
-        $result = $this->query($this->_sql, $this->_params);
+        $result = $this->query($this->sql, $this->params);
         return [
             $count,  //记录个数
             (int)ceil($count / $size),  //总页数

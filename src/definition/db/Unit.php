@@ -15,67 +15,67 @@ trait Unit
      * 是否指明为DISTINCT
      * @var bool
      */
-    protected $_distinct = false;
+    protected $distinct = false;
 
     /**
      * SQL指定要返回的字段语句
      * @var string
      */
-    protected $_field = "";
+    protected $field = "";
 
     /**
      * 当前数据库前缀
      * @var string
      */
-    protected $_tablePrefix = "";
+    protected $tablePrefix = "";
 
     /**
      * 当前数据表名，不含前缀
      * @var string
      */
-    protected $_tableName = null;
+    protected $tableName = null;
 
     /**
      * ALIAS语句
      * @var string
      */
-    protected $_alias = "";
+    protected $alias = "";
 
     /**
      * WHERE语句
      * @var string
      */
-    protected $_where = "";
+    protected $where = "";
 
     /**
      * WHERE语句使用的绑定参数数组
      * @var array
      */
-    protected $_whereParams = [];
+    protected $whereParams = [];
 
     /**
      * GROUP语句
      * @var string
      */
-    protected $_group = "";
+    protected $group = "";
 
     /**
      * HAVING语句
      * @var string
      */
-    protected $_having = "";
+    protected $having = "";
 
     /**
      * HAVING语句使用的绑定参数数组
      * @var array
      */
-    protected $_havingParams = [];
+    protected $havingParams = [];
 
     /**
      * ORDER语句
      * @var string
      */
-    protected $_order = "";
+    protected $order = "";
 
     /**
      * 指定distinct查询
@@ -84,7 +84,7 @@ trait Unit
      */
     public function distinct($distinct = true)
     {
-        $this->_distinct = $distinct;
+        $this->distinct = $distinct;
         return $this;
     }
 
@@ -104,9 +104,9 @@ trait Unit
                     $parts[] = "{$this->_field_($field)} AS {$this->_field_($alias)}";
                 }
             }
-            $this->_field = join(',', $parts);
+            $this->field = join(',', $parts);
         } else {
-            $this->_field = $this->_field_($fields);
+            $this->field = $this->_field_($fields);
         }
         return $this;
     }
@@ -119,9 +119,9 @@ trait Unit
      */
     public function table($name, $prefix = null)
     {
-        $this->_tableName = $name;
+        $this->tableName = $name;
         if (!is_null($prefix)) {
-            $this->_tablePrefix = $prefix;
+            $this->tablePrefix = $prefix;
         }
         return $this;
     }
@@ -133,7 +133,7 @@ trait Unit
      */
     public function alias($alias)
     {
-        $this->_alias = $alias;
+        $this->alias = $alias;
         return $this;
     }
 
@@ -148,10 +148,10 @@ trait Unit
             $fields = array_map([$this, '_field_'], $fields);
             $fields = implode(',', $fields);
         }
-        if (empty($this->_group)) {
-            $this->_group = "{$fields}";
+        if (empty($this->group)) {
+            $this->group = "{$fields}";
         } else {
-            $this->_group .= ",{$fields}";
+            $this->group .= ",{$fields}";
         }
         return $this;
     }
@@ -167,17 +167,17 @@ trait Unit
             foreach ($field_order as $field => $order) {
                 $order = strtoupper($order);
                 if(!empty($this->_order)){
-                    $this->_order .= ", ";
+                    $this->order .= ", ";
                 }
-                $this->_order .= " {$this->_field_($field)} $order";
+                $this->order .= " {$this->_field_($field)} $order";
             }
         } else {
-            if(!empty($this->_order)){
-                $this->_order .= ", ";
+            if(!empty($this->order)){
+                $this->order .= ", ";
             }
-            $this->_order .= " {$field_order}";
+            $this->order .= " {$field_order}";
         }
-        $this->_order = trim($this->_order);
+        $this->order = trim($this->_order);
         return $this;
     }
 
@@ -192,14 +192,14 @@ trait Unit
         if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
             $query = new Query();
             $query->analyze($statements);
-            $this->_where = $query->sql();
-            $this->_whereParams = $query->params();
+            $this->where = $query->sql();
+            $this->whereParams = $query->params();
         } elseif ($statements instanceof Query) {  // $statements是查询器的情况
-            $this->_where = $statements->sql();
-            $this->_whereParams = $statements->params();
+            $this->where = $statements->sql();
+            $this->whereParams = $statements->params();
         } else {  //直接传入SQL预处理语句的情况
-            $this->_where = $statements;
-            $this->_whereParams = $parse;
+            $this->where = $statements;
+            $this->whereParams = $parse;
         }
         return $this;
     }
@@ -213,11 +213,11 @@ trait Unit
     public function having($statements, array $parse = [])
     {
         if ($statements instanceof Query) {  // $statements是查询器的情况
-            $this->_having = $statements->sql();
-            $this->_havingParams = $statements->params();
+            $this->having = $statements->sql();
+            $this->havingParams = $statements->params();
         } else {  //直接传入SQL预处理语句的情况
-            $this->_having = $statements;
-            $this->_havingParams = $parse;
+            $this->having = $statements;
+            $this->havingParams = $parse;
         }
         return $this;
     }

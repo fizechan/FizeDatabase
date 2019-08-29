@@ -10,13 +10,13 @@ trait Unit
      * 指定每页记录集数量，为0时表示不指定，全部返回。
      * @var int
      */
-    protected $_size = 0;
+    protected $size = 0;
 
     /**
      * 指定游标指针位移，为null时不指定，不移动。
      * @var int
      */
-    protected $_offset = null;
+    protected $offset = null;
 
     /**
      * 设置TOP,支持链式调用
@@ -25,7 +25,7 @@ trait Unit
      */
     public function top($rows)
     {
-        $this->_size = $rows;
+        $this->size = $rows;
         return $this;
     }
 
@@ -37,8 +37,8 @@ trait Unit
      */
     public function limit($rows, $offset = null)
     {
-        $this->_size = $rows;
-        $this->_offset = $offset;
+        $this->size = $rows;
+        $this->offset = $offset;
         return $this;
     }
 }

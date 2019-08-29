@@ -29,7 +29,7 @@ class Odbc extends Db
      */
     public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", $driver = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
             $driver = "{MySQL ODBC 5.3 ANSI Driver}";
         }

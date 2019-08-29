@@ -15,19 +15,19 @@ trait Unit
      * LIMIT语句
      * @var string
      */
-    protected $_limit = "";
+    protected $limit = "";
 
     /**
      * 本次查询是否启用LOCK锁
      * @var bool
      */
-    protected $_lock = false;
+    protected $lock = false;
 
     /**
      * LOCK语句主体
      * @var string
      */
-    protected $_lock_sql = "";
+    protected $lock_sql = "";
 
     /**
      * 设置LIMIT,支持链式调用
@@ -38,9 +38,9 @@ trait Unit
     public function limit($rows, $offset = null)
     {
         if (is_null($offset)) {
-            $this->_limit = (string)$rows;
+            $this->limit = (string)$rows;
         } else {
-            $this->_limit = (string)$offset . "," . (string)$rows;
+            $this->limit = (string)$offset . "," . (string)$rows;
         }
         return $this;
     }
@@ -54,14 +54,14 @@ trait Unit
      */
     public function lock($lock = true, array $lock_sqls = null)
     {
-        $this->_lock = $lock;
-        if ($this->_lock) {
+        $this->lock = $lock;
+        if ($this->lock) {
             if (is_null($lock_sqls)) {
-                $lock_sqls = ["{$this->_table_($this->_tablePrefix. $this->_tableName)}` WRITE"];
+                $lock_sqls = ["{$this->_table_($this->tablePrefix. $this->tableName)}` WRITE"];
             }
-            $this->_lock_sql = implode(", ", $lock_sqls);
+            $this->lock_sql = implode(", ", $lock_sqls);
         } else {
-            $this->_lock_sql = "";
+            $this->lock_sql = "";
         }
         return $this;
     }
@@ -77,8 +77,8 @@ trait Unit
         if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
             $query = new Query();
             $query->analyze($statements);
-            $this->_where = $query->sql();
-            $this->_whereParams = $query->params();
+            $this->where = $query->sql();
+            $this->whereParams = $query->params();
         } else {
             parent::where($statements, $parse);
         }
@@ -96,8 +96,8 @@ trait Unit
         if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
             $query = new Query();
             $query->analyze($statements);
-            $this->_having = $query->sql();
-            $this->_havingParams = $query->params();
+            $this->having = $query->sql();
+            $this->havingParams = $query->params();
         } else {
             parent::having($statements, $parse);
         }
