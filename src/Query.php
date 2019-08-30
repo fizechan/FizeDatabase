@@ -13,9 +13,14 @@ class Query
 {
 
     /**
-     * @var Driver
+     * @var Driver Query对象
      */
     protected static $query;
+
+    /**
+     * @var array 配置参数
+     */
+    protected static $options;
 
     /**
      * 初始化
@@ -23,6 +28,7 @@ class Query
      */
     public static function init(array $options)
     {
+        self::$options = $options;
         $class = '\\fize\\db\\realization\\' . $options['type'] . '\\Query';
         self::$query = new $class();
     }
@@ -34,6 +40,17 @@ class Query
     public static function getInstance()
     {
         return self::$query;
+    }
+
+    /**
+     * 获取一个新的Query对象
+     * @param string $object 要进行判断的对象，一般为字段名
+     * @return Driver
+     */
+    public static function construct($object = null)
+    {
+        $class = '\\fize\\db\\realization\\' . self::$options['type'] . '\\Query';
+        return new $class($object);
     }
 
     /**

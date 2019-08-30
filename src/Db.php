@@ -28,7 +28,7 @@ class Db
      */
     public static function init(array $options)
     {
-        self::$mode = '\\fize\\db\\realization\\' . $options['type'] . '\\Mode';
+        self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $options['type'] . '\\Mode';
         $class = self::$mode;
         self::$db = $class::getInstance($options);
     }
@@ -40,8 +40,10 @@ class Db
      */
     public static function connect(array $options)
     {
-        self::$mode = '\\fize\\db\\realization\\' . $options['type'] . '\\Mode';
-        $class = self::$mode;
+        /**
+         * @var $class Mode
+         */
+        $class = '\\fize\\db\\realization\\' . $options['type'] . '\\Mode';
         return $class::getInstance($options);
     }
 

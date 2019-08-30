@@ -219,22 +219,22 @@ abstract class Db extends Base
 
     /**
      * 解析插入多条数值的SQL部分语句，用于数值原样写入
-     * @param array $data_set 数据集
+     * @param array $data_sets 数据集
      * @param array $fields 可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @param array $params 可能要操作的参数数组
      * @return string
      */
-    private function parseInsertAllDatas(array $data_set, array $fields = [], array &$params = [])
+    private function parseInsertAllDatas(array $data_sets, array $fields = [], array &$params = [])
     {
         if(empty($fields)){  //$fields为空时，$data_set各元素必须带键名，且键名顺序、名称都需要一致
-            foreach(array_keys($data_set[0]) as $key){
+            foreach(array_keys($data_sets[0]) as $key){
                 $fields[] = $key;
             }
         }
         $values = []; //SQL各单位值填充
-        foreach ($data_set as $data){
+        foreach ($data_sets as $data_set){
             $holdes = []; //占位符
-            foreach($data as $value){
+            foreach($data_set as $value){
                 $holdes[] = "?";
                 $params[] = $value;
             }
@@ -245,14 +245,14 @@ abstract class Db extends Base
 
     /**
      * 批量插入记录
-     * @param array $data_set 数据集
+     * @param array $data_sets 数据集
      * @param array $fields 可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入的记录数，错误返回false
      */
-    public function insertAll(array $data_set, array $fields = null)
+    public function insertAll(array $data_sets, array $fields = null)
     {
         $params = [];
-        $sql = "INSERT INTO `{$this->tablePrefix}{$this->tableName}`{$this->parseInsertAllDatas($data_set, $fields, $params)}";
+        $sql = "INSERT INTO `{$this->tablePrefix}{$this->tableName}`{$this->parseInsertAllDatas($data_sets, $fields, $params)}";
         $this->sql = $sql;
         $this->params = $params;
         return $this->query($sql, $params);

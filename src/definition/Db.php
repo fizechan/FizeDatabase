@@ -828,12 +828,32 @@ abstract class Db
 
     /**
      * 批量插入记录
-     * @param array $datas 要插入的记录组成的数组
+     * @param array $data_sets 数据集
+     * @param array $fields 可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
+     * @return int 返回插入成功的记录数
      */
-    public function insertAll($datas)
+    public function insertAll(array $data_sets, array $fields = null)
     {
-        foreach ($datas as $data) {
-            $this->insert($data);
+        if($fields) {
+            $datas = [];
+            foreach ($data_sets as $data_set) {
+                $data = [];
+                foreach ($fields as $index => $field) {
+                    $data[$field] = $data_set[$index];
+                }
+                $datas[] = $data;
+            }
+        } else {
+            $datas = $data_sets;
         }
+
+        $count = 0;
+        foreach ($datas as $data) {
+            $result = $this->insert($data);
+            if($result !== false) {
+                $count++;
+            }
+        }
+        return $count;
     }
 }
