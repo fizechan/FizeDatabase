@@ -25,6 +25,7 @@ trait Adodb
 
     /**
      * 构造Adodb
+     * @see https://www.connectionstrings.com/
      * @param string $dsn DSN字符串
      * @param int $codepage 编码
      */

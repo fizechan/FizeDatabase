@@ -43,7 +43,7 @@ class Db
         /**
          * @var $class Mode
          */
-        $class = '\\fize\\db\\realization\\' . $options['type'] . '\\Mode';
+        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $options['type'] . '\\Mode';
         return $class::getInstance($options);
     }
 

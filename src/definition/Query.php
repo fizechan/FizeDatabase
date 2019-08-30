@@ -563,14 +563,14 @@ class Query
      * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
-    protected function qMerge($logic, $query)
+    public function qMerge($logic, $query)
     {
         if (is_array($query)) {
             $maps = $query;
             $query = new static();
             $query->analyze($maps);
         }
-        $this->sql .= " {$logic} (" . $query->sql() . ")";;
+        $this->sql = "({$this->sql}) {$logic} (" . $query->sql() . ")";
         $this->params = array_merge($this->params, $query->params());
         return $this;
     }

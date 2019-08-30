@@ -3,7 +3,7 @@
 namespace fize\db\realization\access\mode;
 
 use fize\db\realization\access\Db;
-use fize\db\middleware\pdo\Middleware;
+use fize\db\middleware\Pdo as Middleware;
 use fize\db\exception\DbException;
 
 
@@ -18,19 +18,31 @@ class Pdo extends Db
 
     /**
      * Pdo方式构造必须实例化$this->_pdo
-     * @param string $db_file Access文件路径
+     * @param string $file Access文件路径
      * @param string $pwd 用户密码
      * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param string $driver 指定ODBC驱动名称。
      */
-    public function __construct($db_file, $pwd = null, $prefix = "", $driver = null)
+    public function __construct($file, $pwd = null, $prefix = "", $driver = null)
     {
         $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
-            $driver = "{Microsoft Access Driver (*.mdb, *.accdb)}";
+            $driver = "Microsoft Access Driver (*.mdb, *.accdb)";
         }
-        $dsn = "odbc:Driver={$driver};DSN='';DBQ=" . realpath($db_file) . ";";
-        $this->construct($dsn, null, null);
+        $dsn = "odbc:Driver={" . $driver . "};DSN='';DBQ=" . realpath($file) . ";";
+        if($pwd) {
+            $dsn .= "PWD={$pwd};";
+        }
+        $this->pdoConstruct($dsn, null, null);
+    }
+
+    /**
+     * 析构时释放PDO资源
+     */
+    public function __destruct()
+    {
+        $this->pdoDestruct();
+        parent::__destruct();
     }
 
     /**
@@ -51,19 +63,23 @@ class Pdo extends Db
     }
 
     /**
-     * 对中文兼容性处理
-     * @param string $string 待处理字符串
-     * @param string $direction 方向 UTF8_2_GBK,GBK_2_UTF8
-     * @return string 处理后字符串
+     * ACCESS使用GBK编码，发送前需转化
+     * @param string $string 待转码字符串
+     * @return string
      */
-    private static function stringSerialize($string, $direction)
+    private static function encode($string)
     {
-        if ($direction == 'UTF8_2_GBK') {
-            $string = iconv('UTF-8', 'GBK', $string);
-        } else if ($direction == 'GBK_2_UTF8') {
-            $string = iconv('GBK', 'UTF-8', $string);
-        }
-        return $string;
+        return iconv('UTF-8', 'GBK', $string);
+    }
+
+    /**
+     * 返回的数据为GBK编码，使用前需转化
+     * @param $string
+     * @return string
+     */
+    private static function decode($string)
+    {
+        return iconv('GBK', 'UTF-8', $string);
     }
 
     /**
@@ -97,28 +113,28 @@ class Pdo extends Db
     public function query($sql, array $params = [], callable $callback = null)
     {
         $sql = $this->getRealSql($sql, $params);
-        $sql = self::stringSerialize($sql, 'UTF8_2_GBK');
+        $sql = self::encode($sql);
 
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->_pdo->exec($sql);
-            $rst = $this->_pdo->query('SELECT @@IDENTITY');
+            $this->pdo->exec($sql);
+            $rst = $this->pdo->query('SELECT @@IDENTITY');
             $row = $rst->fetch();
             return $row[0];
         }elseif (stripos($sql, "SELECT") === 0) {
             $sql = $this->getRealSql($sql, $params);
             if ($callback !== null) {
-                foreach ($this->_pdo->query($sql) as $row) {
+                foreach ($this->pdo->query($sql) as $row) {
                     array_walk($row, function(&$value){
-                        $value = self::stringSerialize($value, 'GBK_2_UTF8');
+                        $value = self::decode($value);
                     });
                     $callback($row);
                 }
                 return null;
             } else {
                 $rows = [];
-                foreach ($this->_pdo->query($sql) as $row) {
+                foreach ($this->pdo->query($sql) as $row) {
                     array_walk($row, function(&$value){
-                        $value = self::stringSerialize($value, 'GBK_2_UTF8');
+                        $value = self::decode($value);
                     });
                     $rows[] = $row;
                 }

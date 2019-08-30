@@ -88,19 +88,17 @@ class Mode implements ModeInterface
      */
     public static function getInstance(array $options)
     {
+        $mode = isset($options['mode']) ? $options['mode'] : 'pdo';
         $option = $options['option'];
-        $db = null;
-        switch ($options['mode']) {
+        switch ($mode) {
             case 'adodb':
-                $db = self::adodb();
-                break;
+                return self::adodb();
             case 'odbc':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $port = isset($option['port']) ? $option['port'] : '';
                 $charset = isset($option['charset']) ? $option['charset'] : 'utf8';
                 $driver = isset($option['driver']) ? $option['driver'] : null;
-                $db = self::odbc($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $driver);
-                break;
+                return self::odbc($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $driver);
             case 'mysqli':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $port = isset($option['port']) ? $option['port'] : '';
@@ -110,19 +108,16 @@ class Mode implements ModeInterface
                 $socket = isset($option['socket']) ? $option['socket'] : null;
                 $ssl_set = isset($option['ssl_set']) ? $option['ssl_set'] : [];
                 $flags = isset($option['flags']) ? $option['flags'] : null;
-                $db = self::mysqli($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
-                break;
+                return self::mysqli($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
             case 'pdo':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $port = isset($option['port']) ? $option['port'] : '';
                 $charset = isset($option['charset']) ? $option['charset'] : 'utf8';
                 $opts = isset($option['opts']) ? $option['opts'] : [];
                 $socket = isset($option['socket']) ? $option['socket'] : null;
-                $db = self::pdo($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $socket);
-                break;
+                return self::pdo($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $socket);
             default:
                 throw new DbException("error db mode: {$options['mode']}");
         }
-        return $db;
     }
 }

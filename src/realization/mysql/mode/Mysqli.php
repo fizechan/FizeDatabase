@@ -85,7 +85,7 @@ class Mysqli extends Db
 
     /**
      * 多语句查询
-     * @todo 非标准用法，请勿使用
+     * @notice 非标准用法，不建议使用
      * @param array $querys 要进行查询的多条SQL语句组成的数组
      * @return array
      * @throws Exception

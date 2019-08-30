@@ -13,14 +13,14 @@ class Query
 {
 
     /**
-     * @var Driver Query对象
-     */
-    protected static $query;
-
-    /**
      * @var array 配置参数
      */
     protected static $options;
+
+    /**
+     * @var string 实际使用Query类名
+     */
+    protected static $class;
 
     /**
      * 初始化
@@ -29,28 +29,7 @@ class Query
     public static function init(array $options)
     {
         self::$options = $options;
-        $class = '\\fize\\db\\realization\\' . $options['type'] . '\\Query';
-        self::$query = new $class();
-    }
-
-    /**
-     * 查询器单例
-     * @return Driver
-     */
-    public static function getInstance()
-    {
-        return self::$query;
-    }
-
-    /**
-     * 获取一个新的Query对象
-     * @param string $object 要进行判断的对象，一般为字段名
-     * @return Driver
-     */
-    public static function construct($object = null)
-    {
-        $class = '\\fize\\db\\realization\\' . self::$options['type'] . '\\Query';
-        return new $class($object);
+        self::$class = '\\fize\\db\\realization\\' . $options['type'] . '\\Query';
     }
 
     /**
@@ -58,9 +37,10 @@ class Query
      * @param string $object 操作对象，通常为字段名
      * @return Driver
      */
-    public static function object($object)
+    public static function object($object = null)
     {
-        return self::$query->object($object);
+        $query = new self::$class($object);
+        return $query;
     }
 
     /**
@@ -71,7 +51,8 @@ class Query
      */
     public static function field($field_name)
     {
-        return self::$query->field($field_name);
+        $query = new self::$class($field_name);
+        return $query;
     }
 
     /**
@@ -81,26 +62,61 @@ class Query
      */
     public static function analyze(array $maps)
     {
-        return self::$query->analyze($maps);
+        /**
+         * @var $query Driver
+         */
+        $query = new self::$class();
+        return $query->analyze($maps);
     }
 
     /**
-     * 以AND形式组合Query对象,或者指可以使用analyze()的数组
-     * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
+     * 以AND形式组合多个Query对象,或者指可以使用analyze()的数组
+     * @param string $logic 组合逻辑
+     * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return Driver
      */
-    public function qAnd($query)
+    public static function qMerge($logic, ...$querys)
     {
-        return self::$query->qAnd($query);
+        /**
+         * @var $query Driver
+         */
+        $query = $querys[0];
+        if (is_array($querys[0])) {
+            $query = new self::$class();
+            $query->analyze($querys[0]);
+        }
+
+        for ($i = 1; $i < count($querys); $i++) {
+            /**
+             * @var $query2 Driver
+             */
+            $query2 = $querys[$i];
+            if (is_array($querys[$i])) {
+                $query2 = new self::$class();
+                $query2->analyze($querys[$i]);
+            }
+            $query->qMerge($logic, $query2);
+        }
+        return $query;
     }
 
     /**
-     * 以OR形式组合Query对象,或者指可以使用analyze()的数组
-     * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
+     * 以AND形式组合多个Query对象,或者指可以使用analyze()的数组
+     * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return Driver
      */
-    public function qOr($query)
+    public static function qAnd(...$querys)
     {
-        return self::$query->qOr($query);
+        return self::qMerge('AND', ...$querys);
+    }
+
+    /**
+     * 以OR形式组合多个Query对象,或者指可以使用analyze()的数组
+     * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
+     * @return Driver
+     */
+    public static function qOr(...$querys)
+    {
+        return self::qMerge('OR', ...$querys);
     }
 }

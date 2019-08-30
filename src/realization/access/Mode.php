@@ -17,41 +17,41 @@ class Mode implements ModeInterface
 
     /**
      * odbc方式构造
-     * @param string $db_file Access文件路径
+     * @param string $file Access文件路径
      * @param string $pwd 用户密码
      * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param string $driver 指定ODBC驱动名称。
      * @return Adodb
      */
-    public static function adodb($db_file, $pwd = null, $prefix = "", $driver = null)
+    public static function adodb($file, $pwd = null, $prefix = "", $driver = null)
     {
-        return new Adodb($db_file, $pwd, $prefix, $driver);
+        return new Adodb($file, $pwd, $prefix, $driver);
     }
 
     /**
      * odbc方式构造
-     * @param string $db_file Access文件路径
+     * @param string $file Access文件路径
      * @param string $pwd 用户密码
      * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param string $driver 指定ODBC驱动名称。
      * @return Odbc
      */
-    public static function odbc($db_file, $pwd = null, $prefix = "", $driver = null)
+    public static function odbc($file, $pwd = null, $prefix = "", $driver = null)
     {
-        return new Odbc($db_file, $pwd, $prefix, $driver);
+        return new Odbc($file, $pwd, $prefix, $driver);
     }
 
     /**
      * odbc方式构造
-     * @param string $db_file Access文件路径
+     * @param string $file Access文件路径
      * @param string $pwd 用户密码
      * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param string $driver 指定ODBC驱动名称。
      * @return Pdo
      */
-    public static function pdo($db_file, $pwd = null, $prefix = "", $driver = null)
+    public static function pdo($file, $pwd = null, $prefix = "", $driver = null)
     {
-        return new Pdo($db_file, $pwd, $prefix, $driver);
+        return new Pdo($file, $pwd, $prefix, $driver);
     }
 
     /**
@@ -62,23 +62,24 @@ class Mode implements ModeInterface
      */
     public static function getInstance(array $options)
     {
+        $mode = isset($options['mode']) ? $options['mode'] : 'adodb';
         $option = $options['option'];
-        switch ($options['mode']) {
+        switch ($mode) {
             case 'adodb':
                 $pwd = isset($option['password']) ? $option['password'] : null;
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::adodb($option['db_file'], $pwd, $prefix, $driver);
+                return self::adodb($option['file'], $pwd, $prefix, $driver);
             case 'odbc':
                 $pwd = isset($option['password']) ? $option['password'] : null;
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::odbc($option['db_file'], $pwd, $prefix, $driver);
+                return self::odbc($option['file'], $pwd, $prefix, $driver);
             case 'pdo':
                 $pwd = isset($option['password']) ? $option['password'] : null;
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::pdo($option['db_file'], $pwd, $prefix, $driver);
+                return self::pdo($option['file'], $pwd, $prefix, $driver);
             default:
                 throw new DbException("error db mode: {$options['mode']}");
         }

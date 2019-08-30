@@ -4,7 +4,7 @@ namespace fize\db\realization\access\mode;
 
 
 use fize\db\realization\access\Db;
-use fize\db\middleware\odbc\Middleware;
+use fize\db\middleware\Odbc as Middleware;
 
 /**
  * ODBC方式Access数据库模型类
@@ -18,19 +18,28 @@ class Odbc extends Db
 
     /**
      * 构造
-     * @param string $db_file Access文件路径
+     * @param string $file Access文件路径
      * @param string $pwd 用户密码
      * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param string $driver 指定ODBC驱动名称。
      */
-    public function __construct($db_file, $pwd = null, $prefix = "", $driver = null)
+    public function __construct($file, $pwd = null, $prefix = "", $driver = null)
     {
         $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
-            $driver = "{Microsoft Access Driver (*.mdb, *.accdb)}";
+            $driver = "Microsoft Access Driver (*.mdb, *.accdb)";
         }
-        $dsn = "Driver={$driver};DSN='';DBQ=" . realpath($db_file) . ";";
-        $this->construct($dsn, '', $pwd);
+        $dsn = "Driver={" . $driver . "};DSN='';DBQ=" . realpath($file) . ";";
+        $this->odbcConstruct($dsn, '', $pwd);
+    }
+
+    /**
+     * 析构时释放ODBC资源
+     */
+    public function __destruct()
+    {
+        $this->odbcDestruct();
+        parent::__destruct();
     }
 
     /**
@@ -51,19 +60,23 @@ class Odbc extends Db
     }
 
     /**
-     * 对中文兼容性处理
-     * @param string $string 待处理字符串
-     * @param string $direction 方向 UTF8_2_GBK,GBK_2_UTF8
-     * @return string 处理后字符串
+     * ACCESS使用GBK编码，发送前需转化
+     * @param string $string 待转码字符串
+     * @return string
      */
-    private static function stringSerialize($string, $direction)
+    private static function encode($string)
     {
-        if ($direction == 'UTF8_2_GBK') {
-            $string = iconv('UTF-8', 'GBK', $string);
-        } else if ($direction == 'GBK_2_UTF8') {
-            $string = iconv('GBK', 'UTF-8', $string);
-        }
-        return $string;
+        return iconv('UTF-8', 'GBK', $string);
+    }
+
+    /**
+     * 返回的数据为GBK编码，使用前需转化
+     * @param $string
+     * @return string
+     */
+    private static function decode($string)
+    {
+        return iconv('GBK', 'UTF-8', $string);
     }
 
     /**
@@ -96,35 +109,35 @@ class Odbc extends Db
     public function query($sql, array $params = [], callable $callback = null)
     {
         $sql = $this->getRealSql($sql, $params);
-        $sql = self::stringSerialize($sql, 'UTF8_2_GBK');
-        $this->_driver->exec($sql);  //ACCESS不支持prepare，故使用exec方法
+        $sql = self::encode($sql);
+        $this->driver->exec($sql);  //ACCESS不支持prepare，故使用exec方法
         if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
-                while ($row = $this->_driver->fetchArray()) {
+                while ($row = $this->driver->fetchArray()) {
                     array_walk($assoc, function(&$value){
-                        $value = self::stringSerialize($value, 'GBK_2_UTF8');
+                        $value = self::decode($value);
                     });
                     $callback($row);
                 }
-                $this->_driver->freeResult();
+                $this->driver->freeResult();
                 return null;
             } else {
                 $rows = [];
-                while ($row = $this->_driver->fetchArray()) {
+                while ($row = $this->driver->fetchArray()) {
                     array_walk($row, function(&$value){
-                        $value = self::stringSerialize($value, 'GBK_2_UTF8');
+                        $value = self::decode($value);
                     });
                     $rows[] = $row;
                 }
-                $this->_driver->freeResult();
+                $this->driver->freeResult();
                 return $rows; //返回数组
             }
         } else if(stripos($sql, "INSERT") === 0){
-            $this->_driver->exec("SELECT @@IDENTITY");
-            $id = $this->_driver->result(1);
+            $this->driver->exec("SELECT @@IDENTITY");
+            $id = $this->driver->result(1);
             return $id; //返回自增ID
         }else{
-            $num = $this->_driver->numRows();
+            $num = $this->driver->numRows();
             return $num;
         }
     }

@@ -252,7 +252,7 @@ abstract class Db
         if (is_array($field_order)) {
             foreach ($field_order as $field => $order) {
                 $order = strtoupper($order);
-                if (!empty($this->_order)) {
+                if (!empty($this->order)) {
                     $this->order .= ", ";
                 }
                 $this->order .= " {$this->formatField($field)} $order";
@@ -263,7 +263,7 @@ abstract class Db
             }
             $this->order .= " {$field_order}";
         }
-        $this->order = trim($this->_order);
+        $this->order = trim($this->order);
         return $this;
     }
 
@@ -272,12 +272,24 @@ abstract class Db
      * @param mixed $statements “Query对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
-     * @todo Query对象的灵活性
      */
     public function where($statements, array $parse = [])
     {
+        /**
+         * @var $Query Query
+         */
+        $Query = '\\' . __NAMESPACE__ . '\\Query';
+
+        $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
+        if(class_exists($class)) {
+            $Query = $class;
+        }
+
         if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
-            $query = new Query();
+            /**
+             * @var $query Query
+             */
+            $query = new $Query();
             $query->analyze($statements);
             $this->where = $query->sql();
             $this->whereParams = $query->params();
@@ -296,11 +308,28 @@ abstract class Db
      * @param mixed $statements “QueryMysql对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
-     * @todo Query对象的灵活性
      */
     public function having($statements, array $parse = [])
     {
-        if ($statements instanceof Query) {  // $statements是查询器的情况
+        /**
+         * @var $Query Query
+         */
+        $Query = '\\' . __NAMESPACE__ . '\\Query';
+
+        $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
+        if(class_exists($class)) {
+            $Query = $class;
+        }
+
+        if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
+            /**
+             * @var $query Query
+             */
+            $query = new $Query();
+            $query->analyze($statements);
+            $this->having = $query->sql();
+            $this->havingParams = $query->params();
+        } elseif ($statements instanceof Query) {  // $statements是查询器的情况
             $this->having = $statements->sql();
             $this->havingParams = $statements->params();
         } else {  //直接传入SQL预处理语句的情况
@@ -519,7 +548,7 @@ abstract class Db
                 $this->params = $params;
                 break;
             case "SELECT" : //查询
-                if (empty($this->_field)) {
+                if (empty($this->field)) {
                     $this->field = "*";
                 }
                 $sql = "SELECT {$this->field} FROM {$this->formatTable($this->tablePrefix. $this->tableName)}";
@@ -614,7 +643,6 @@ abstract class Db
     public function select($cache = true)
     {
         $this->build("SELECT");
-
         if ($cache) {
             $sql = $this->getLastSql(true);
             if (!isset(self::$cache_rows[$sql])) {
@@ -622,7 +650,6 @@ abstract class Db
             }
             return self::$cache_rows[$sql];
         }
-
         $result = $this->query($this->sql, $this->params);
         return $result;
     }
@@ -667,7 +694,7 @@ abstract class Db
     public function value($field, $default = null, $force = false)
     {
         $this->field([$field]);
-        $row = $this->findOrNull(false);
+        $row = $this->findOrNull();
         $result = $default;
         if (!empty($row)) {
             $result = array_values($row)[0];  //第一列第一个值
@@ -685,6 +712,7 @@ abstract class Db
      */
     public function column($field)
     {
+        $this->field($field);
         $values = [];
         $this->fetch(function ($row) use ($field, &$values) {
             $values[] = $row[$field];
@@ -801,7 +829,7 @@ abstract class Db
      * 完整分页，执行该方法可以获取到分页记录、完整记录数、总页数，可用于分页输出
      * @param int $page 页码
      * @param int $size 每页记录数量，默认每页10个
-     * @return array [count、pages、rows]
+     * @return array [记录个数, 总页数、记录数组]
      * @todo 寻找更好的方案
      */
     public function paginate($page, $size = 10)

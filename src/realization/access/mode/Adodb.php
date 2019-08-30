@@ -3,7 +3,7 @@
 namespace fize\db\realization\access\mode;
 
 use fize\db\realization\access\Db;
-use fize\db\middleware\adodb\Middleware;
+use fize\db\middleware\Adodb as Middleware;
 
 /**
  * ADODB方式(推荐使用)连接access数据库
@@ -18,22 +18,31 @@ class Adodb extends Db
     /**
      * Adodb constructor.
      * @see https://www.connectionstrings.com/ace-oledb-12-0/
-     * @param string $db_file 数据库文件路径
+     * @param string $file 数据库文件路径
      * @param string $pwd 密码
      * @param string $prefix 表前缀
      * @param string $driver 驱动名
      */
-    public function __construct($db_file, $pwd = null, $prefix = "", $driver = null)
+    public function __construct($file, $pwd = null, $prefix = "", $driver = null)
     {
         $this->tablePrefix = $prefix;
         if (is_null($driver)) {
             $driver = "Microsoft.ACE.OLEDB.12.0";
         }
-        $dsn = "Provider={$driver};Data Source=" . realpath($db_file) . ";";
+        $dsn = "Provider={$driver};Data Source=" . realpath($file) . ";";
         if( $pwd ) {
             $dsn .= "Jet OLEDB:Database Password=" . $pwd . ";";
         }
-        $this->construct($dsn, 65001);
+        $this->adodbConstruct($dsn, 65001);
+    }
+
+    /**
+     * 析构时释放ADODB资源
+     */
+    public function __destruct()
+    {
+        $this->adodbDestruct();
+        parent::__destruct();
     }
 
     /**

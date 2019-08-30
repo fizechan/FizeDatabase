@@ -16,7 +16,8 @@
         "ext-sqlsrv": "*",
         "ext-mysqli": "*",
         "ext-pgsql": "*",
-        "ext-sqlite3": "*"
+        "ext-sqlite3": "*",
+        "ext-iconv": "*"
     },
 	"autoload": {
         "psr-4": {
