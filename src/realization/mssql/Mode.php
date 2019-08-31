@@ -18,7 +18,6 @@ class Mode implements ModeInterface
 
     /**
      * odbc方式构造
-     * @todo ODBC本身未实现数据库特性，仅适用于一般性调用
      * @param string $host 服务器地址，必填
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
@@ -76,20 +75,17 @@ class Mode implements ModeInterface
      */
     public static function getInstance(array $options)
     {
+        $mode = isset($options['mode']) ? $options['mode'] : 'odbc';
         $option = $options['option'];
         $db = null;
-        switch ($options['mode']) {
+        switch ($mode) {
+            case 'adodb':
+                break;
             case 'odbc':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
                 $port = isset($option['port']) ? $option['port'] : '';
                 $driver = isset($option['driver']) ? $option['driver'] : null;
                 $db = self::odbc($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $driver);
-                break;
-            case 'sqlsrv':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $charset = isset($option['charset']) ? $option['charset'] : 'GBK';
-                $db = self::sqlsrv($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset);
                 break;
             case 'pdo':
                 $prefix = isset($option['prefix']) ? $option['prefix'] : '';
@@ -97,6 +93,12 @@ class Mode implements ModeInterface
                 $charset = isset($option['charset']) ? $option['charset'] : 'GBK';
                 $opts = isset($option['opts']) ? $option['opts'] : [];
                 $db = self::pdo($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts);
+                break;
+            case 'sqlsrv':
+                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
+                $port = isset($option['port']) ? $option['port'] : '';
+                $charset = isset($option['charset']) ? $option['charset'] : 'GBK';
+                $db = self::sqlsrv($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset);
                 break;
             default:
                 throw new DbException("error db mode: {$options['mode']}");

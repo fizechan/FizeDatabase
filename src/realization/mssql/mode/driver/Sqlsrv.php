@@ -17,13 +17,13 @@ class Sqlsrv
      * 当前数据库链接对象
      * @var resource
      */
-    private $_conn = null;
+    private $conn = null;
 
     /**
      * 当前预处理对象
      * @var resource
      */
-    private $_stmt = null;
+    private $stmt = null;
 
     /**
      * MSSQL constructor.
@@ -33,8 +33,8 @@ class Sqlsrv
      */
     public function __construct($serverName, array $connectionInfo = null)
     {
-        $this->_conn = self::connect($serverName, $connectionInfo);
-        if (!$this->_conn) {
+        $this->conn = self::connect($serverName, $connectionInfo);
+        if (!$this->conn) {
             $error = end(self::errors(SQLSRV_ERR_ERRORS));
             throw new Exception($error['message'], $error['code']);
         }
@@ -45,10 +45,10 @@ class Sqlsrv
      */
     public function __destruct()
     {
-        if ($this->_stmt && is_resource($this->_stmt) && get_resource_type($this->_stmt) == "SQL Server Statement") {
+        if ($this->stmt && is_resource($this->stmt) && get_resource_type($this->stmt) == "SQL Server Statement") {
             $this->freeStmt();
         }
-        if ($this->_conn && is_resource($this->_conn) && get_resource_type($this->_conn) == "SQL Server Connection") {
+        if ($this->conn && is_resource($this->conn) && get_resource_type($this->conn) == "SQL Server Connection") {
             $this->close();
         }
     }
@@ -59,7 +59,7 @@ class Sqlsrv
      */
     public function beginTransaction()
     {
-        return sqlsrv_begin_transaction($this->_conn);
+        return sqlsrv_begin_transaction($this->conn);
     }
 
     /**
@@ -68,10 +68,10 @@ class Sqlsrv
      */
     public function cancel()
     {
-        if (is_null($this->_stmt)) {
+        if (is_null($this->stmt)) {
             return false;
         }
-        return sqlsrv_cancel($this->_stmt);
+        return sqlsrv_cancel($this->stmt);
     }
 
     /**
@@ -80,7 +80,7 @@ class Sqlsrv
      */
     public function clientInfo()
     {
-        return sqlsrv_client_info($this->_conn);
+        return sqlsrv_client_info($this->conn);
     }
 
     /**
@@ -89,7 +89,7 @@ class Sqlsrv
      */
     public function close()
     {
-        return sqlsrv_close($this->_conn);
+        return sqlsrv_close($this->conn);
     }
 
     /**
@@ -98,7 +98,7 @@ class Sqlsrv
      */
     public function commit()
     {
-        return sqlsrv_commit($this->_conn);
+        return sqlsrv_commit($this->conn);
     }
 
     /**
@@ -139,7 +139,7 @@ class Sqlsrv
      */
     public function execute()
     {
-        return sqlsrv_execute($this->_stmt);
+        return sqlsrv_execute($this->stmt);
     }
 
     /**
@@ -152,11 +152,11 @@ class Sqlsrv
     public function fetchArray($func, $fetchType = 2, $row = null, $offset = 0)
     {
         if (is_null($row)) {
-            while ($row = sqlsrv_fetch_array($this->_stmt, $fetchType)) {
+            while ($row = sqlsrv_fetch_array($this->stmt, $fetchType)) {
                 $func($row);
             }
         } else {
-            while ($row = sqlsrv_fetch_array($this->_stmt, $fetchType, $row, $offset)) {
+            while ($row = sqlsrv_fetch_array($this->stmt, $fetchType, $row, $offset)) {
                 $func($row);
             }
         }
@@ -173,8 +173,8 @@ class Sqlsrv
      */
     public function fetchObject($func, $className = null, array $ctorParams = null, $row = 6, $offset = null)
     {
-        //while($obj = sqlsrv_fetch_object($this->_stmt, $className, $ctorParams, $row, $offset)){
-        while ($obj = sqlsrv_fetch_object($this->_stmt)) {
+        while($obj = sqlsrv_fetch_object($this->stmt, $className, $ctorParams, $row, $offset)){
+        //while ($obj = sqlsrv_fetch_object($this->_stmt)) {
             $func($obj);
         }
     }
@@ -188,9 +188,9 @@ class Sqlsrv
     public function fetch($row = null, $offset = null)
     {
         if (is_null($row)) {
-            return sqlsrv_fetch($this->_stmt);
+            return sqlsrv_fetch($this->stmt);
         } else {
-            return sqlsrv_fetch($this->_stmt, $row, $offset);
+            return sqlsrv_fetch($this->stmt, $row, $offset);
         }
     }
 
@@ -200,7 +200,7 @@ class Sqlsrv
      */
     public function fieldMetadata()
     {
-        return sqlsrv_field_metadata($this->_stmt);
+        return sqlsrv_field_metadata($this->stmt);
     }
 
     /**
@@ -209,8 +209,8 @@ class Sqlsrv
      */
     public function freeStmt()
     {
-        $result = sqlsrv_free_stmt($this->_stmt);
-        $this->_stmt = null;
+        $result = sqlsrv_free_stmt($this->stmt);
+        $this->stmt = null;
         return $result;
     }
 
@@ -233,9 +233,9 @@ class Sqlsrv
     public function getField($fieldIndex, $getAsType = null)
     {
         if (is_null($getAsType)) {
-            return sqlsrv_get_field($this->_stmt, $fieldIndex);
+            return sqlsrv_get_field($this->stmt, $fieldIndex);
         } else {
-            return sqlsrv_get_field($this->_stmt, $fieldIndex, $getAsType);
+            return sqlsrv_get_field($this->stmt, $fieldIndex, $getAsType);
         }
     }
 
@@ -245,7 +245,7 @@ class Sqlsrv
      */
     public function hasRows()
     {
-        return sqlsrv_has_rows($this->_stmt);
+        return sqlsrv_has_rows($this->stmt);
     }
 
     /**
@@ -254,7 +254,7 @@ class Sqlsrv
      */
     public function nextResult()
     {
-        return sqlsrv_next_result($this->_stmt);
+        return sqlsrv_next_result($this->stmt);
     }
 
     /**
@@ -263,7 +263,7 @@ class Sqlsrv
      */
     public function numFields()
     {
-        return sqlsrv_num_fields($this->_stmt);
+        return sqlsrv_num_fields($this->stmt);
     }
 
     /**
@@ -272,7 +272,7 @@ class Sqlsrv
      */
     public function numRows()
     {
-        return sqlsrv_num_rows($this->_stmt);
+        return sqlsrv_num_rows($this->stmt);
     }
 
     /**
@@ -285,11 +285,11 @@ class Sqlsrv
     public function prepare($sql, array $params = null, array $options = null)
     {
         if (is_null($options)) {
-            $this->_stmt = sqlsrv_prepare($this->_conn, $sql, $params);
+            $this->stmt = sqlsrv_prepare($this->conn, $sql, $params);
         } else {
-            $this->_stmt = sqlsrv_prepare($this->_conn, $sql, $params, $options);
+            $this->stmt = sqlsrv_prepare($this->conn, $sql, $params, $options);
         }
-        return $this->_stmt;
+        return $this->stmt;
     }
 
     /**
@@ -302,11 +302,11 @@ class Sqlsrv
     public function query($sql, array $params = null, array $options = null)
     {
         if (is_null($options)) {
-            $this->_stmt = sqlsrv_query($this->_conn, $sql, $params);
+            $this->stmt = sqlsrv_query($this->conn, $sql, $params);
         } else {
-            $this->_stmt = sqlsrv_query($this->_conn, $sql, $params, $options);
+            $this->stmt = sqlsrv_query($this->conn, $sql, $params, $options);
         }
-        return $this->_stmt;
+        return $this->stmt;
     }
 
     /**
@@ -315,7 +315,7 @@ class Sqlsrv
      */
     public function rollback()
     {
-        return sqlsrv_rollback($this->_conn);
+        return sqlsrv_rollback($this->conn);
     }
 
     /**
@@ -324,7 +324,7 @@ class Sqlsrv
      */
     public function rowsAffected()
     {
-        return sqlsrv_rows_affected($this->_stmt);
+        return sqlsrv_rows_affected($this->stmt);
     }
 
     /**
@@ -333,7 +333,7 @@ class Sqlsrv
      */
     public function sendStreamData()
     {
-        return sqlsrv_send_stream_data($this->_stmt);
+        return sqlsrv_send_stream_data($this->stmt);
     }
 
     /**
@@ -342,6 +342,6 @@ class Sqlsrv
      */
     public function serverInfo()
     {
-        return sqlsrv_server_info($this->_conn);
+        return sqlsrv_server_info($this->conn);
     }
 }

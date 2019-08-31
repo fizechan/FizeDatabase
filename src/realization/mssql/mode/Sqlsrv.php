@@ -19,7 +19,7 @@ class Sqlsrv extends Db
      * 使用的MSSQL对象
      * @var Driver
      */
-    private $_driver = null;
+    protected $driver = null;
 
     /**
      * 构造
@@ -53,8 +53,8 @@ class Sqlsrv extends Db
                 'Database' => $dbname,
             ];
         }
-        $this->_tablePrefix = $prefix;
-        $this->_driver = new Driver($server, $config);
+        $this->tablePrefix = $prefix;
+        $this->driver = new Driver($server, $config);
     }
 
     /**
@@ -62,7 +62,7 @@ class Sqlsrv extends Db
      */
     public function __destruct()
     {
-        $this->_driver->close();
+        $this->driver = null;
     }
 
     /**
@@ -71,7 +71,7 @@ class Sqlsrv extends Db
      */
     public function prototype()
     {
-        return $this->_driver;
+        return $this->driver;
     }
 
     /**
@@ -100,35 +100,35 @@ class Sqlsrv extends Db
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
-        $rst = $this->_driver->query($sql, $params);
+        $rst = $this->driver->query($sql, $params);
         if (!$rst) {
             return false;
         }
         if (stripos($sql, "INSERT") === 0) {
             //获取最后的自增ID
             $id_sql = "SELECT @@IDENTITY";
-            $this->_driver->query($id_sql);
-            $this->_driver->fetch();
-            $id = $this->_driver->getField(0);
-            $this->_driver->freeStmt();
+            $this->driver->query($id_sql);
+            $this->driver->fetch();
+            $id = $this->driver->getField(0);
+            $this->driver->freeStmt();
             return $id;
         } elseif (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
-                $this->_driver->fetchArray(function ($row) use (&$callback) {
+                $this->driver->fetchArray(function ($row) use (&$callback) {
                     $callback($row);  //循环回调
                 });
-                $this->_driver->freeStmt();
+                $this->driver->freeStmt();
                 return null;
             } else {
                 $rows = [];
-                $this->_driver->fetchArray(function ($row) use (&$rows) {
+                $this->driver->fetchArray(function ($row) use (&$rows) {
                     $rows[] = $row;
                 });
-                $this->_driver->freeStmt();
+                $this->driver->freeStmt();
                 return $rows;  //返回结果数组
             }
         } else {
-            return $this->_driver->rowsAffected(); //返回受影响条数
+            return $this->driver->rowsAffected(); //返回受影响条数
         }
     }
 
@@ -138,7 +138,7 @@ class Sqlsrv extends Db
      */
     public function startTrans()
     {
-        $this->_driver->beginTransaction();
+        $this->driver->beginTransaction();
     }
 
     /**
@@ -147,7 +147,7 @@ class Sqlsrv extends Db
      */
     public function commit()
     {
-        $this->_driver->commit();
+        $this->driver->commit();
     }
 
     /**
@@ -156,6 +156,6 @@ class Sqlsrv extends Db
      */
     public function rollback()
     {
-        $this->_driver->rollback();
+        $this->driver->rollback();
     }
 }

@@ -4,14 +4,14 @@ namespace fize\db\realization\mssql\mode;
 
 
 use fize\db\realization\mssql\Db;
-use fize\db\middleware\pdo\Middleware;
+use fize\db\middleware\Pdo as Middleware;
 use PDO as Driver;
 
 
 /**
  * PDO方式MSSQL数据库模型类
- * php_sqlsrv_pdo.dll需要本地客户端支持，不同版本使用的客户端不同，可以在错误信息中获取相关资料。
- * php_sqlsrv_pdo.dll由微软官方提供技术支持，推荐使用。
+ * php_pdo_sqlsrv.dll需要本地客户端支持，不同版本使用的客户端不同，可以在错误信息中获取相关资料。
+ * php_pdo_sqlsrv.dll由微软官方提供技术支持，推荐使用。
  * @see https://docs.microsoft.com/en-us/sql/connect/php/system-requirements-for-the-php-sql-driver
  * @see https://www.microsoft.com/en-us/download/details.aspx?id=55642
  */
@@ -37,7 +37,7 @@ class Pdo extends Db
             'UTF8' => 'UTF-8',
         ];
         $charset = isset($charset_map[$charset]) ? $charset_map[$charset] : $charset;
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         $dsn = "sqlsrv:Server={$host}";
         if (!empty($port)) {
             $dsn .= ",{$port}";
@@ -58,6 +58,15 @@ class Pdo extends Db
                     Driver::SQLSRV_ATTR_ENCODING   => Driver::SQLSRV_ENCODING_DEFAULT,
                 ];
         }
-        $this->construct($dsn, $user, $pwd, $opts);
+        $this->pdoConstruct($dsn, $user, $pwd, $opts);
+    }
+
+    /**
+     * 析构时释放PDO资源
+     */
+    public function __destruct()
+    {
+        $this->pdoDestruct();
+        parent::__destruct();
     }
 }

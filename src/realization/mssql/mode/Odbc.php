@@ -5,7 +5,7 @@ namespace fize\db\realization\mssql\mode;
 
 
 use fize\db\realization\mssql\Db;
-use fize\db\middleware\odbc\Middleware;
+use fize\db\middleware\Odbc as Middleware;
 use Exception;
 
 /**
@@ -30,7 +30,7 @@ class Odbc extends Db
      */
     public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $driver = null)
     {
-        $this->_tablePrefix = $prefix;
+        $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
             $driver = "{SQL Server}";
         }
@@ -40,7 +40,16 @@ class Odbc extends Db
             $server = "{$host},{$port}";
         }
         $dsn = "Driver={$driver};Server={$server};Database={$dbname}";
-        $this->construct($dsn, $user, $pwd);
+        $this->odbcConstruct($dsn, $user, $pwd);
+    }
+
+    /**
+     * 析构时释放ODBC资源
+     */
+    public function __destruct()
+    {
+        $this->odbcDestruct();
+        parent::__destruct();
     }
 
     /**
@@ -89,39 +98,39 @@ class Odbc extends Db
     public function query($sql, array $params = [], callable $callback = null)
     {
         $sql = self::stringSerialize($sql, 'UTF8_2_GBK');
-        array_walk($params, function(&$value, $key){
+        array_walk($params, function(&$value){
             $value = self::stringSerialize($value, 'UTF8_2_GBK');
         });
-        $this->_driver->prepare($sql);
-        $this->_driver->execute($params); //绑定参数
+        $this->driver->prepare($sql);
+        $this->driver->execute($params); //绑定参数
         if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
-                while ($assoc = $this->_driver->fetchArray()) {
-                    array_walk($assoc, function(&$value, $key){
+                while ($assoc = $this->driver->fetchArray()) {
+                    array_walk($assoc, function(&$value){
                         $value = self::stringSerialize($value, 'GBK_2_UTF8');
                     });
                     $callback($assoc);
                 }
-                $this->_driver->freeResult();
+                $this->driver->freeResult();
                 return null;
             } else {
                 $rows = [];
-                while ($row = $this->_driver->fetchArray()) {
-                    array_walk($row, function(&$value, $key){
+                while ($row = $this->driver->fetchArray()) {
+                    array_walk($row, function(&$value){
                         $value = self::stringSerialize($value, 'GBK_2_UTF8');
                     });
                     $rows[] = $row;
                 }
-                $this->_driver->freeResult();
+                $this->driver->freeResult();
                 return $rows; //返回数组
             }
         } else if(stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0){
-            $this->_driver->exec("SELECT @@IDENTITY");
-            $id = $this->_driver->result(1);
+            $this->driver->exec("SELECT @@IDENTITY");
+            $id = $this->driver->result(1);
             return $id; //返回自增ID
         }else{
-            $this->_driver->exec("SELECT @@ROWCOUNT");
-            $rows = $this->_driver->result(1);
+            $this->driver->exec("SELECT @@ROWCOUNT");
+            $rows = $this->driver->result(1);
             return (int)$rows; //返回受影响条数
         }
     }
