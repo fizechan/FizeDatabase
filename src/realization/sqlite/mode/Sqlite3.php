@@ -18,7 +18,7 @@ class Sqlite3 extends Db
      * 使用的SQLite3对象
      * @var Driver
      */
-    private $_driver = null;
+    private $driver = null;
 
     /**
      * 构造
@@ -31,8 +31,8 @@ class Sqlite3 extends Db
     public function __construct($filename, $prefix = "", $flags = 2, $encryption_key = null, $busy_timeout = 30000)
     {
         $this->tablePrefix = $prefix;
-        $this->_driver = new Driver($filename, $flags, $encryption_key);
-        $this->_driver->busyTimeout($busy_timeout);
+        $this->driver = new Driver($filename, $flags, $encryption_key);
+        $this->driver->busyTimeout($busy_timeout);
     }
 
     /**
@@ -40,7 +40,7 @@ class Sqlite3 extends Db
      */
     public function __destruct()
     {
-        $this->_driver->close();
+        $this->driver->close();
     }
 
     /**
@@ -49,7 +49,7 @@ class Sqlite3 extends Db
      */
     public function prototype()
     {
-        return $this->_driver;
+        return $this->driver;
     }
 
     /**
@@ -80,10 +80,10 @@ class Sqlite3 extends Db
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
-        $stmt = $this->_driver->prepare($sql);
+        $stmt = $this->driver->prepare($sql);
 
         if(!$stmt){
-            throw new Exception($this->_driver->lastErrorMsg(), $this->_driver->lastErrorCode());
+            throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
         }
 
         if (!empty($params)) {
@@ -106,11 +106,11 @@ class Sqlite3 extends Db
         $result = $stmt->execute();
 
         if($result === false){
-            throw new Exception($this->_driver->lastErrorMsg(), $this->_driver->lastErrorCode());
+            throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
         }
 
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $id = $this->_driver->lastInsertRowID();
+            $id = $this->driver->lastInsertRowID();
             $stmt->close();
             return $id; //返回自增ID
         } elseif (stripos($sql, "SELECT") === 0) {
@@ -129,7 +129,7 @@ class Sqlite3 extends Db
                 return $out; //返回数组
             }
         } else {
-            $rows = $this->_driver->changes();
+            $rows = $this->driver->changes();
             $stmt->close();
             return $rows; //返回受影响条数
         }
@@ -141,7 +141,7 @@ class Sqlite3 extends Db
      */
     public function startTrans()
     {
-        $this->_driver->query('BEGIN TRANSACTION');
+        $this->driver->query('BEGIN TRANSACTION');
     }
 
     /**
@@ -150,7 +150,7 @@ class Sqlite3 extends Db
      */
     public function commit()
     {
-        $this->_driver->query('COMMIT');
+        $this->driver->query('COMMIT');
     }
 
     /**
@@ -159,6 +159,6 @@ class Sqlite3 extends Db
      */
     public function rollback()
     {
-        $this->_driver->query('ROLLBACK');
+        $this->driver->query('ROLLBACK');
     }
 }

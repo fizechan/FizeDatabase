@@ -4,7 +4,7 @@ namespace fize\db\realization\sqlite\mode;
 
 
 use fize\db\realization\sqlite\Db;
-use fize\db\middleware\odbc\Middleware;
+use fize\db\middleware\Odbc as Middleware;
 
 /**
  * ODBC方式Sqlite3数据库模型类
@@ -35,7 +35,16 @@ class Odbc extends Db
             $driver = "SQLite3 ODBC Driver";
         }
         $dsn = "DRIVER={$driver};Database={$filename};LongNames={$long_names};Timeout={$time_out};NoTXN={$no_txn};SyncPragma={$sync_pragma};StepAPI={$step_api}";
-        $this->construct($dsn, '', '');
+        $this->odbcConstruct($dsn, '', '');
+    }
+
+    /**
+     * 析构时关闭ODBC
+     */
+    public function __destruct()
+    {
+        $this->odbcDestruct();
+        parent::__destruct();
     }
 
     /**
@@ -68,14 +77,14 @@ class Odbc extends Db
     {
         $result = $this->queryOdbc($sql, $params, $callback);
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->_driver->exec("SELECT LAST_INSERT_ROWID()");
-            $id = $this->_driver->result(1);
+            $this->driver->exec("SELECT LAST_INSERT_ROWID()");
+            $id = $this->driver->result(1);
             return $id; //返回自增ID
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {
-            $this->_driver->exec("SELECT CHANGES()");
-            $rows = $this->_driver->result(1);
+            $this->driver->exec("SELECT CHANGES()");
+            $rows = $this->driver->result(1);
             return (int)$rows; //返回受影响条数
         }
     }
