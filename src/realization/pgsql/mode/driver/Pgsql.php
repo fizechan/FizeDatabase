@@ -125,7 +125,7 @@ class Pgsql
 
     /**
      * 读取连接上的输入
-     * @notice 不建议使用
+     * @deprecated 不建议使用
      * @return bool
      */
     public function consumeInput()
@@ -411,6 +411,7 @@ class Pgsql
 
     /**
      * 刷新链接中已处理的数据查询
+     * @deprecated 不建议使用
      * @return mixed
      */
     public function flush()
@@ -597,6 +598,7 @@ class Pgsql
 
     /**
      * 截断大对象
+     * @deprecated 不建议使用
      * @param int $size 要截断的字节数
      * @return bool
      */
