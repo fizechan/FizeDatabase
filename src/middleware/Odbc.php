@@ -19,6 +19,7 @@ trait Odbc
 
     /**
      * 构建ODBC
+     * @see https://www.connectionstrings.com/
      * @param string $dsn 连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
      * @param string $user 用户名
      * @param string $pwd 密码
@@ -53,7 +54,6 @@ trait Odbc
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return mixed SELECT语句返回数组，其余语句返回受影响记录数
-     * @todo 未找到ODBC提供影响记录条数、最后自增ID的功能
      */
     public function query($sql, array $params = [], callable $callback = null)
     {

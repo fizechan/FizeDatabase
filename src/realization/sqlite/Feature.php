@@ -17,7 +17,26 @@ trait Feature
      */
     protected function formatTable($str)
     {
-        return "{$str}";
+        if(strpos($str, '`') === 0)
+        {
+            return $str;
+        }
+        if(strpos($str, '.') !== false)
+        {
+            return $str;
+        }
+        elseif (stripos($str, ' SELECT ') !== false)
+        {
+            return $str;
+        }
+        elseif (stripos($str, ' AS ') !== false)
+        {
+            return $str;
+        }
+        else
+        {
+            return "`{$str}`";
+        }
     }
 
     /**
@@ -27,6 +46,33 @@ trait Feature
      */
     protected function formatField($str)
     {
-        return "{$str}";
+        if($str === '*')
+        {
+            return '*';
+        }
+        elseif(strpos($str, '`') === 0)
+        {
+            return $str;
+        }
+        if(strpos($str, '.') !== false)
+        {
+            return $str;
+        }
+        elseif (stripos($str, ' SELECT ') !== false)
+        {
+            return $str;
+        }
+        elseif (stripos($str, ' AS ') !== false)
+        {
+            return $str;
+        }
+        elseif (substr($str, -1) === ')')
+        {
+            return $str;
+        }
+        else
+        {
+            return "`{$str}`";
+        }
     }
 }

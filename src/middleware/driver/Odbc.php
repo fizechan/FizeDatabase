@@ -8,7 +8,7 @@ use Exception;
 
 /**
  * ODBC驱动类
- * @todo ODBC的SQL预处理语句对中文支持跟ODBC驱动有关，例如{MySQL ODBC 5.3 ANSI Driver}、{MySQL ODBC 5.3 Unicode Driver}。
+ * @notice ODBC的SQL预处理语句对中文支持跟ODBC驱动有关，例如{MySQL ODBC 5.3 ANSI Driver}、{MySQL ODBC 5.3 Unicode Driver}。
  * @notice 如果发现中文乱码问题，可以尝试替换驱动。
  * @package fize\db\middleware\driver
  */
@@ -19,17 +19,17 @@ class Odbc
      * 当前连接标识符
      * @var resource
      */
-    private $_connection = null;
+    private $connection = null;
 
     /**
      * 当前结果集标识符
      * @var resource
      */
-    private $_result = null;
+    private $result = null;
 
     /**
      * 构造
-     * 可用DSN参见 https://www.connectionstrings.com/
+     * @see https://www.connectionstrings.com/ 可用DSN参见
      * @param string $dsn 连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
      * @param string $user 用户名
      * @param string $pwd 密码
@@ -40,11 +40,11 @@ class Odbc
     public function __construct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
     {
         if ($pconnect) {
-            $this->_connection = odbc_pconnect($dsn, $user, $pwd, $cursor_type);
+            $this->connection = odbc_pconnect($dsn, $user, $pwd, $cursor_type);
         } else {
-            $this->_connection = odbc_connect($dsn, $user, $pwd, $cursor_type);
+            $this->connection = odbc_connect($dsn, $user, $pwd, $cursor_type);
         }
-        if (!$this->_connection) {
+        if (!$this->connection) {
             throw new Exception("SQL state " . odbc_error() . ":" . odbc_errormsg());
         }
     }
@@ -66,12 +66,12 @@ class Odbc
     public function autocommit($OnOff = null)
     {
         if ($OnOff === null) {
-            $rst = odbc_autocommit($this->_connection);
+            $rst = odbc_autocommit($this->connection);
         } else {
-            $rst = odbc_autocommit($this->_connection, $OnOff);
+            $rst = odbc_autocommit($this->connection, $OnOff);
         }
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
     }
@@ -84,9 +84,9 @@ class Odbc
      */
     public function binmode($mode)
     {
-        $rst = odbc_binmode($this->_result, $mode);
+        $rst = odbc_binmode($this->result, $mode);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
     }
@@ -104,10 +104,10 @@ class Odbc
      */
     public function close()
     {
-        if ($this->_connection != null && get_resource_type($this->_connection) == "odbc link") {
-            odbc_close($this->_connection);
+        if ($this->connection != null && get_resource_type($this->connection) == "odbc link") {
+            odbc_close($this->connection);
         }
-        $this->_connection = null;
+        $this->connection = null;
     }
 
     /**
@@ -122,12 +122,12 @@ class Odbc
      */
     public function columnprivileges($qualifier, $owner, $table_name, $column_name)
     {
-        $rst = odbc_columnprivileges($this->_connection, $qualifier, $owner, $table_name, $column_name);
+        $rst = odbc_columnprivileges($this->connection, $qualifier, $owner, $table_name, $column_name);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
-        $this->_result = $rst;
-        return $this->_result;
+        $this->result = $rst;
+        return $this->result;
     }
 
     /**
@@ -141,12 +141,12 @@ class Odbc
      */
     public function columns($qualifier = null, $schema = null, $table_name = null, $column_name = null)
     {
-        $rst = odbc_columns($this->_connection, $qualifier, $schema, $table_name, $column_name);
+        $rst = odbc_columns($this->connection, $qualifier, $schema, $table_name, $column_name);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
-        $this->_result = $rst;
-        return $this->_result;
+        $this->result = $rst;
+        return $this->result;
     }
 
     /**
@@ -155,9 +155,9 @@ class Odbc
      */
     public function commit()
     {
-        $rst = odbc_commit($this->_connection);
+        $rst = odbc_commit($this->connection);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
     }
 
@@ -167,7 +167,7 @@ class Odbc
      */
     public function cursor()
     {
-        return odbc_cursor($this->_result);
+        return odbc_cursor($this->result);
     }
 
     /**
@@ -178,9 +178,9 @@ class Odbc
      */
     public function dataSource($fetch_type)
     {
-        $rst = odbc_data_source($this->_connection, $fetch_type);
+        $rst = odbc_data_source($this->connection, $fetch_type);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
     }
@@ -194,12 +194,12 @@ class Odbc
      */
     public function exec($query_string, $flags = null)
     {
-        $rst = odbc_exec($this->_connection, $query_string, $flags);
+        $rst = odbc_exec($this->connection, $query_string, $flags);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
-        $this->_result = $rst;
-        return $this->_result;
+        $this->result = $rst;
+        return $this->result;
     }
 
     /**
@@ -209,9 +209,9 @@ class Odbc
      */
     public function execute(array $parameters_array = null)
     {
-        $rst = odbc_execute($this->_result, $parameters_array);
+        $rst = odbc_execute($this->result, $parameters_array);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
     }
 
@@ -222,7 +222,7 @@ class Odbc
      */
     public function fetchArray($rownumber = null)
     {
-        return odbc_fetch_array($this->_result, $rownumber);
+        return odbc_fetch_array($this->result, $rownumber);
     }
 
     /**
@@ -234,9 +234,9 @@ class Odbc
      */
     public function fetchInto(array &$result_array, $rownumber = null)
     {
-        $rst = odbc_fetch_into($this->_result, $result_array, $rownumber);
+        $rst = odbc_fetch_into($this->result, $result_array, $rownumber);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
     }
@@ -248,7 +248,7 @@ class Odbc
      */
     public function fetchObject($rownumber = null)
     {
-        return odbc_fetch_object($this->_result, $rownumber);
+        return odbc_fetch_object($this->result, $rownumber);
     }
 
     /**
@@ -258,7 +258,7 @@ class Odbc
      */
     public function fetchRow($row_number = null)
     {
-        return odbc_fetch_row($this->_result, $row_number);
+        return odbc_fetch_row($this->result, $row_number);
     }
 
     /**
@@ -275,17 +275,17 @@ class Odbc
     public function field($index)
     {
         if (is_string($index)) {
-            $index = odbc_field_num($this->_result, $index);
+            $index = odbc_field_num($this->result, $index);
             if ($index === false) {
-                throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+                throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
             }
         }
         return [
             'index' => $index,
-            'len' => odbc_field_len($this->_result, $index),
-            'name' => odbc_field_name($this->_result, $index),
-            'scale' => odbc_field_scale($this->_result, $index),
-            'type' => odbc_field_type($this->_result, $index),
+            'len' => odbc_field_len($this->result, $index),
+            'name' => odbc_field_name($this->result, $index),
+            'scale' => odbc_field_scale($this->result, $index),
+            'type' => odbc_field_type($this->result, $index),
         ];
     }
 
@@ -302,12 +302,12 @@ class Odbc
      */
     public function foreignkeys($pk_qualifier, $pk_owner, $pk_table, $fk_qualifier, $fk_owner, $fk_table)
     {
-        $rst = odbc_foreignkeys($this->_connection, $pk_qualifier, $pk_owner, $pk_table, $fk_qualifier, $fk_owner, $fk_table);
+        $rst = odbc_foreignkeys($this->connection, $pk_qualifier, $pk_owner, $pk_table, $fk_qualifier, $fk_owner, $fk_table);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
-        $this->_result = $rst;
-        return $this->_result;
+        $this->result = $rst;
+        return $this->result;
     }
 
     /**
@@ -316,8 +316,8 @@ class Odbc
      */
     public function freeResult()
     {
-        $result = odbc_free_result($this->_result);
-        $this->_result = null;
+        $result = odbc_free_result($this->result);
+        $this->result = null;
         return $result;
     }
 
@@ -328,8 +328,8 @@ class Odbc
      */
     public function gettypeinfo($data_type = null)
     {
-        $this->_result = odbc_gettypeinfo($this->_connection, $data_type);
-        return $this->_result;
+        $this->result = odbc_gettypeinfo($this->connection, $data_type);
+        return $this->result;
     }
 
     /**
@@ -339,7 +339,7 @@ class Odbc
      */
     public function longreadlen($length)
     {
-        return odbc_longreadlen($this->_result, $length);
+        return odbc_longreadlen($this->result, $length);
     }
 
     /**
@@ -348,7 +348,7 @@ class Odbc
      */
     public function nextResult()
     {
-        return odbc_next_result($this->_result);
+        return odbc_next_result($this->result);
     }
 
     /**
@@ -357,7 +357,7 @@ class Odbc
      */
     public function numFields()
     {
-        return odbc_num_fields($this->_result);
+        return odbc_num_fields($this->result);
     }
 
     /**
@@ -366,7 +366,7 @@ class Odbc
      */
     public function numRows()
     {
-        return odbc_num_rows($this->_result);
+        return odbc_num_rows($this->result);
     }
 
     /**
@@ -377,12 +377,12 @@ class Odbc
      */
     public function prepare($query_string)
     {
-        $rst = odbc_prepare($this->_connection, $query_string);
+        $rst = odbc_prepare($this->connection, $query_string);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
-        $this->_result = $rst;
-        return $this->_result;
+        $this->result = $rst;
+        return $this->result;
     }
 
     /**
@@ -394,13 +394,13 @@ class Odbc
      */
     public function primarykeys($qualifier, $owner, $table)
     {
-        $this->_result = odbc_primarykeys($this->_connection, $qualifier, $owner, $table);
-        return $this->_result;
+        $this->result = odbc_primarykeys($this->connection, $qualifier, $owner, $table);
+        return $this->result;
     }
 
     /**
      * 检索参数到过程的信息
-     * @notice 非常见用法，不建议使用
+     * @deprecated 非常见用法，不建议使用
      * @param string $qualifier 限定符
      * @param string $owner 所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
      * @param string $proc 过程。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
@@ -409,20 +409,20 @@ class Odbc
      */
     public function procedurecolumns($qualifier = null, $owner = null, $proc = null, $column = null)
     {
-        $this->_result = odbc_procedurecolumns($this->_connection, $qualifier, $owner, $proc, $column);
-        return $this->_result;
+        $this->result = odbc_procedurecolumns($this->connection, $qualifier, $owner, $proc, $column);
+        return $this->result;
     }
 
     /**
      * 获取存储在特定数据源中的过程列表。
-     * @notice 非常见用法，不建议使用
+     * @deprecated 非常见用法，不建议使用
      * @param string $qualifier 限定符
      * @param string $owner 所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
      * @param string $name 名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
      */
     public function procedures($qualifier = null, $owner = null, $name = null)
     {
-        $this->_result = odbc_procedures($this->_connection, $qualifier, $owner, $name);
+        $this->result = odbc_procedures($this->connection, $qualifier, $owner, $name);
     }
 
     /**
@@ -433,9 +433,9 @@ class Odbc
      */
     public function resultAll($format = null)
     {
-        $rst = odbc_result_all($this->_result, $format);
+        $rst = odbc_result_all($this->result, $format);
         if($rst === false){
-            throw new Exception(odbc_error($this->_connection), odbc_errormsg($this->_connection));
+            throw new Exception(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
     }
@@ -447,7 +447,7 @@ class Odbc
      */
     public function result($field)
     {
-        return odbc_result($this->_result, $field);
+        return odbc_result($this->result, $field);
     }
 
     /**
@@ -456,7 +456,7 @@ class Odbc
      */
     public function rollback()
     {
-        return odbc_rollback($this->_connection);
+        return odbc_rollback($this->connection);
     }
 
     /**
@@ -469,9 +469,9 @@ class Odbc
     public function setoption($function, $option, $param)
     {
         if ($function == 1) {
-            return odbc_setoption($this->_connection, 1, $option, $param);
+            return odbc_setoption($this->connection, 1, $option, $param);
         } else {
-            return odbc_setoption($this->_result, 2, $option, $param);
+            return odbc_setoption($this->result, 2, $option, $param);
         }
     }
 
@@ -487,8 +487,8 @@ class Odbc
      */
     public function specialcolumns($type, $qualifier, $owner, $table, $scope, $nullable)
     {
-        $this->_result = odbc_specialcolumns($this->_connection, $type, $qualifier, $owner, $table, $scope, $nullable);
-        return $this->_result;
+        $this->result = odbc_specialcolumns($this->connection, $type, $qualifier, $owner, $table, $scope, $nullable);
+        return $this->result;
     }
 
     /**
@@ -502,8 +502,8 @@ class Odbc
      */
     public function statistics($qualifier, $owner, $table_name, $unique, $accuracy)
     {
-        $this->_result = odbc_statistics($this->_connection, $qualifier, $owner, $table_name, $unique, $accuracy);
-        return $this->_result;
+        $this->result = odbc_statistics($this->connection, $qualifier, $owner, $table_name, $unique, $accuracy);
+        return $this->result;
     }
 
     /**
@@ -515,8 +515,8 @@ class Odbc
      */
     public function tableprivileges($qualifier, $owner, $name)
     {
-        $this->_result = odbc_tableprivileges($this->_connection, $qualifier, $owner, $name);
-        return $this->_result;
+        $this->result = odbc_tableprivileges($this->connection, $qualifier, $owner, $name);
+        return $this->result;
     }
 
     /**
@@ -529,7 +529,7 @@ class Odbc
      */
     public function tables($qualifier = null, $owner = null, $name = null, $types = null)
     {
-        $this->_result = odbc_tables($this->_connection, $qualifier, $owner, $name, $types);
-        return $this->_result;
+        $this->result = odbc_tables($this->connection, $qualifier, $owner, $name, $types);
+        return $this->result;
     }
 }
