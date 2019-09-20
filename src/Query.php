@@ -13,23 +13,29 @@ class Query
 {
 
     /**
-     * @var array 配置参数
-     */
-    protected static $options;
-
-    /**
      * @var string 实际使用Query类名
      */
     protected static $class;
 
     /**
      * 初始化
-     * @param array $options 配置项
+     * @param string $db_type 数据库类型
      */
-    public static function init(array $options)
+    public static function init($db_type)
     {
-        self::$options = $options;
-        self::$class = '\\fize\\db\\realization\\' . $options['type'] . '\\Query';
+        self::$class = '\\' . __NAMESPACE__ . '\\realization\\' . $db_type . '\\Query';
+    }
+
+    /**
+     * 获取指定数据库类型的查询器对象
+     * @param string $db_type 数据库类型
+     * @param string $object 要进行判断的对象，一般为字段名
+     * @return Driver
+     */
+    public static function construct($db_type, $object = null)
+    {
+        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $db_type . '\\Query';
+        return new $class($object);
     }
 
     /**
@@ -39,8 +45,7 @@ class Query
      */
     public static function object($object = null)
     {
-        $query = new self::$class($object);
-        return $query;
+        return new self::$class($object);
     }
 
     /**
@@ -51,8 +56,7 @@ class Query
      */
     public static function field($field_name)
     {
-        $query = new self::$class($field_name);
-        return $query;
+        return new self::$class($field_name);
     }
 
     /**

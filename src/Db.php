@@ -31,6 +31,8 @@ class Db
         self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $options['type'] . '\\Mode';
         $class = self::$mode;
         self::$db = $class::getInstance($options);
+        
+        Query::init($options['type']);
     }
 
     /**
