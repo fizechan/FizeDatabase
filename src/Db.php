@@ -24,29 +24,29 @@ class Db
 
     /**
      * 初始化
-     * @param array $options 配置项
+     * @param array $config 配置项
      */
-    public static function init(array $options)
+    public static function init(array $config)
     {
-        self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $options['type'] . '\\Mode';
+        self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $config['type'] . '\\Mode';
         $class = self::$mode;
-        self::$db = $class::getInstance($options);
+        self::$db = $class::getInstance($config);
         
-        Query::init($options['type']);
+        Query::init($config['type']);
     }
 
     /**
      * 取得一个新的连接
-     * @param array $options 配置项
+     * @param array $config 配置项
      * @return Driver
      */
-    public static function connect(array $options)
+    public static function connect(array $config)
     {
         /**
          * @var $class Mode
          */
-        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $options['type'] . '\\Mode';
-        return $class::getInstance($options);
+        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $config['type'] . '\\Mode';
+        return $class::getInstance($config);
     }
 
     /**

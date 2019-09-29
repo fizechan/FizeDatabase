@@ -61,6 +61,7 @@ class Odbc extends Db
 
     /**
      * ACCESS使用GBK编码，发送前需转化
+     * @todo 待优化
      * @param string $string 待转码字符串
      * @return string
      */
@@ -71,6 +72,7 @@ class Odbc extends Db
 
     /**
      * 返回的数据为GBK编码，使用前需转化
+     * @todo 待优化
      * @param $string
      * @return string
      */
@@ -134,11 +136,9 @@ class Odbc extends Db
             }
         } else if(stripos($sql, "INSERT") === 0){
             $this->driver->exec("SELECT @@IDENTITY");
-            $id = $this->driver->result(1);
-            return $id; //返回自增ID
+            return $this->driver->result(1);  //返回自增ID
         }else{
-            $num = $this->driver->numRows();
-            return $num;
+            return $this->driver->numRows();
         }
     }
 }

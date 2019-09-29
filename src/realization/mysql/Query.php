@@ -3,6 +3,7 @@
 namespace fize\db\realization\mysql;
 
 use fize\db\definition\Query as Base;
+use fize\db\Query as DbQuery;
 
 
 /**
@@ -75,31 +76,12 @@ class Query extends Base
     }
 
     /**
-     * 以XOR形式组合多个Query对象,或者指可以使用analyze()的数组
-     * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
+     * 以XOR形式组合Query对象,或者指可以使用analyze()的数组
+     * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
-    public static function qXor(...$querys){
-        if(count($querys) < 1){
-            return new static();
-        }
-        $sql = "";
-        $bind = [];
-        for($i = 0; $i < count($querys); $i++){
-            if(is_array($querys[$i])){
-                $query = new static();
-                $query->analyze($querys[$i]);
-            }else{
-                $query = $querys[$i];
-            }
-            if($i == 0){
-                $sql = "( " . $query->sql() . ")";
-                $bind = $query->params();
-            }else{
-                $sql .= " XOR (" . $query->sql() . ")";
-                $bind = array_merge($bind, $query->params());
-            }
-        }
-        return new static(null, $sql, $bind);
+    public function qXOr($query)
+    {
+        return $this->qMerge('XOR', $query);
     }
 }

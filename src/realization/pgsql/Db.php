@@ -96,7 +96,7 @@ abstract class Db extends Base
             return $sql; //REPLACE语句已完整
         } elseif ($action == 'TRUNCATE') {
             $sql = "TRUNCATE TABLE {$this->formatTable($this->tablePrefix . $this->tableName)}";
-            $this->_sql = $sql;
+            $this->sql = $sql;
             return $sql; //TRUNCATE语句已完整
         } else {
             $sql = parent::build($action, $data, false);
@@ -163,8 +163,7 @@ abstract class Db extends Base
     public function replace(array $data)
     {
         $this->build("REPLACE", $data);
-        $id = $this->query($this->sql, $this->params);
-        return $id;
+        return $this->query($this->sql, $this->params);
     }
 
     /**

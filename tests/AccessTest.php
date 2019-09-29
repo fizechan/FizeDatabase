@@ -1,21 +1,23 @@
 <?php
 
-
 use PHPUnit\Framework\TestCase;
 use fize\db\Db;
 use fize\db\Query;
 
-class SqliteTest extends TestCase
+
+class AccessTest extends TestCase
 {
+
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
 
         $options = [
-            'type'   => 'sqlite',
-            'mode'   => 'pdo',
-            'option' => [
-                'file' => 'F:\data\sqlite3\gm_test.sqlite3'
+            'type'   => 'access',
+            'mode'   => 'adodb',
+            'config' => [
+                'file'     => dirname(__FILE__) . '/data/test_with_password.mdb',
+                'password' => '123456'
             ]
         ];
 
@@ -33,12 +35,22 @@ class SqliteTest extends TestCase
         echo "<br/>";
         $sql = Db::getLastSql(true);
         print_r($sql);
+        self::assertIsNumeric($rst);
+    }
+
+    public function testCommit()
+    {
+        Db::startTrans();
+        echo 'OK';
+        Db::commit();
+
+        self::assertTrue(true);
     }
 
     public function testDelete()
     {
         $user = Db::table('user');
-        $result = $user->where(['id' => 93])->delete();
+        $result = $user->where(['id' => ['IN', [2, 3, 4, 5, 9, 20, 21]]])->delete();
         var_dump($result);
         var_dump(Db::getLastSql(true));
     }
@@ -56,18 +68,18 @@ class SqliteTest extends TestCase
         var_dump(Db::getLastSql(true));
     }
 
-    public function testPaginate()
+    public function testRollback()
     {
-        $result = Db::table('user')->where(['sex' => null])->paginate(2, 3);
-        var_dump($result);
-        var_dump(Db::getLastSql(true));
+        Db::startTrans();
+        echo 'OK';
+        Db::rollback();
     }
 
     public function testSelect()
     {
-        $user = Db::table('user');
+        $user = Db::table('tt_user_role');
         $map2 = [
-            'name' => '陈峰展2'
+            'name' => ['LIKE', '%测试%']
         ];
         $list = $user->where($map2)->limit(2)->select();
         echo $user->getLastSql();
@@ -83,7 +95,7 @@ class SqliteTest extends TestCase
         $map1 = [
             'name'     => '35NEW,哈哈哈',
             'add_time' => ['<>', 1493712345, "OR"],  //EQ、OR不区分大小写
-            "`name` IS NOT NULL"  //测试非标
+            "[name] IS NOT NULL"  //测试非标
         ];
         $map2 = [
             'add_time' => ['IN', "1493716872, 1493717205, 1493717205"]  //值为字符串格式，不含左右括号
@@ -107,7 +119,7 @@ class SqliteTest extends TestCase
             ->neq(1493712345)
             ->logic('AND')
             ->object(null)
-            ->exp('`name` IS NOT NULL');
+            ->exp('[name] IS NOT NULL');
         $map2 = Query::field('add_time')
             ->isIn("1493716872, 1493717205, 1493717205");
         $map3 = Query::field('name')
@@ -126,13 +138,10 @@ class SqliteTest extends TestCase
     public function testSelectOr()
     {
         $user = Db::table('user');
-        $map1 = array(
+        $map1 = [
             'name'     => "陈峰展'",
-            'add_time' => array(
-                'between',
-                array(1422720001, 1461226895)
-            )
-        );
+            'add_time' => ['BETWEEN', [1422720001, 1461226895]]
+        ];
 
         $list1 = $user->where($map1)->select();
         var_dump($list1);
@@ -140,33 +149,20 @@ class SqliteTest extends TestCase
         echo $user->getLastSql(true);
         echo "<br/>";
 
-        $map2 = array(
+        $map2 = [
             'name' => '35NEW,哈哈哈',
-            'sex'  => ['=', 4, "or"]
-        );
+            'sex'  => ['=', 4, "OR"]
+        ];
         $list2 = $user->where($map2)->select();
         var_dump($list2);
         echo "<br/>";
         echo $user->getLastSql();
     }
 
-    public function testSetValue()
+    public function testStartTrans()
     {
-        $user = Db::table('user');
-        $result = $user->where(['id' => 75])->setValue('sex', ['`sex` + 110']);
-        var_dump($result);
-        var_dump(Db::getLastSql(true));
-    }
-
-    public function testUpdate()
-    {
-        $user = Db::table('user');
-        $data = [
-            'name' => '梁燕萍',
-            'sex'  => ['`sex` + 110']
-        ];
-        $result = $user->where(['id' => 75])->update($data);
-        var_dump($result);
-        var_dump(Db::getLastSql(true));
+        Db::startTrans();
+        echo 'OK';
+        Db::commit();
     }
 }

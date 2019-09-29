@@ -62,11 +62,9 @@ class Adodb extends Db
             //获取最后的自增ID
             $id_sql = "SELECT @@IDENTITY AS id";
             $id_rst = $this->queryAdodb($id_sql);
-            $id = $id_rst[0]['id'];
-            return $id;
+            return $id_rst[0]['id'];
         } else {
-            $rst = $this->queryAdodb($sql, $params, $callback);
-            return $rst;
+            return $this->queryAdodb($sql, $params, $callback);
         }
     }
 }

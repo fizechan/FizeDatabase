@@ -23,7 +23,7 @@ class Mode implements ModeInterface
 
     /**
      * odbc方式构造
-     * @todo ODBC本身未实现数据库特性，仅适用于一般性调用
+     * @notice ODBC本身未实现数据库特性，仅适用于一般性调用
      * @param string $host 服务器地址，必填
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
@@ -41,7 +41,7 @@ class Mode implements ModeInterface
 
     /**
      * mysqli方式构造
-     * @todo mysqli最终还是会被淘汰的，建议谨慎使用
+     * @notice mysqli最终还是会被淘汰的，建议谨慎使用
      * @param string $host 服务器地址
      * @param string $user 用户名
      * @param string $pwd 用户密码
@@ -82,42 +82,42 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
-     * @param array $options 数据库参数选项
+     * @param array $config 数据库参数选项
      * @return Db
      * @throws DbException
      */
-    public static function getInstance(array $options)
+    public static function getInstance(array $config)
     {
-        $mode = isset($options['mode']) ? $options['mode'] : 'pdo';
-        $option = $options['option'];
+        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
+        $db_cfg = $config['config'];
         switch ($mode) {
             case 'adodb':
-                return self::adodb();
+                return self::adodb();  //todo
             case 'odbc':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $charset = isset($option['charset']) ? $option['charset'] : 'utf8';
-                $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::odbc($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $driver);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
+                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
+                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
+                return self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $driver);
             case 'mysqli':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $charset = isset($option['charset']) ? $option['charset'] : 'utf8';
-                $opts = isset($option['opts']) ? $option['opts'] : [];
-                $real = isset($option['real']) ? $option['real'] : true;
-                $socket = isset($option['socket']) ? $option['socket'] : null;
-                $ssl_set = isset($option['ssl_set']) ? $option['ssl_set'] : [];
-                $flags = isset($option['flags']) ? $option['flags'] : null;
-                return self::mysqli($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
+                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
+                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
+                $real = isset($db_cfg['real']) ? $db_cfg['real'] : true;
+                $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
+                $ssl_set = isset($db_cfg['ssl_set']) ? $db_cfg['ssl_set'] : [];
+                $flags = isset($db_cfg['flags']) ? $db_cfg['flags'] : null;
+                return self::mysqli($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
             case 'pdo':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $charset = isset($option['charset']) ? $option['charset'] : 'utf8';
-                $opts = isset($option['opts']) ? $option['opts'] : [];
-                $socket = isset($option['socket']) ? $option['socket'] : null;
-                return self::pdo($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts, $socket);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
+                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
+                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
+                $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
+                return self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $socket);
             default:
-                throw new DbException("error db mode: {$options['mode']}");
+                throw new DbException("error db mode: {$mode}");
         }
     }
 }

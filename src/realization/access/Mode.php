@@ -56,32 +56,32 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
-     * @param array $options 数据库参数选项
+     * @param array $config 数据库参数选项
      * @return Db
      * @throws DbException
      */
-    public static function getInstance(array $options)
+    public static function getInstance(array $config)
     {
-        $mode = isset($options['mode']) ? $options['mode'] : 'adodb';
-        $option = $options['option'];
+        $mode = isset($config['mode']) ? $config['mode'] : 'adodb';
+        $db_cfg = $config['config'];
         switch ($mode) {
             case 'adodb':
-                $pwd = isset($option['password']) ? $option['password'] : null;
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::adodb($option['file'], $pwd, $prefix, $driver);
+                $pwd = isset($db_cfg['password']) ? $db_cfg['password'] : null;
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
+                return self::adodb($db_cfg['file'], $pwd, $prefix, $driver);
             case 'odbc':
-                $pwd = isset($option['password']) ? $option['password'] : null;
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::odbc($option['file'], $pwd, $prefix, $driver);
+                $pwd = isset($db_cfg['password']) ? $db_cfg['password'] : null;
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
+                return self::odbc($db_cfg['file'], $pwd, $prefix, $driver);
             case 'pdo':
-                $pwd = isset($option['password']) ? $option['password'] : null;
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $driver = isset($option['driver']) ? $option['driver'] : null;
-                return self::pdo($option['file'], $pwd, $prefix, $driver);
+                $pwd = isset($db_cfg['password']) ? $db_cfg['password'] : null;
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
+                return self::pdo($db_cfg['file'], $pwd, $prefix, $driver);
             default:
-                throw new DbException("error db mode: {$options['mode']}");
+                throw new DbException("error db mode: {$mode}");
         }
     }
 }

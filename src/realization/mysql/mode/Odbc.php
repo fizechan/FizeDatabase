@@ -81,8 +81,7 @@ class Odbc extends Db
         $result = $this->queryOdbc($sql, $params, $callback);
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
             $this->driver->exec("SELECT @@IDENTITY");
-            $id = $this->driver->result(1);
-            return $id; //返回自增ID
+            return $this->driver->result(1);  //返回自增ID
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {

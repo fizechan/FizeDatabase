@@ -64,6 +64,7 @@ class Pdo extends Db
 
     /**
      * ACCESS使用GBK编码，发送前需转化
+     * @todo 待优化
      * @param string $string 待转码字符串
      * @return string
      */
@@ -74,6 +75,7 @@ class Pdo extends Db
 
     /**
      * 返回的数据为GBK编码，使用前需转化
+     * @todo 待优化
      * @param $string
      * @return string
      */

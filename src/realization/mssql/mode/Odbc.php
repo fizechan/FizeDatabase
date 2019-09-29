@@ -73,6 +73,7 @@ class Odbc extends Db
 
     /**
      * 对中文兼容性处理
+     * @todo 待优化
      * @param string $string 待处理字符串
      * @param string $direction 方向 UTF8_2_GBK,GBK_2_UTF8
      * @return string 处理后字符串
@@ -126,8 +127,7 @@ class Odbc extends Db
             }
         } else if(stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0){
             $this->driver->exec("SELECT @@IDENTITY");
-            $id = $this->driver->result(1);
-            return $id; //返回自增ID
+            return $this->driver->result(1);  //返回自增ID
         }else{
             $this->driver->exec("SELECT @@ROWCOUNT");
             $rows = $this->driver->result(1);

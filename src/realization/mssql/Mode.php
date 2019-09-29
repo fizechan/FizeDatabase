@@ -69,42 +69,42 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
-     * @param array $options 数据库参数选项
+     * @param array $config 数据库参数选项
      * @return Db
      * @throws DbException
      */
-    public static function getInstance(array $options)
+    public static function getInstance(array $config)
     {
-        $mode = isset($options['mode']) ? $options['mode'] : 'odbc';
-        $option = $options['option'];
+        $mode = isset($config['mode']) ? $config['mode'] : 'odbc';
+        $db_cfg = $config['config'];
         $db = null;
         switch ($mode) {
             case 'adodb':
                 break;
             case 'odbc':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $driver = isset($option['driver']) ? $option['driver'] : null;
-                $db = self::odbc($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $driver);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
+                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
+                $db = self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $driver);
                 break;
             case 'pdo':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $charset = isset($option['charset']) ? $option['charset'] : 'GBK';
-                $opts = isset($option['opts']) ? $option['opts'] : [];
-                $db = self::pdo($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset, $opts);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
+                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'GBK';
+                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
+                $db = self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts);
                 break;
             case 'sqlsrv':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $port = isset($option['port']) ? $option['port'] : '';
-                $charset = isset($option['charset']) ? $option['charset'] : 'GBK';
-                $db = self::sqlsrv($option['host'], $option['user'], $option['password'], $option['dbname'], $prefix, $port, $charset);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
+                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'GBK';
+                $db = self::sqlsrv($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset);
                 break;
             default:
-                throw new DbException("error db mode: {$options['mode']}");
+                throw new DbException("error db mode: {$mode}");
         }
-        if(isset($option['new_feature'])) {
-            $db->newFeature($option['new_feature']);  //开启新特性支持
+        if(isset($db_cfg['new_feature'])) {
+            $db->newFeature($db_cfg['new_feature']);  //开启新特性支持
         }
         return $db;
     }

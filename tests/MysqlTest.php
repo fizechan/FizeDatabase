@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use fize\db\Db;
 use fize\db\Query;
 
-class MssqlTest extends TestCase
+class MysqlTest extends TestCase
 {
 
     public function __construct($name = null, array $data = [], $dataName = '')
@@ -15,7 +15,7 @@ class MssqlTest extends TestCase
         $options = [
             'type'   => 'mysql',
             'mode'   => 'pdo',
-            'option' => [
+            'config' => [
                 'host'     => 'localhost',
                 'user'     => 'root',
                 'password' => '123456',
@@ -66,16 +66,21 @@ class MssqlTest extends TestCase
     public function testDelete()
     {
         $user = Db::table('user');
-        $result = $user->where(['id' => 10])->delete();
+        $result = $user->where(['id' => 73])->delete();
         var_dump($result);
         var_dump(Db::getLastSql(true));
     }
 
-    public function testLimit()
+    public function testFetch()
     {
         $user = Db::table('user');
-        $rows = $user->where(['id' => ['>=', 4]])->order(['sex' => 'DESC'])->limit(3, 2)->select();
-        var_dump($rows);
+
+        $user->where(['sex' => ['NEQ', 1]])->fetch(
+            function ($row) {
+                var_dump($row);
+            }
+        );
+
         var_dump(Db::getLastSql(true));
     }
 
@@ -95,9 +100,17 @@ class MssqlTest extends TestCase
         var_dump(Db::getLastSql(true));
     }
 
+    public function testOrder()
+    {
+        $result = Db::table('user')->order(['sex' => 'asc', 'add_time' => 'desc'])->select();
+        var_dump($result);
+
+        var_dump(Db::getLastSql(true));
+    }
+
     public function testPaginate()
     {
-        $result = Db::table('user')->where(['sex' => ['NEQ', 1]])->order("sex ASC")->paginate(2, 3);
+        $result = Db::table('user')->where(['sex' => 1])->field(['id', 'name'])->paginate(2, 3);
         var_dump($result);
         var_dump(Db::getLastSql(true));
     }
@@ -106,7 +119,7 @@ class MssqlTest extends TestCase
     {
         $user = Db::table('user');
         $map2 = [
-            'name' => '陈峰展2'
+            'name' => ['LIKE', '陈峰展%']
         ];
         $list = $user->where($map2)->limit(2)->select();
         echo $user->getLastSql();
@@ -114,12 +127,68 @@ class MssqlTest extends TestCase
         var_dump($list);
     }
 
+    public function testSelectMulti()
+    {
+        $user = Db::table('user');
+
+//var_dump($user);
+
+//示例1，以数组连接
+        $map1 = [
+            'name'     => '35NEW,哈哈哈',
+            'add_time' => ['<>', 1493712345, "OR"],  //EQ、OR不区分大小写
+            "`name` IS NOT NULL"  //测试非标
+        ];
+        $map2 = [
+            'add_time' => ['IN', "1493716872, 1493717205, 1493717205"]  //值为字符串格式，不含左右括号
+        ];
+        $map3 = [
+            'name'     => '35NEW,哈哈哈',
+            'add_time' => ['BETWEEN', 1493712345, 1493716872, "OR"]  //BETWEEN、OR不区分大小写
+        ];
+        $query1 = Query::qOr(Query::qAnd($map1, $map2), $map3);
+        var_dump($query1);
+        $list1 = $user->where($query1)->select();
+        var_dump($list1);
+        echo "<br/>";
+        echo $user->getLastSql();
+        echo "<br/>";
+
+//示例2，以QueryMysql对象连接
+        $map1 = Query::field('name')
+            ->eq('35NEW,哈哈哈')
+            ->logic('OR')
+            ->field('add_time')
+            ->neq(1493712345)
+            ->logic('AND')
+            ->field(null)
+            ->exp('`name` IS NOT NULL');
+        $map2 = Query::field('add_time')
+            ->isIn("1493716872, 1493717205, 1493717205");
+        $map3 = Query::object()
+            ->field('name')
+            ->eq('35NEW,哈哈哈')
+            ->logic('OR')
+            ->field('add_time')
+            ->between(1493712345, 1493716872);
+        $query2 = Query::qOr(Query::qAnd($map1, $map2), $map3);
+        var_dump($query2);
+        $list2 = $user->where($query2)->select();
+        var_dump($list2);
+        echo "<br/>";
+        echo $user->getLastSql();
+        echo "<br/>";
+    }
+
     public function testSelectOr()
     {
         $user = Db::table('user');
         $map1 = [
             'name'     => "陈峰展'",
-            'add_time' => ['BETWEEN', [1422720001, 1461226895]]
+            'add_time' => [
+                'between',
+                [1422720001, 1461226895]
+            ]
         ];
 
         $list1 = $user->where($map1)->select();
@@ -128,14 +197,38 @@ class MssqlTest extends TestCase
         echo $user->getLastSql(true);
         echo "<br/>";
 
-        $map2 = [
+        $map2 = array(
             'name' => '35NEW,哈哈哈',
             'sex'  => ['=', 4, "OR"]
-        ];
+        );
         $list2 = $user->where($map2)->select();
         var_dump($list2);
         echo "<br/>";
         echo $user->getLastSql();
+    }
+
+    public function testSetDec()
+    {
+        $user = Db::table('user');
+        $result = $user->where(['id' => 75])->setDec('sex', 200);
+        var_dump($result);
+        var_dump(Db::getLastSql(true));
+    }
+
+    public function testSetInc()
+    {
+        $user = Db::table('user');
+        $result = $user->where(['id' => 75])->setInc('sex');
+        var_dump($result);
+        var_dump(Db::getLastSql(true));
+    }
+
+    public function testSetValue()
+    {
+        $user = Db::table('user');
+        $result = $user->where(['id' => 75])->setValue('sex', ['`sex` + 110']);
+        var_dump($result);
+        var_dump(Db::getLastSql(true));
     }
 
     public function testSum()
@@ -151,7 +244,7 @@ class MssqlTest extends TestCase
         $user = Db::table('user');
         $data = [
             'name' => '梁燕萍',
-            'sex'  => ['[sex] + 110']
+            'sex'  => ['`sex` + 110']
         ];
         $result = $user->where(['id' => 75])->update($data);
         var_dump($result);
@@ -161,7 +254,7 @@ class MssqlTest extends TestCase
     public function testValue()
     {
         $user = Db::table('user');
-        $sex = $user->where(['id' => 23])->value('sex', 0, true);
+        $sex = $user->where(['id' => 75])->value('sex', 0, true);
         var_dump($sex);
         var_dump(Db::getLastSql(true));
     }

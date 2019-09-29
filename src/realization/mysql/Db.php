@@ -162,8 +162,7 @@ abstract class Db extends Base
     public function replace(array $data)
     {
         $this->build("REPLACE", $data);
-        $id = $this->query($this->sql, $this->params);
-        return $id;
+        return $this->query($this->sql, $this->params);
     }
 
     /**

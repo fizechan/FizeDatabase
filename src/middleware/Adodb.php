@@ -1,4 +1,7 @@
 <?php
+/** @noinspection PhpUndefinedFieldInspection */
+/** @noinspection PhpUndefinedMethodInspection */
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 
 namespace fize\db\middleware;

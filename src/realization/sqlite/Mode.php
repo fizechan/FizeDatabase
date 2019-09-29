@@ -62,39 +62,39 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
-     * @param array $options 数据库参数选项
+     * @param array $config 数据库参数选项
      * @return Db
      * @throws DbException
      */
-    public static function getInstance(array $options)
+    public static function getInstance(array $config)
     {
-        $mode = isset($options['mode']) ? $options['mode'] : 'pdo';
-        $option = $options['option'];
+        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
+        $db_cfg = $config['config'];
         $db = null;
         switch ($mode) {
             case 'odbc':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $long_names = isset($option['long_names']) ? $option['long_names'] : 0;
-                $time_out = isset($option['time_out']) ? $option['time_out'] : 1000;
-                $no_txn = isset($option['no_txn']) ? $option['no_txn'] : 0;
-                $sync_pragma = isset($option['sync_pragma']) ? $option['sync_pragma'] : 'NORMAL';
-                $step_api = isset($option['step_api']) ? $option['step_api'] : 0;
-                $driver = isset($option['driver']) ? $option['driver'] : null;
-                $db = self::odbc($option['file'], $prefix, $long_names, $time_out, $no_txn, $sync_pragma, $step_api, $driver);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $long_names = isset($db_cfg['long_names']) ? $db_cfg['long_names'] : 0;
+                $time_out = isset($db_cfg['time_out']) ? $db_cfg['time_out'] : 1000;
+                $no_txn = isset($db_cfg['no_txn']) ? $db_cfg['no_txn'] : 0;
+                $sync_pragma = isset($db_cfg['sync_pragma']) ? $db_cfg['sync_pragma'] : 'NORMAL';
+                $step_api = isset($db_cfg['step_api']) ? $db_cfg['step_api'] : 0;
+                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
+                $db = self::odbc($db_cfg['file'], $prefix, $long_names, $time_out, $no_txn, $sync_pragma, $step_api, $driver);
                 break;
             case 'sqlite3':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $flags = isset($option['flags']) ? $option['flags'] : 2;
-                $encryption_key = isset($option['encryption_key']) ? $option['encryption_key'] : null;
-                $busy_timeout = isset($option['busy_timeout']) ? $option['busy_timeout'] : 30000;
-                $db = self::sqlite3($option['file'], $prefix, $flags, $encryption_key, $busy_timeout);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $flags = isset($db_cfg['flags']) ? $db_cfg['flags'] : 2;
+                $encryption_key = isset($db_cfg['encryption_key']) ? $db_cfg['encryption_key'] : null;
+                $busy_timeout = isset($db_cfg['busy_timeout']) ? $db_cfg['busy_timeout'] : 30000;
+                $db = self::sqlite3($db_cfg['file'], $prefix, $flags, $encryption_key, $busy_timeout);
                 break;
             case 'pdo':
-                $prefix = isset($option['prefix']) ? $option['prefix'] : '';
-                $db = self::pdo($option['file'], $prefix);
+                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
+                $db = self::pdo($db_cfg['file'], $prefix);
                 break;
             default:
-                throw new DbException("error db mode: {$options['mode']}");
+                throw new DbException("error db mode: {$mode}");
         }
         return $db;
     }
