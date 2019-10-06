@@ -1,6 +1,6 @@
 {
     "name": "fize/db",
-    "description": "A fully functional and easy to extend the database class library, ORM class library. produced by FizeChan.",
+    "description": "A fully functional and easy to extend the database class library, ORM class library.",
     "license": "Apache-2.0",
     "authors": [
         {
