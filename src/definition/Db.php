@@ -599,8 +599,7 @@ abstract class Db
     public function insert(array $data)
     {
         $this->build("INSERT", $data);
-        $id = $this->query($this->sql, $this->params);
-        return $id;
+        return $this->query($this->sql, $this->params);
     }
 
     /**
@@ -650,8 +649,7 @@ abstract class Db
             }
             return self::$cache_rows[$sql];
         }
-        $result = $this->query($this->sql, $this->params);
-        return $result;
+        return $this->query($this->sql, $this->params);
     }
 
     /**
