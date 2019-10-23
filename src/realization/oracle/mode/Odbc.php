@@ -7,33 +7,34 @@ use fize\db\realization\oracle\Db;
 use fize\db\middleware\Odbc as Middleware;
 
 /**
- * ODBC方式PostgreSQL数据库模型类
+ * ODBC方式Oracle数据库模型类
+ * @todo 未测试通过，暂无法使用
  * 注意ODBC返回的类型都为字符串格式(null除外)
  */
 class Odbc extends Db
 {
     use Middleware {
-        Middleware::query as protected queryOdbc;  //使用别名来解决ODBC本身占用了query方法的问题
+        Middleware::query as protected queryOdbc;
     }
 
     /**
      * 构造
-     * @param string $host 服务器地址，必填
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
-     * @param mixed $port 端口号，选填，MySQL默认是3306
+     * @param string $sid 连接串，必填
+     * @param mixed $port 端口号，选填，Oracle默认是1521
      * @param string $charset 指定编码，选填，默认utf8
      * @param string $driver 指定ODBC驱动名称。
      */
-    public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", $driver = null)
+    public function __construct($user, $pwd, $sid, $port = "", $charset = "utf8", $driver = null)
     {
-        $this->tablePrefix = $prefix;
         if (is_null($driver)) {  //默认驱动名
-            $driver = "{MySQL ODBC 5.3 ANSI Driver}";
+            //$driver = "{Oracle in OraClient11g_home1}";
+            $driver = "{Oracle in OraDB12Home1}";
         }
-        $dsn = "DRIVER={$driver};SERVER={$host};DATABASE={$dbname};CHARSET={$charset}";
+        $dsn = "DRIVER={$driver};SERVER='{$sid}';UID='{$user}';PWD='{$pwd}';CHARSET={$charset}";
+        $dsn = "DRIVER={$driver};SERVER={$sid};UID={$user};PWD={$pwd};";
+        //$dsn = "DRIVER={$driver};SERVER={$sid};";
         if (!empty($port)) {
             $dsn .= ";PORT={$port}";
         }
@@ -51,6 +52,7 @@ class Odbc extends Db
 
     /**
      * 安全化值
+     * @todo 待优化
      * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
      * ODBC为驱动层，安全化值应由各数据库自行实现
      * @param mixed $value
@@ -79,12 +81,11 @@ class Odbc extends Db
     {
         $result = $this->queryOdbc($sql, $params, $callback);
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->driver->exec("SELECT @@IDENTITY");
-            return $this->driver->result(1);  //返回自增ID
+            return 0;  //返回自增ID
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {
-            $this->driver->exec("SELECT ROW_COUNT()");
+            $this->driver->exec("SELECT sql%rowcount");
             $rows = $this->driver->result(1);
             return (int)$rows; //返回受影响条数
         }

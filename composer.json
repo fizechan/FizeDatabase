@@ -1,6 +1,6 @@
 {
     "name": "fize/db",
-    "description": "A fully functional and easy to extend the database class library, ORM class library.",
+    "description": "一个全功能的，易于扩展的数据库类、ORM类。",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -15,7 +15,14 @@
         "phpunit/phpunit": "^8.0.0"
     },
     "suggest": {
-        "ext-oci8": "*"
+        "ext-com_dotnet": "*",
+        "ext-mysqli": "*",
+        "ext-oci8": "*",
+        "ext-odbc": "*",
+        "ext-pdo": "*",
+        "ext-pgsql": "*",
+        "ext-sqlite3": "*",
+        "ext-sqlsrv": "*"
     },
 	"autoload": {
         "psr-4": {

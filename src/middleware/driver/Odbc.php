@@ -46,7 +46,7 @@ class Odbc
             $this->connection = odbc_connect($dsn, $user, $pwd, $cursor_type);
         }
         if (!$this->connection) {
-            throw new Exception("SQL state " . odbc_error() . ":" . odbc_errormsg());
+            throw new Exception("SQL state " . odbc_error() . ":" . iconv('GB2312', 'UTF-8', odbc_errormsg()));
         }
     }
 
