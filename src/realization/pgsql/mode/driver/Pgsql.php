@@ -4,9 +4,13 @@
 
 namespace fize\db\realization\pgsql\mode\driver;
 
+use fize\db\realization\pgsql\mode\driver\pgsql\Result;
+use fize\db\realization\pgsql\mode\driver\pgsql\Lo;
+
 
 /**
  * PostgreSQL数据库
+ * @package fize\db\realization\pgsql\mode\driver
  */
 class Pgsql
 {
@@ -17,38 +21,25 @@ class Pgsql
     protected $connection = null;
 
     /**
-     * @var resource 结果集
-     */
-    protected $result = null;
-
-    /**
-     * @var resource 大型对象
-     */
-    protected $largeObject = null;
-
-    /**
-     * Pgsql constructor.
+     * 构造时创建连接
      * @param string $connection_string 连接字符串
+     * @param bool $pconnect 是否使用长连接
+     * @param int $connect_type PGSQL_CONNECT_FORCE_NEW使用新连接
      */
-    public function __construct($connection_string)
+    public function __construct($connection_string, $pconnect = false, $connect_type = null)
     {
-        $this->connection = self::connect($connection_string);
+        if($pconnect) {
+            $this->pconnect($connection_string, $connect_type);
+        }
+        $this->connect($connection_string);
     }
 
+    /**
+     * 析构时关闭连接
+     */
     public function __destruct()
     {
-        if($this->connection) {
-            $this->close();
-        }
-    }
-
-    /**
-     * 返回受影响的记录数目
-     * @return int
-     */
-    public function affectedRows()
-    {
-        return pg_affected_rows($this->result);
+        $this->close();
     }
 
     /**
@@ -71,11 +62,13 @@ class Pgsql
 
     /**
      * 关闭连接
-     * @return bool
      */
     public function close()
     {
-        return pg_close($this->connection);
+        if($this->connection) {
+            pg_close($this->connection);
+            $this->connection = null;
+        }
     }
 
     /**
@@ -90,11 +83,11 @@ class Pgsql
     /**
      * 打开一个 PostgreSQL 连接
      * @param string $connection_string 连接字符串
-     * @return resource
      */
-    public static function connect($connection_string)
+    public function connect($connection_string)
     {
-        return pg_connect($connection_string);
+        $this->close();
+        $this->connection = pg_connect($connection_string);
     }
 
     /**
@@ -126,7 +119,6 @@ class Pgsql
 
     /**
      * 读取连接上的输入
-     * @deprecated 不建议使用
      * @return bool
      */
     public function consumeInput()
@@ -157,7 +149,13 @@ class Pgsql
      */
     public function copyFrom($table_name, array $rows, $delimiter = null, $null_as = null)
     {
-        return pg_copy_from($this->connection, $table_name, $rows, $delimiter, $null_as);
+        if(!is_null($null_as)) {
+            return pg_copy_from($this->connection, $table_name, $rows, $delimiter, $null_as);
+        }
+        if(!is_null($delimiter)) {
+            return pg_copy_from($this->connection, $table_name, $rows, $delimiter);
+        }
+        return pg_copy_from($this->connection, $table_name, $rows);
     }
 
     /**
@@ -169,7 +167,13 @@ class Pgsql
      */
     public function copyTo($table_name, $delimiter = null, $null_as = null)
     {
-        return pg_copy_to($this->connection, $table_name, $delimiter, $null_as);
+        if(!is_null($null_as)) {
+            return pg_copy_to($this->connection, $table_name, $delimiter, $null_as);
+        }
+        if(!is_null($delimiter)) {
+            return pg_copy_to($this->connection, $table_name, $delimiter);
+        }
+        return pg_copy_to($this->connection, $table_name);
     }
 
     /**
@@ -187,7 +191,7 @@ class Pgsql
      * @param string $table_name 表名
      * @param array $assoc_array 以 field=>value 格式给出的条件
      * @param int $options 常量PGSQL_CONV_FORCE_NULL, PGSQL_DML_NO_CONV, PGSQL_DML_EXEC or PGSQL_DML_STRING
-     * @return mixed
+     * @return bool|string 选项带PGSQL_DML_STRING时返回SQL语句，其他情况返回bool
      */
     public function delete($table_name, array $assoc_array, $options = 512)
     {
@@ -247,186 +251,24 @@ class Pgsql
      * 发送一个请求来执行带有给定参数的准备好的语句，并等待结果
      * @param string $stmtname SQL预处理语句
      * @param array $params 绑定参数
-     * @return resource
+     * @return Result|false Result对象来进行数据集操作，失败时返回false
      */
     public function execute($stmtname, array $params)
     {
         $result = pg_execute($this->connection, $stmtname, $params);
-        $this->result = $result;
-        return $result;
-    }
-
-    /**
-     * 以数组的形式获取特定结果列中的所有行
-     * @param int $column 要从结果资源中检索的列号(从零开始)
-     * @return array
-     */
-    public function fetchAllColumns($column = 0)
-    {
-        return pg_fetch_all_columns($this->result, $column);
-    }
-
-    /**
-     * 从结果中提取所有行作为一个数组
-     * @return array
-     */
-    public function fetchAll()
-    {
-        return pg_fetch_all($this->result);
-    }
-
-    /**
-     * 提取一行作为数组
-     * @param int $row 要从结果资源中检索的列号(从零开始)
-     * @param int $result_type 常量PGSQL_ASSOC，PGSQL_NUM 和 PGSQL_BOTH
-     * @return array
-     */
-    public function fetchArray($row = null, $result_type = 3)
-    {
-        return pg_fetch_array($this->result, $row, $result_type);
-    }
-
-    /**
-     * 提取一行作为关联数组
-     * @param int $row 要从结果资源中检索的列号(从零开始)
-     * @return array
-     */
-    public function fetchAssoc($row = null)
-    {
-        return pg_fetch_assoc($this->result, $row);
-    }
-
-    /**
-     * 提取一行作为对象
-     * @param int $row 要从结果资源中检索的列号(从零开始)
-     * @return object
-     */
-    public function fetchObject($row = null)
-    {
-        return pg_fetch_object($this->result, $row);
-    }
-
-    /**
-     * 从结果资源中返回值
-     * @param int $row 要从结果资源中检索的列号(从零开始)
-     * @param mixed $field 字段名（字符串）或字段索引（整数）。
-     * @return mixed
-     */
-    public function fetchResult($row, $field)
-    {
-        return pg_fetch_result($this->result, $row, $field);
-    }
-
-    /**
-     * 提取一行作为枚举数组
-     * @param int $row 要从结果资源中检索的列号(从零开始)
-     * @return array
-     */
-    public function fetchRow($row = null)
-    {
-        return pg_fetch_row($this->result, $row);
-    }
-
-    /**
-     * 测试字段是否为 NULL
-     * @param int $row 要从结果资源中检索的列号(从零开始)
-     * @param mixed $field 字段名（字符串）或字段索引（整数）。
-     * @return int 为null返回1，不为null返回0
-     */
-    public function fieldIsNull($row, $field)
-    {
-        return pg_field_is_null($this->result, $row, $field);
-    }
-
-    /**
-     * 返回字段的名字
-     * @param int $field_number 字段编号从 0 开始
-     * @return string
-     */
-    public function fieldName($field_number)
-    {
-        return pg_field_name($this->result, $field_number);
-    }
-
-    /**
-     * 返回字段的编号
-     * @param string $field_name 字段名
-     * @return int 未找到或者出错时返回-1
-     */
-    public function fieldNum($field_name)
-    {
-        return pg_field_num($this->result, $field_name);
-    }
-
-    /**
-     * 返回打印出来的长度
-     * @param int $row_number 要从结果资源中检索的列号(从零开始)
-     * @param string $field_name 字段名
-     * @return int
-     */
-    public function fieldPrtlen($row_number, $field_name)
-    {
-        return pg_field_prtlen($this->result, $row_number, $field_name);
-    }
-
-    /**
-     * 返回指定字段占用内部存储空间的大小
-     * @param int $field_number 字段编号从 0 开始
-     * @return int 字段大小为 -1 表示可变长度字段。如果出错本函数返回 FALSE
-     */
-    public function fieldSize($field_number)
-    {
-        return pg_field_size($this->result, $field_number);
-    }
-
-    /**
-     * 返回tables字段的名称或oid
-     * @param int $field_number 字段编号从 0 开始
-     * @param bool $oid_only 默认情况下，返回字段所属的表名，但如果oid_only设置为TRUE，则返回oid。
-     * @return mixed
-     */
-    public function fieldTable($field_number, $oid_only = false)
-    {
-        return pg_field_table($this->result, $field_number, $oid_only);
-    }
-
-    /**
-     * 返回对应字段号的类型ID (OID)
-     * @param int $field_number 字段编号从 0 开始
-     * @return int
-     */
-    public function fieldTypeOid($field_number)
-    {
-        return pg_field_type_oid($this->result, $field_number);
-    }
-
-    /**
-     * 返回相应字段的类型名称
-     * @param int $field_number 字段编号从 0 开始
-     * @return string
-     */
-    public function fieldType($field_number)
-    {
-        return pg_field_type($this->result, $field_number);
+        if($result === false) {
+            return false;
+        }
+        return new Result($result);
     }
 
     /**
      * 刷新链接中已处理的数据查询
-     * @deprecated 不建议使用
      * @return mixed
      */
     public function flush()
     {
         return pg_flush($this->connection);
-    }
-
-    /**
-     * 释放查询结果占用的内存
-     * @return bool
-     */
-    public function freeResult()
-    {
-        return pg_free_result($this->result);
     }
 
     /**
@@ -436,7 +278,10 @@ class Pgsql
      */
     public function getNotify($result_type = null)
     {
-        return pg_get_notify($this->connection, $result_type);
+        if(!is_null($result_type)) {
+            return pg_get_notify($this->connection, $result_type);
+        }
+        return pg_get_notify($this->connection);
     }
 
     /**
@@ -450,11 +295,15 @@ class Pgsql
 
     /**
      * 取得异步查询结果
-     * @return resource
+     * @return Result|false Result对象来进行数据集操作，失败时返回false
      */
-    public function get_result()
+    public function getResult()
     {
-        return pg_get_result($this->connection);
+        $result = pg_get_result($this->connection);
+        if($result === false) {
+            return false;
+        }
+        return new Result($result);
     }
 
     /**
@@ -497,24 +346,6 @@ class Pgsql
     }
 
     /**
-     * 返回上一个对象的 oid
-     * @return string
-     */
-    public function lastOid()
-    {
-        return pg_last_oid($this->result);
-    }
-
-    /**
-     * 关闭一个大型对象
-     * @return bool
-     */
-    public function loClose()
-    {
-        return pg_lo_close($this->largeObject);
-    }
-
-    /**
      * 新建一个大型对象
      * @return int
      */
@@ -542,70 +373,25 @@ class Pgsql
      */
     public function loImport($pathname, $object_id = null)
     {
-        return pg_lo_import($this->connection, $pathname, $object_id);
+        if($object_id) {
+            return pg_lo_import($this->connection, $pathname, $object_id);
+        }
+        return pg_lo_import($this->connection, $pathname);
     }
 
     /**
      * 打开一个大型对象
      * @param int $oid 指定了有效的大型对象的 oid
      * @param string $mode 可以为 "r"，"w" 或者 "rw"。
-     * @return resource 失败则返回 FALSE
+     * @return Lo|false 失败则返回 FALSE
      */
     public function loOpen($oid, $mode)
     {
         $large_object = pg_lo_open($this->connection, $oid, $mode);
-        $this->largeObject = $large_object;
-        return $large_object;
-    }
-
-    /**
-     * 读入整个大型对象并直接发送给浏览器
-     * @return int
-     */
-    public function loReadAll()
-    {
-        return pg_lo_read_all($this->largeObject);
-    }
-
-    /**
-     * 从大型对象中读入数据
-     * @param int $len 读入最多 len 字节的数据
-     * @return string
-     */
-    public function loRead($len)
-    {
-        return pg_lo_read($this->largeObject, $len);
-    }
-
-    /**
-     * 移动大型对象中的指针
-     * @param int $offset 偏移量
-     * @param int $whence 参数为 PGSQL_SEEK_SET，PGSQL_SEEK_CUR 或 PGSQL_SEEK_END
-     * @return bool
-     */
-    public function loSeek($offset, $whence = 1)
-    {
-        return pg_lo_seek($this->largeObject, $offset, $whence);
-    }
-
-    /**
-     * 返回大型对象的当前指针位置
-     * @return int
-     */
-    public function loTell()
-    {
-        return pg_lo_tell($this->largeObject);
-    }
-
-    /**
-     * 截断大对象
-     * @deprecated 不建议使用
-     * @param int $size 要截断的字节数
-     * @return bool
-     */
-    public function loTruncate($size)
-    {
-        return pg_lo_truncate($this->largeObject, $size);
+        if($large_object === false) {
+            return false;
+        }
+        return new Lo($large_object);
     }
 
     /**
@@ -619,41 +405,14 @@ class Pgsql
     }
 
     /**
-     * 向大型对象写入数据
-     * @param string $data 要写入的数据
-     * @return int
-     */
-    public function loWrite($data)
-    {
-        return pg_lo_write($this->largeObject, $data);
-    }
-
-    /**
      * 获得表的元数据
+     * @notice 此函数是实验性的
      * @param string $table_name 表名
      * @return array
      */
     public function metaData($table_name)
     {
         return pg_meta_data($this->connection, $table_name);
-    }
-
-    /**
-     * 返回字段的数目
-     * @return int
-     */
-    public function numFields()
-    {
-        return pg_num_fields($this->result);
-    }
-
-    /**
-     * 返回行的数目
-     * @return int
-     */
-    public function numRows()
-    {
-        return pg_num_rows($this->result);
     }
 
     /**
@@ -679,11 +438,10 @@ class Pgsql
      * 打开一个持久的 PostgreSQL 连接
      * @param string $connection_string 连接字符串
      * @param int $connect_type PGSQL_CONNECT_FORCE_NEW强制新连接
-     * @return resource
      */
-    public static function pconnect($connection_string, $connect_type = null)
+    protected function pconnect($connection_string, $connect_type = null)
     {
-        return pg_pconnect($connection_string, $connect_type);
+        $this->connection = pg_pconnect($connection_string, $connect_type);
     }
 
     /**
@@ -729,67 +487,38 @@ class Pgsql
      * 向服务器提交一个命令并等待结果，同时能够独立于SQL命令文本传递参数
      * @param string $query SQL语句，支持占位符
      * @param array $params 绑定参数
-     * @return resource
+     * @return Result|false 失败时返回false
      */
     public function queryParams($query, array $params)
     {
-        return pg_query_params($this->connection, $query, $params);
+        $result = pg_query_params($this->connection, $query, $params);
+        if($result === false) {
+            return false;
+        }
+        return new Result($result);
     }
 
     /**
      * 执行查询
      * @param string $query SQL语句
-     * @return resource
+     * @return Result|false 失败时返回false
      */
     public function query($query)
     {
-        return pg_query($this->connection, $query);
-    }
-
-    /**
-     * 返回错误报告的单个字段
-     * @param int $fieldcode 指定常量配置
-     * @return string
-     */
-    public function resultErrorField($fieldcode)
-    {
-        return pg_result_error_field($this->result, $fieldcode);
-    }
-
-    /**
-     * 获得查询结果的错误信息
-     * @return string
-     */
-    public function resultError()
-    {
-        return pg_result_error($this->result);
-    }
-
-    /**
-     * 在结果资源中设定内部行偏移量
-     * @param int $offset 偏移量
-     * @return bool
-     */
-    public function resultSeek($offset)
-    {
-        return pg_result_seek($this->result, $offset);
-    }
-
-    /**
-     * 获得查询结果的状态
-     * @return string
-     */
-    public function resultStatus()
-    {
-        return pg_result_error($this->result);
+        $result = pg_query($this->connection, $query);
+        if($result === false) {
+            return false;
+        }
+        return new Result($result);
     }
 
     /**
      * 选择记录
+     * @notice 此函数是实验性的
      * @param string $table_name 表名
      * @param array $assoc_array 条件数组
      * @param int $options 选项常量
-     * @return mixed
+     * @return array|string 如果选项带PGSQL_DML_STRING则返回SQL语句，其他返回结果数组
      */
     public function select($table_name, array $assoc_array, $options = 512)
     {
@@ -842,7 +571,7 @@ class Pgsql
     /**
      * 设定客户端编码
      * @param string $encoding 编码
-     * @return int
+     * @return int 成功返回 0，出错返回 -1
      */
     public function setClientEncoding($encoding)
     {
@@ -852,7 +581,7 @@ class Pgsql
     /**
      * 确定消息的冗长
      * @param int $verbosity 冗长
-     * @return int
+     * @return int 常量PGSQL_ERRORS_TERSE, PGSQL_ERRORS_DEFAULT 或 PGSQL_ERRORS_VERBOSE
      */
     public function setErrorVerbosity($verbosity)
     {
@@ -909,10 +638,11 @@ class Pgsql
 
     /**
      * 关闭 PostgreSQL 连接的追踪功能
+     * @return bool
      */
     public function untrace()
     {
-        pg_untrace($this->connection);
+        return pg_untrace($this->connection);
     }
 
     /**
@@ -921,10 +651,11 @@ class Pgsql
      * @param array $data 数据
      * @param array $condition 条件
      * @param int $options 选项常量
+     * @return bool|string 选项带PGSQL_DML_STRING时返回SQL语句，其他情况返回bool
      */
     public function update($table_name, array $data, array $condition, $options = 512)
     {
-        pg_update($this->connection, $table_name, $data, $condition, $options);
+        return pg_update($this->connection, $table_name, $data, $condition, $options);
     }
 
     /**
@@ -935,5 +666,4 @@ class Pgsql
     {
         return pg_version($this->connection);
     }
-
 }
