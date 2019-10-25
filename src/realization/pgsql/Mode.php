@@ -22,56 +22,41 @@ class Mode implements ModeInterface
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param mixed $port 端口号，选填，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param string $driver 指定ODBC驱动名称。
      * @return Odbc
      */
-    public static function odbc($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", $driver = null)
+    public static function odbc($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", $driver = null)
     {
-        return new Odbc($host, $user, $pwd, $dbname, $prefix, $port, $charset, $driver);
+        return new Odbc($host, $user, $pwd, $dbname, $port, $charset, $driver);
     }
 
     /**
-     * mysqli方式构造
-     * @notice mysqli最终还是会被淘汰的，建议谨慎使用
-     * @param string $host 服务器地址
-     * @param string $user 用户名
-     * @param string $pwd 用户密码
-     * @param string $dbname 指定数据库
-     * @param string $prefix 指定全局前缀
-     * @param mixed $port 端口号，MySQL默认是3306
-     * @param string $charset 指定编码，选填，默认utf8
-     * @param array $opts 设置MYSQL连接选项
-     * @param bool $real 是否使用real方式，默认true
-     * @param string $socket 指定应使用的套接字或命名管道，选填，默认不指定
-     * @param array $ssl_set 设置SSL选项，选填，为数组参数，其下有参数ENABLE、KEY、CERT、CA、CAPATH、CIPHER，如果ENABLE为true，则其余参数都需要填写
-     * @param int $flags 设置连接参数，选填，如MYSQLI_CLIENT_SSL等
+     * pgsql方式构造
+     * @param string $connection_string 连接字符串
+     * @param bool $pconnect 是否使用长连接
+     * @param int $connect_type PGSQL_CONNECT_FORCE_NEW使用新连接
      * @return Pgsql
      */
-    public static function pgsql($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
+    public static function pgsql($connection_string, $pconnect = false, $connect_type = null)
     {
-        return new Pgsql($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+        return new Pgsql($connection_string, $pconnect, $connect_type);
     }
 
     /**
      * Pdo方式构造
-     * 强烈推荐使用
      * @param string $host 服务器地址，必填
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
-     * @param int $port 端口号，选填，MySQL默认是3306
-     * @param string $charset 指定编码，选填，默认utf8
+     * @param int $port 端口号，选填，PostgreSQL默认是5432
      * @param array $opts PDO连接的其他选项，选填
-     * @param string $socket 指定应使用的套接字或命名管道,windows不可用，选填，默认不指定
      * @return Pdo
      */
-    public static function pdo($host, $user, $pwd, $dbname, $prefix = "", $port = null, $charset = "utf8", array $opts = [], $socket = null)
+    public static function pdo($host, $user, $pwd, $dbname, $port = null, array $opts = [])
     {
-        return new Pdo($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts, $socket);
+        return new Pdo($host, $user, $pwd, $dbname, $port, $opts);
     }
 
     /**
@@ -82,35 +67,33 @@ class Mode implements ModeInterface
      */
     public static function getInstance(array $config)
     {
-        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
+        $mode = isset($config['mode']) ? $config['mode'] : 'pgsql';
         $db_cfg = $config['config'];
         $db = null;
         switch ($mode) {
             case 'odbc':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
                 $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
                 $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
                 $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
-                $db = self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $driver);
+                $db = self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $port, $charset, $driver);
                 break;
             case 'pgsql':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
-                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
-                $real = isset($db_cfg['real']) ? $db_cfg['real'] : true;
-                $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
-                $ssl_set = isset($db_cfg['ssl_set']) ? $db_cfg['ssl_set'] : [];
-                $flags = isset($db_cfg['flags']) ? $db_cfg['flags'] : null;
-                $db = self::pgsql($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+                $host = $db_cfg['host'];
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '5432';
+                $dbname = $db_cfg['dbname'];
+                $user = $db_cfg['user'];
+                $password = $db_cfg['password'];
+                $connection_string = "host={$host} port={$port} dbname={$dbname} user={$user} password={$password}";
+
+                $pconnect = isset($db_cfg['pconnect']) ? $db_cfg['pconnect'] : false;
+                $connect_type = isset($db_cfg['connect_type']) ? $db_cfg['connect_type'] : null;
+
+                $db = self::pgsql($connection_string, $pconnect, $connect_type);
                 break;
             case 'pdo':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
+                $port = isset($db_cfg['port']) ? $db_cfg['port'] : null;
                 $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
-                $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
-                $db = self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $socket);
+                $db = self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $port, $opts);
                 break;
             default:
                 throw new DbException("error db mode: {$mode}");

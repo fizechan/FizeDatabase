@@ -13,7 +13,7 @@ use fize\db\middleware\Odbc as Middleware;
 class Odbc extends Db
 {
     use Middleware {
-        Middleware::query as protected queryOdbc;  //使用别名来解决ODBC本身占用了query方法的问题
+        Middleware::query as protected queryOdbc;
     }
 
     /**
@@ -22,16 +22,14 @@ class Odbc extends Db
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param mixed $port 端口号，选填，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param string $driver 指定ODBC驱动名称。
      */
-    public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", $driver = null)
+    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", $driver = null)
     {
-        $this->tablePrefix = $prefix;
-        if (is_null($driver)) {  //默认驱动名
-            $driver = "{MySQL ODBC 5.3 ANSI Driver}";
+        if (is_null($driver)) {
+            $driver = "{PostgreSQL ANSI}";
         }
         $dsn = "DRIVER={$driver};SERVER={$host};DATABASE={$dbname};CHARSET={$charset}";
         if (!empty($port)) {
@@ -79,13 +77,12 @@ class Odbc extends Db
     {
         $result = $this->queryOdbc($sql, $params, $callback);
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->driver->exec("SELECT @@IDENTITY");
-            return $this->driver->result(1);  //返回自增ID
+            return 0;
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {
-            $this->driver->exec("SELECT ROW_COUNT()");
-            $rows = $this->driver->result(1);
+            $this->driver->exec("GET DIAGNOSTICS v_count = ROW_COUNT");
+            $rows = $this->driver->result('v_count');
             return (int)$rows; //返回受影响条数
         }
     }

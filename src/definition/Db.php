@@ -146,7 +146,7 @@ abstract class Db
     abstract public function startTrans();
 
     /**
-     * 执行事务
+     * 提交事务
      */
     abstract public function commit();
 

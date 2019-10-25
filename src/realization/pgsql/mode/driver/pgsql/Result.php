@@ -54,11 +54,12 @@ class Result
 
     /**
      * 从结果中提取所有行作为一个数组
+     * @param int $result_type 返回类型 PGSQL_ASSOC | PGSQL_NUM | PGSQL_BOTH
      * @return array
      */
-    public function fetchAll()
+    public function fetchAll($result_type = 1)
     {
-        return pg_fetch_all($this->result);
+        return pg_fetch_all($this->result, $result_type);
     }
 
     /**
