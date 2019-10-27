@@ -85,9 +85,7 @@ class Odbc extends Db
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {
-            $this->driver->exec("SELECT ROW_COUNT()");
-            $rows = $this->driver->result(1);
-            return (int)$rows; //返回受影响条数
+            return $this->driver->numRows();  //返回受影响条数
         }
     }
 }

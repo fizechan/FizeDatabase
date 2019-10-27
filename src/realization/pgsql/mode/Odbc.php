@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace fize\db\realization\pgsql\mode;
 
@@ -22,20 +23,21 @@ class Odbc extends Db
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param mixed $port 端口号，选填，MySQL默认是3306
-     * @param string $charset 指定编码，选填，默认utf8
+     * @param mixed $port 端口号，选填，PostgreSQL默认是5432
      * @param string $driver 指定ODBC驱动名称。
      */
-    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", $driver = null)
+    public function __construct($host, $user, $pwd, $dbname, $port = "", $driver = null)
     {
         if (is_null($driver)) {
             $driver = "{PostgreSQL ANSI}";
+            //$driver = "{PostgreSQL UNICODE}";
         }
-        $dsn = "DRIVER={$driver};SERVER={$host};DATABASE={$dbname};CHARSET={$charset}";
+        $dsn = "DRIVER={$driver};SERVER={$host};DATABASE={$dbname}";
         if (!empty($port)) {
             $dsn .= ";PORT={$port}";
         }
-        $this->odbcConstruct($dsn, $user, $pwd);
+        $this->odbcConstruct($dsn, $user, $pwd, SQL_CUR_USE_ODBC);
+        $this->queryOdbc("SET CLIENT_ENCODING TO 'UTF8'");  //@todo 编码统一处理
     }
 
     /**
@@ -81,9 +83,7 @@ class Odbc extends Db
         } elseif (stripos($sql, "SELECT") === 0) {
             return $result;
         } else {
-            $this->driver->exec("GET DIAGNOSTICS v_count = ROW_COUNT");
-            $rows = $this->driver->result('v_count');
-            return (int)$rows; //返回受影响条数
+            return $this->driver->numRows();  //返回受影响条数
         }
     }
 }

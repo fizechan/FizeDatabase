@@ -23,13 +23,12 @@ class Mode implements ModeInterface
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
      * @param mixed $port 端口号，选填，MySQL默认是3306
-     * @param string $charset 指定编码，选填，默认utf8
      * @param string $driver 指定ODBC驱动名称。
      * @return Odbc
      */
-    public static function odbc($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", $driver = null)
+    public static function odbc($host, $user, $pwd, $dbname, $port = "", $driver = null)
     {
-        return new Odbc($host, $user, $pwd, $dbname, $port, $charset, $driver);
+        return new Odbc($host, $user, $pwd, $dbname, $port, $driver);
     }
 
     /**
@@ -73,9 +72,8 @@ class Mode implements ModeInterface
         switch ($mode) {
             case 'odbc':
                 $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
                 $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
-                $db = self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $port, $charset, $driver);
+                $db = self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $port, $driver);
                 break;
             case 'pgsql':
                 $host = $db_cfg['host'];

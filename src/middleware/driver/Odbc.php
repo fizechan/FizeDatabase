@@ -31,6 +31,7 @@ class Odbc
     /**
      * 构造
      * @see https://www.connectionstrings.com/ 可用DSN参见
+     * @todo 驱动问题导致的中文乱码错误的统一解决方法。
      * @param string $dsn 连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
      * @param string $user 用户名
      * @param string $pwd 密码
@@ -41,9 +42,9 @@ class Odbc
     public function __construct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
     {
         if ($pconnect) {
-            $this->connection = odbc_pconnect($dsn, $user, $pwd, $cursor_type);
+            $this->connection = @odbc_pconnect($dsn, $user, $pwd, $cursor_type);
         } else {
-            $this->connection = odbc_connect($dsn, $user, $pwd, $cursor_type);
+            $this->connection = @odbc_connect($dsn, $user, $pwd, $cursor_type);
         }
         if (!$this->connection) {
             throw new Exception("SQL state " . odbc_error() . ":" . iconv('GB2312', 'UTF-8', odbc_errormsg()));
@@ -362,7 +363,7 @@ class Odbc
     }
 
     /**
-     * 返回结果中的行(记录)数
+     * 返回结果中的行(记录)数,对于操作，则返回受影响的行数
      * @return int
      */
     public function numRows()
