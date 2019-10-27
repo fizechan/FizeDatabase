@@ -8,106 +8,90 @@ use fize\db\exception\DbException;
 
 /**
  * 数据库模型抽象类
- * @package fize\db\definition
  */
 abstract class Db
 {
     use Feature;
 
     /**
-     * 是否指明为DISTINCT
-     * @var bool
+     * @var bool 是否指明为DISTINCT
      */
     protected $distinct = false;
 
     /**
-     * SQL指定要返回的字段语句
-     * @var string
+     * @var string SQL指定要返回的字段
      */
     protected $field = "";
 
     /**
-     * 当前数据库前缀
-     * @var string
+     * @var string 当前数据库前缀
      */
     protected $tablePrefix = "";
 
     /**
-     * 当前数据表名，不含前缀
-     * @var string
+     * @var string 当前数据表名，不含前缀
      */
     protected $tableName = null;
 
     /**
-     * ALIAS语句
-     * @var string
+     * @var string ALIAS语句
      */
     protected $alias = "";
 
     /**
-     * WHERE语句
-     * @var string
+     * @var string WHERE语句
      */
     protected $where = "";
 
     /**
-     * WHERE语句使用的绑定参数数组
-     * @var array
+     * @var array WHERE语句使用的绑定参数数组
      */
     protected $whereParams = [];
 
     /**
-     * GROUP语句
-     * @var string
+     * @var string GROUP语句
      */
     protected $group = "";
 
     /**
-     * HAVING语句
-     * @var string
+     * @var string HAVING语句
      */
     protected $having = "";
 
     /**
-     * HAVING语句使用的绑定参数数组
-     * @var array
+     * @var array HAVING语句使用的绑定参数数组
      */
     protected $havingParams = [];
 
     /**
-     * ORDER语句
-     * @var string
+     * @var string ORDER语句
      */
     protected $order = "";
 
     /**
-     * JOIN语句
-     * @var string
+     * @var string JOIN语句
      */
     protected $join = "";
 
     /**
-     * UNION语句
-     * @var string
+     * @var string UNION语句
      */
     protected $union = "";
 
     /**
-     * 最后组装的SQL语句
-     * @var string
+     * @var string 最后组装的SQL语句
      */
     protected $sql = "";
 
     /**
-     * 语句中所有按顺序绑定的参数
-     * @var array
+     * @var array 语句中所有按顺序绑定的参数
      */
     protected $params = [];
 
     /**
      * @var array 缓存中的查询记录
      */
-    protected static $cache_rows = [];
+    protected static $cacheRows = [];
 
     /**
      * 析构函数
@@ -122,14 +106,6 @@ abstract class Db
      * @return mixed
      */
     abstract public function prototype();
-
-    /**
-     * 待实现的安全化值
-     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
-     * @param mixed $value 要安全化的值
-     * @return string
-     */
-    abstract protected function parseValue($value);
 
     /**
      * 执行一个SQL语句并返回相应结果
@@ -162,6 +138,26 @@ abstract class Db
      * @return $this
      */
     abstract public function limit($rows, $offset = null);
+
+    /**
+     * 安全化值
+     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
+     * @param mixed $value 要安全化的值
+     * @return string
+     */
+    protected function parseValue($value)
+    {
+        if (is_string($value)) {
+            $value = "'" . addcslashes($value, "'") . "'";
+        } elseif (is_bool($value)) {
+            $value = $value ? '1' : '0';
+        } elseif (is_null($value)) {
+            $value = 'null';
+        }
+        return $value;
+    }
+
+
 
     /**
      * 指定distinct查询
@@ -644,10 +640,10 @@ abstract class Db
         $this->build("SELECT");
         if ($cache) {
             $sql = $this->getLastSql(true);
-            if (!isset(self::$cache_rows[$sql])) {
-                self::$cache_rows[$sql] = $this->query($this->sql, $this->params);
+            if (!isset(self::$cacheRows[$sql])) {
+                self::$cacheRows[$sql] = $this->query($this->sql, $this->params);
             }
-            return self::$cache_rows[$sql];
+            return self::$cacheRows[$sql];
         }
         return $this->query($this->sql, $this->params);
     }
