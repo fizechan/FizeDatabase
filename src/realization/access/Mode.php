@@ -6,7 +6,7 @@ use fize\db\definition\Mode as ModeInterface;
 use fize\db\realization\access\mode\Adodb;
 use fize\db\realization\access\mode\Odbc;
 use fize\db\realization\access\mode\Pdo;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 
 /**
@@ -58,7 +58,7 @@ class Mode implements ModeInterface
      * 数据库实例
      * @param array $config 数据库参数选项
      * @return Db
-     * @throws DbException
+     * @throws Exception
      */
     public static function getInstance(array $config)
     {
@@ -81,7 +81,7 @@ class Mode implements ModeInterface
                 $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
                 return self::pdo($db_cfg['file'], $pwd, $prefix, $driver);
             default:
-                throw new DbException("error db mode: {$mode}");
+                throw new Exception("error db mode: {$mode}");
         }
     }
 }

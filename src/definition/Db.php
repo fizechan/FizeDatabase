@@ -4,10 +4,11 @@ namespace fize\db\definition;
 
 
 use fize\db\exception\DataNotFoundException;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 /**
  * 数据库模型抽象类
+ * @package fize\db\definition
  */
 abstract class Db
 {
@@ -98,7 +99,6 @@ abstract class Db
      */
     public function __destruct()
     {
-
     }
 
     /**
@@ -157,8 +157,6 @@ abstract class Db
         return $value;
     }
 
-
-
     /**
      * 指定distinct查询
      * @param bool $distinct 为true时表示distinct
@@ -194,7 +192,18 @@ abstract class Db
     }
 
     /**
-     * 指定当前要操作的表,支持链式调用
+     * 设置表前缀
+     * @param string $prefix 前缀
+     * @return $this
+     */
+    public function prefix($prefix)
+    {
+        $this->tablePrefix = $prefix;
+        return $this;
+    }
+
+    /**
+     * 指定当前要操作的表
      * @param string $name 表名
      * @param string $prefix 表前缀，默认为null表示使用当前前缀
      * @return $this
@@ -209,7 +218,7 @@ abstract class Db
     }
 
     /**
-     * 对当前表设置别名,支持链式调用
+     * 对当前表设置别名
      * @param string $alias 别名
      * @return $this
      */
@@ -220,7 +229,7 @@ abstract class Db
     }
 
     /**
-     * GROUP语句,支持链式调用
+     * GROUP语句
      * @param mixed $fields 要GROUP的字段字符串或则数组
      * @return $this
      */
@@ -239,8 +248,8 @@ abstract class Db
     }
 
     /**
-     * 设置排序条件,支持链式调用
-     * @param mixed $field_order 字符串原样，如果是数组(推荐)，则形如字段=>排序
+     * 设置排序条件
+     * @param array|string $field_order 字符串原样，如果是数组(推荐)，则形如字段=>排序
      * @return $this
      */
     public function order($field_order)
@@ -264,8 +273,8 @@ abstract class Db
     }
 
     /**
-     * 设置WHERE语句,支持链式调用
-     * @param mixed $statements “Query对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
+     * 设置WHERE语句
+     * @param Query|array|string $statements “Query对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
      */
@@ -300,8 +309,8 @@ abstract class Db
     }
 
     /**
-     * HAVING语句，支持链式调用
-     * @param mixed $statements “QueryMysql对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
+     * HAVING语句
+     * @param Query|array|string $statements “QueryMysql对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
      */
@@ -336,8 +345,8 @@ abstract class Db
     }
 
     /**
-     * JOIN条件,可以使用所有JOIN变种,支持链式调用
-     * @param mixed $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
+     * JOIN条件,可以使用所有JOIN变种
+     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
      * @param string $type JOIN形式,默认为JOIN
      * @param string $on ON条件，建议ON条件单独开来
      * @param string $using USING字段
@@ -367,8 +376,8 @@ abstract class Db
     }
 
     /**
-     * INNER JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
+     * INNER JOIN条件
+     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
      * @param string $on ON条件，建议ON条件单独开来
      * @return $this
      */
@@ -378,8 +387,8 @@ abstract class Db
     }
 
     /**
-     * LEFT JOIN条件,支持链式调用
-     * @param mixed $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
+     * LEFT JOIN条件
+     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
      * @param string $on ON条件，建议ON条件单独开来
      * @return $this
      */
@@ -389,8 +398,8 @@ abstract class Db
     }
 
     /**
-     * RIGHT JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
+     * RIGHT JOIN条件
+     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
      * @param string $on ON条件，建议ON条件单独开来
      * @return $this
      */
@@ -400,7 +409,7 @@ abstract class Db
     }
 
     /**
-     * UNION语句,支持链式调用
+     * UNION语句
      * @param string $sql 要UNION的SQL语句
      * @param string $union_type 类型，可选值UNION、UNION ALL、UNION DISTINCT，默认UNION
      * @return $this
@@ -412,7 +421,7 @@ abstract class Db
     }
 
     /**
-     * UNION ALL语句,支持链式调用
+     * UNION ALL语句
      * @param string $sql 要UNION ALL的SQL语句
      * @return $this
      */
@@ -422,7 +431,7 @@ abstract class Db
     }
 
     /**
-     * UNION DISTINCT语句,支持链式调用
+     * UNION DISTINCT语句
      * @param string $sql 要UNION DISTINCT的SQL语句
      * @return $this
      */
@@ -529,7 +538,7 @@ abstract class Db
      * @param array $data 可能需要的数据
      * @param bool $clear 是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
-     * @throws DbException
+     * @throws Exception
      */
     protected function build($action, array $data = [], $clear = true)
     {
@@ -557,7 +566,7 @@ abstract class Db
                 break;
             default :
                 //仅需要支持DELETE、INSERT、REPLACE、SELECT、UPDATE，防止其他语句进入
-                throw new DbException("Illegal SQL statement: {$action}");
+                throw new Exception("Illegal SQL statement: {$action}");
         }
         if (in_array($action, ['DELETE', 'SELECT', 'UPDATE'])) {
             if (!empty($this->alias)) {
@@ -679,11 +688,10 @@ abstract class Db
 
     /**
      * 得到某个字段的值
-     * @access public
      * @param string $field 字段名
      * @param mixed $default 默认值
      * @param bool $force 强制转为数字类型
-     * @return mixed 如果$force为true时真返回数字类型
+     * @return mixed 如果$force为true时则返回数字类型
      */
     public function value($field, $default = null, $force = false)
     {

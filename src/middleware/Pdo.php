@@ -5,7 +5,7 @@
 namespace fize\db\middleware;
 
 use PDO as Driver;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 /**
  * PDO中间层
@@ -75,7 +75,7 @@ trait Pdo
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return mixed SELECT语句返回数组或不返回，INSERT/REPLACE返回自增ID，其余返回受影响行数
-     * @throws DbException
+     * @throws Exception
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -83,7 +83,7 @@ trait Pdo
 
         if (!$stmt) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            throw new DbException($this->pdo->errorCode() . ":" . $this->pdo->errorInfo()[2]);
+            throw new Exception($this->pdo->errorCode() . ":" . $this->pdo->errorInfo()[2]);
         }
 
         if (!empty($params)) {
@@ -96,7 +96,7 @@ trait Pdo
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
             //var_dump($this->_pdo->errorInfo());
             //var_dump($this->_pdo->errorCode());
-            throw new DbException($this->pdo->errorInfo()[2], $this->pdo->errorCode());
+            throw new Exception($this->pdo->errorInfo()[2], $this->pdo->errorCode());
         }
 
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {

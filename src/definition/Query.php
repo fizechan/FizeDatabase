@@ -43,7 +43,7 @@ class Query
 
     /**
      * 设置本对象当前每个条件的组合逻辑
-     * @param mixed $logic 组合逻辑，不区分大小写，未调用该方法是默认组合逻辑为“AND”,特殊值true表示AND，false表示OR
+     * @param string|bool $logic 组合逻辑，不区分大小写，未调用该方法是默认组合逻辑为“AND”,特殊值true表示AND，false表示OR
      * @return $this
      */
     public function logic($logic)
@@ -75,7 +75,7 @@ class Query
 
     /**
      * 设定当前操作字段
-     * 实际上是object方法的别名
+     * @notice 实际上是object方法的别名
      * @param string $field_name 字段名
      * @return $this
      */
@@ -105,7 +105,7 @@ class Query
     /**
      * 使用原始表达式语句设置条件
      * @param string $expression 表达式语句
-     * @param mixed $params 要绑定的数组，如果是单个绑定可以直接传入值，不需要绑定请不传递或者传递null
+     * @param array|string|null $params 要绑定的数组，如果是单个绑定可以直接传入值，不需要绑定请不传递或者传递null
      * @return $this
      */
     public function exp($expression, $params = null)
@@ -137,7 +137,7 @@ class Query
      * 使用条件语句设置条件
      * @param string $judge 判断符
      * @param mixed $value 判断量，该值必须为标量
-     * @param mixed $params 参数绑定数组，特殊值false表示不绑定参数，null表示自动判断是否绑定
+     * @param array|false|null $params 参数绑定数组，特殊值false表示不绑定参数，null表示自动判断是否绑定
      * @return $this
      */
     public function condition($judge, $value, $params = null)
@@ -256,7 +256,7 @@ class Query
     /**
      * 使用“EXISTS”子语句设置条件，使用EXISTS语句时不需要指定对象object，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
      * @param string $expression EXISTS语句部分、注意是不含EXISTS
-     * @param mixed $params 参数绑定数组
+     * @param array|false|null $params 参数绑定数组
      * @param string $premodifier 前置修饰
      * @return $this
      */
@@ -275,7 +275,7 @@ class Query
     /**
      * 使用“NOT EXISTS”子语句设置条件，使用EXISTS语句时不需要指定对象obj，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
      * @param string $expression EXISTS语句部分、注意是不含EXISTS
-     * @param mixed $params 参数绑定数组
+     * @param array|false|null $params 参数绑定数组
      * @return $this
      */
     public function notExists($expression, $params = null)
@@ -285,7 +285,7 @@ class Query
 
     /**
      * 使用“IN”语句设置条件
-     * @param mixed $values 可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
+     * @param array|string $values 可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
      * @param string $premodifier 前置修饰
      * @return $this
      */
@@ -326,7 +326,7 @@ class Query
 
     /**
      * 使用“NOT IN”语句设置条件
-     * @param mixed $values 可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
+     * @param array|string $values 可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
      * @return $this
      */
     public function notIn($values)
@@ -560,7 +560,7 @@ class Query
     /**
      * 以指定形式组合Query对象,或者指可以使用analyze()的数组
      * @param string $logic 组合逻辑
-     * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
+     * @param Query|array $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
     public function qMerge($logic, $query)
@@ -577,7 +577,7 @@ class Query
 
     /**
      * 以AND形式组合Query对象,或者指可以使用analyze()的数组
-     * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
+     * @param Query|array $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
     public function qAnd($query)
@@ -587,7 +587,7 @@ class Query
 
     /**
      * 以OR形式组合Query对象,或者指可以使用analyze()的数组
-     * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
+     * @param Query|array $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
     public function qOr($query)

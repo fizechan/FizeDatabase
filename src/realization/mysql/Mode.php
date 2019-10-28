@@ -8,7 +8,7 @@ use fize\db\realization\mysql\mode\Adodb;
 use fize\db\realization\mysql\mode\Odbc;
 use fize\db\realization\mysql\mode\Mysqli;
 use fize\db\realization\mysql\mode\Pdo;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 /**
  * MySQL数据库模型类
@@ -84,7 +84,7 @@ class Mode implements ModeInterface
      * 数据库实例
      * @param array $config 数据库参数选项
      * @return Db
-     * @throws DbException
+     * @throws Exception
      */
     public static function getInstance(array $config)
     {
@@ -117,7 +117,7 @@ class Mode implements ModeInterface
                 $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
                 return self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $socket);
             default:
-                throw new DbException("error db mode: {$mode}");
+                throw new Exception("error db mode: {$mode}");
         }
     }
 }

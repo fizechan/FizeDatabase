@@ -4,7 +4,7 @@
 namespace fize\db\realization\oracle;
 
 use fize\db\definition\Mode as ModeInterface;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 use fize\db\realization\oracle\mode\Oci;
 use fize\db\realization\oracle\mode\Pdo;
 
@@ -49,7 +49,7 @@ class Mode implements ModeInterface
      * 数据库实例
      * @param array $config 数据库参数选项
      * @return Db
-     * @throws DbException
+     * @throws Exception
      */
     public static function getInstance(array $config)
     {
@@ -68,7 +68,7 @@ class Mode implements ModeInterface
                 $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
                 return self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $port, $charset, $opts);
             default:
-                throw new DbException("error db mode: {$mode}");
+                throw new Exception("error db mode: {$mode}");
         }
     }
 }

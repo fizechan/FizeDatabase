@@ -57,21 +57,21 @@ trait Odbc
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
-        $this->driver->prepare($sql);
-        $this->driver->execute($params); //绑定参数
+        $result = $this->driver->prepare($sql);
+        $result->execute($params); //绑定参数
         if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
-                while ($assoc = $this->driver->fetchArray()) {
+                while ($assoc = $result->fetchArray()) {
                     $callback($assoc);
                 }
-                $this->driver->freeResult();
+                $result->freeResult();
                 return null;
             } else {
                 $rows = [];
-                while ($row = $this->driver->fetchArray()) {
+                while ($row = $result->fetchArray()) {
                     $rows[] = $row;
                 }
-                $this->driver->freeResult();
+                $result->freeResult();
                 return $rows; //返回数组
             }
         } else {

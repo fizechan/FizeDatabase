@@ -2,12 +2,12 @@
 
 namespace fize\db\exception;
 
-use Exception;
+use Exception as BaseException;
 
 /**
  * 数据库错误
  */
-class DbException extends Exception
+class Exception extends BaseException
 {
 
     /**
@@ -16,7 +16,7 @@ class DbException extends Exception
     protected $sql;
 
     /**
-     * DbException constructor.
+     * Exception constructor.
      * @param string $message 错误信息
      * @param int $code 错误码
      * @param string $sql SQL语句

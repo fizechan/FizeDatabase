@@ -6,7 +6,7 @@ namespace fize\db\realization\pgsql\mode;
 
 use fize\db\realization\pgsql\Db;
 use fize\db\realization\pgsql\mode\driver\Pgsql as Driver;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 /**
  * PGSQL原生方式PostgreSQL数据库模型类
@@ -88,7 +88,7 @@ class Pgsql extends Db
         $result = $this->driver->queryParams($sql, $params);
 
         if ($result === false) {
-            throw new DbException($this->driver->lastError());
+            throw new Exception($this->driver->lastError());
         }
 
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {

@@ -4,7 +4,7 @@ namespace fize\db\realization\access\mode;
 
 use fize\db\realization\access\Db;
 use fize\db\middleware\Pdo as Middleware;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 
 /**
@@ -110,7 +110,7 @@ class Pdo extends Db
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array|int|null SELECT语句返回数组或不返回，INSERT/REPLACE返回自增ID，其余返回受影响行数
-     * @throws DbException
+     * @throws Exception
      */
     public function query($sql, array $params = [], callable $callback = null)
     {

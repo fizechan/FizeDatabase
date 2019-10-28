@@ -7,7 +7,7 @@ use fize\db\definition\Mode as ModeInterface;
 use fize\db\realization\pgsql\mode\Odbc;
 use fize\db\realization\pgsql\mode\Pgsql;
 use fize\db\realization\pgsql\mode\Pdo;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 /**
  * PostgreSQL数据库模型类
@@ -62,7 +62,7 @@ class Mode implements ModeInterface
      * 数据库实例
      * @param array $config 数据库参数选项
      * @return Db
-     * @throws DbException
+     * @throws Exception
      */
     public static function getInstance(array $config)
     {
@@ -94,7 +94,7 @@ class Mode implements ModeInterface
                 $db = self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $port, $opts);
                 break;
             default:
-                throw new DbException("error db mode: {$mode}");
+                throw new Exception("error db mode: {$mode}");
         }
         return $db;
     }

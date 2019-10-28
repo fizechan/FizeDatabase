@@ -7,7 +7,7 @@ use fize\db\definition\Mode as ModeInterface;
 use fize\db\realization\mssql\mode\Odbc;
 use fize\db\realization\mssql\mode\Pdo;
 use fize\db\realization\mssql\mode\Sqlsrv;
-use fize\db\exception\DbException;
+use fize\db\exception\Exception;
 
 
 /**
@@ -71,7 +71,7 @@ class Mode implements ModeInterface
      * 数据库实例
      * @param array $config 数据库参数选项
      * @return Db
-     * @throws DbException
+     * @throws Exception
      */
     public static function getInstance(array $config)
     {
@@ -101,7 +101,7 @@ class Mode implements ModeInterface
                 $db = self::sqlsrv($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset);
                 break;
             default:
-                throw new DbException("error db mode: {$mode}");
+                throw new Exception("error db mode: {$mode}");
         }
         if(isset($db_cfg['new_feature'])) {
             $db->newFeature($db_cfg['new_feature']);  //开启新特性支持
