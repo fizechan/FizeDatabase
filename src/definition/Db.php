@@ -109,10 +109,10 @@ abstract class Db
 
     /**
      * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，支持原生的pdo问号预处理
+     * @param string $sql SQL语句，支持问号预处理语句
      * @param array $params 可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int|null SELECT语句返回数组，INSERT/REPLACE返回自增ID，其余返回受影响行数。
+     * @param callable $callback 如果定义该记录集回调函数则直接进行循环回调
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */
     abstract public function query($sql, array $params = [], callable $callback = null);
 
@@ -140,10 +140,18 @@ abstract class Db
     abstract public function limit($rows, $offset = null);
 
     /**
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称
+     * @return int|string
+     */
+    abstract public function lastInsertId($name = null);
+
+    /**
      * 安全化值
      * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
      * @param mixed $value 要安全化的值
      * @return string
+     * @todo 待更优化方法
      */
     protected function parseValue($value)
     {
@@ -170,7 +178,7 @@ abstract class Db
 
     /**
      * 指定要查询的字段，支持链式调用
-     * @param mixed $fields 要查询的字段组成的数组或者字符串,如果需要指定别名，则使用：别名=>实际名称
+     * @param array|string $fields 要查询的字段组成的数组或者字符串,如果需要指定别名，则使用：别名=>实际名称
      * @return $this
      */
     public function field($fields)
@@ -205,7 +213,7 @@ abstract class Db
     /**
      * 指定当前要操作的表
      * @param string $name 表名
-     * @param string $prefix 表前缀，默认为null表示使用当前前缀
+     * @param string $prefix 表前缀，默认为使用当前前缀
      * @return $this
      */
     public function table($name, $prefix = null)
@@ -274,6 +282,7 @@ abstract class Db
 
     /**
      * 设置WHERE语句
+     * 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
      * @param Query|array|string $statements “Query对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
@@ -286,11 +295,11 @@ abstract class Db
         $Query = '\\' . __NAMESPACE__ . '\\Query';
 
         $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
-        if(class_exists($class)) {
+        if (class_exists($class)) {
             $Query = $class;
         }
 
-        if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
+        if (is_array($statements)) {  //条件数组
             /**
              * @var $query Query
              */
@@ -298,7 +307,7 @@ abstract class Db
             $query->analyze($statements);
             $this->where = $query->sql();
             $this->whereParams = $query->params();
-        } elseif ($statements instanceof Query) {  // $statements是查询器的情况
+        } elseif ($statements instanceof Query) {  //$statements是查询器的情况
             $this->where = $statements->sql();
             $this->whereParams = $statements->params();
         } else {  //直接传入SQL预处理语句的情况
@@ -310,6 +319,7 @@ abstract class Db
 
     /**
      * HAVING语句
+     * 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
      * @param Query|array|string $statements “QueryMysql对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
@@ -322,11 +332,11 @@ abstract class Db
         $Query = '\\' . __NAMESPACE__ . '\\Query';
 
         $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
-        if(class_exists($class)) {
+        if (class_exists($class)) {
             $Query = $class;
         }
 
-        if (is_array($statements)) {  // 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
+        if (is_array($statements)) {  //条件数组
             /**
              * @var $query Query
              */
@@ -334,7 +344,7 @@ abstract class Db
             $query->analyze($statements);
             $this->having = $query->sql();
             $this->havingParams = $query->params();
-        } elseif ($statements instanceof Query) {  // $statements是查询器的情况
+        } elseif ($statements instanceof Query) {  //$statements是查询器的情况
             $this->having = $statements->sql();
             $this->havingParams = $statements->params();
         } else {  //直接传入SQL预处理语句的情况
@@ -597,14 +607,26 @@ abstract class Db
     }
 
     /**
-     * 插入记录，正确时返回自增ID，错误返回false
+     * 插入记录
      * @param array $data 数据
-     * @return int 返回自增ID
+     * @return int 返回受影响行数
      */
     public function insert(array $data)
     {
         $this->build("INSERT", $data);
         return $this->query($this->sql, $this->params);
+    }
+
+    /**
+     * 插入记录,并返回最后插入行的ID或序列值
+     * @param array $data 数据
+     * @param string $name 序列名
+     * @return int|string
+     */
+    public function insertGetId(array $data, $name = null)
+    {
+        $this->insert($data);
+        return $this->lastInsertId($name);
     }
 
     /**
@@ -664,7 +686,7 @@ abstract class Db
      */
     public function findOrNull($cache = false)
     {
-        $rows = $this->limit(1, 0)->select($cache);
+        $rows = $this->limit(1)->select($cache);
         if (count($rows) == 0) {
             return null;
         }
@@ -864,7 +886,7 @@ abstract class Db
      */
     public function insertAll(array $data_sets, array $fields = null)
     {
-        if($fields) {
+        if ($fields) {
             $datas = [];
             foreach ($data_sets as $data_set) {
                 $data = [];
@@ -880,7 +902,7 @@ abstract class Db
         $count = 0;
         foreach ($datas as $data) {
             $result = $this->insert($data);
-            if($result !== false) {
+            if ($result !== false) {
                 $count++;
             }
         }

@@ -58,23 +58,6 @@ trait Adodb
     }
 
     /**
-     * 自己实现的安全化值
-     * @param mixed $value 要安全化的值
-     * @return string
-     */
-    protected function parseValue($value)
-    {
-        if (is_string($value)) {
-            $value = "'" . str_replace("'", "''", $value) . "'";
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'NULL';
-        }
-        return $value;
-    }
-
-    /**
      * 根据SQL预处理语句和绑定参数，返回实际的SQL
      * @param string $sql SQL语句，支持原生的ODBC问号预处理
      * @param array $params 可选的绑定参数
@@ -96,21 +79,15 @@ trait Adodb
 
     /**
      * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，支持模拟问号预处理
+     * @param string $sql SQL语句，支持模拟问号占位符预处理语句
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组(错误返回false)，INSERT/REPLACE返回0，其余返回受影响行数
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
         $sql = $this->getRealSql($sql, $params);
-        if (stripos($sql, "INSERT") === 0) {
-            $rst = $this->conn->Execute($sql);
-            if (!$rst) {
-                return false;
-            }
-            return 0;
-        } elseif (stripos($sql, "SELECT") === 0) {
+        if (stripos($sql, "SELECT") === 0) {
             $rows = [];
             $rs = new COM("ADODB.RecordSet", null, $this->codepage);
             $rs->Open($sql, $this->conn, 1, 3);

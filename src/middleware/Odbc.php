@@ -8,6 +8,7 @@ use fize\db\middleware\driver\Odbc as Driver;
 
 /**
  * ODBC中间层
+ * @todo ODBC返回的类型都为字符串格式(null除外)，应进行统一处理
  */
 trait Odbc
 {
@@ -53,12 +54,12 @@ trait Odbc
      * @param string $sql SQL语句，支持原生的ODBC问号预处理
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组，其余语句返回受影响记录数
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
         $result = $this->driver->prepare($sql);
-        $result->execute($params); //绑定参数
+        $result->execute($params);
         if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
                 while ($assoc = $result->fetchArray()) {
@@ -72,10 +73,10 @@ trait Odbc
                     $rows[] = $row;
                 }
                 $result->freeResult();
-                return $rows; //返回数组
+                return $rows;
             }
         } else {
-            return 0;
+            return $result->numRows();
         }
     }
 

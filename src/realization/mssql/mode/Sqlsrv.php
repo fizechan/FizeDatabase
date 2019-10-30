@@ -27,11 +27,10 @@ class Sqlsrv extends Db
      * @param string $user 数据库登录账户
      * @param string $pwd 数据库登录密码
      * @param string $dbname 数据库名
-     * @param string $prefix 指定前缀，选填，默认空字符
      * @param mixed $port 数据库服务器端口，选填，默认是1433(默认设置)
      * @param string $charset 指定数据库编码，默认GBK,(不区分大小写)
      */
-    public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "GBK")
+    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "GBK")
     {
         $charset = strtoupper($charset);
         $charset_map = [
@@ -53,7 +52,6 @@ class Sqlsrv extends Db
                 'Database' => $dbname,
             ];
         }
-        $this->tablePrefix = $prefix;
         $this->driver = new Driver($server, $config);
     }
 
@@ -75,23 +73,6 @@ class Sqlsrv extends Db
     }
 
     /**
-     * 自己实现的安全化值
-     * @param mixed $value 要安全化的值
-     * @return string
-     */
-    protected function parseValue($value)
-    {
-        if (is_string($value)) {
-            $value = "'" . str_replace("'", "''", $value) . "'";
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'NULL';
-        }
-        return $value;
-    }
-
-    /**
      * 执行一个SQL语句并返回相应结果
      * @param string $sql SQL语句，支持问号预处理
      * @param array $params 可选的绑定参数
@@ -100,35 +81,24 @@ class Sqlsrv extends Db
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
-        $rst = $this->driver->query($sql, $params);
-        if (!$rst) {
-            return false;
-        }
-        if (stripos($sql, "INSERT") === 0) {
-            //获取最后的自增ID
-            $id_sql = "SELECT @@IDENTITY";
-            $this->driver->query($id_sql);
-            $this->driver->fetch();
-            $id = $this->driver->getField(0);
-            $this->driver->freeStmt();
-            return $id;
-        } elseif (stripos($sql, "SELECT") === 0) {
+        $result = $this->driver->query($sql, $params);
+        if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
-                $this->driver->fetchArray(function ($row) use (&$callback) {
-                    $callback($row);  //循环回调
+                $result->fetchArray(function ($row) use (&$callback) {
+                    $callback($row);
                 });
-                $this->driver->freeStmt();
+                $result->freeStmt();
                 return null;
             } else {
                 $rows = [];
-                $this->driver->fetchArray(function ($row) use (&$rows) {
+                $result->fetchArray(function ($row) use (&$rows) {
                     $rows[] = $row;
                 });
-                $this->driver->freeStmt();
-                return $rows;  //返回结果数组
+                $result->freeStmt();
+                return $rows;
             }
         } else {
-            return $this->driver->rowsAffected(); //返回受影响条数
+            return $result->rowsAffected();
         }
     }
 
@@ -157,5 +127,20 @@ class Sqlsrv extends Db
     public function rollback()
     {
         $this->driver->rollback();
+    }
+
+    /**
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称,该参数在mssql中无效
+     * @return int|string
+     */
+    public function lastInsertId($name = null)
+    {
+        $sql = "SELECT @@IDENTITY";
+        $result = $this->driver->query($sql);
+        $result->fetch();
+        $id = $result->getField(0);
+        $result->freeStmt();
+        return $id;
     }
 }

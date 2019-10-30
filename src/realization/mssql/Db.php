@@ -14,14 +14,12 @@ abstract class Db extends Base
     use Feature;
 
     /**
-     * 指定每页记录集数量，为null时表示不指定，全部返回。
-     * @var int
+     * @var int 指定每页记录集数量，为null时表示不指定，全部返回。
      */
     protected $size = null;
 
     /**
-     * 指定游标指针位移，为null时不指定，不移动。
-     * @var int
+     * @var int 指定游标指针位移，为null时不指定，不移动。
      */
     protected $offset = null;
 
@@ -33,8 +31,7 @@ abstract class Db extends Base
     protected $new_feature = true;
 
     /**
-     * 设置是否支持新特性
-     * @param $bool
+     * @param bool $bool 设置是否支持新特性
      */
     public function newFeature($bool)
     {

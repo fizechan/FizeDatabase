@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace fize\db\realization\access\mode;
 
@@ -46,45 +47,6 @@ class Pdo extends Db
     }
 
     /**
-     * 自己实现的安全化值
-     * @param mixed $value 要安全化的值
-     * @return string
-     */
-    protected function parseValue($value)
-    {
-        if (is_string($value)) {
-            $value = "'" . str_replace("'", "''", $value) . "'";
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'NULL';
-        }
-        return $value;
-    }
-
-    /**
-     * ACCESS使用GBK编码，发送前需转化
-     * @todo 待优化
-     * @param string $string 待转码字符串
-     * @return string
-     */
-    private static function encode($string)
-    {
-        return iconv('UTF-8', 'GBK', $string);
-    }
-
-    /**
-     * 返回的数据为GBK编码，使用前需转化
-     * @todo 待优化
-     * @param $string
-     * @return string
-     */
-    private static function decode($string)
-    {
-        return iconv('GBK', 'UTF-8', $string);
-    }
-
-    /**
      * 根据SQL预处理语句和绑定参数，返回实际的SQL
      * @param string $sql SQL语句，支持原生的ODBC问号预处理
      * @param array $params 可选的绑定参数
@@ -115,19 +77,14 @@ class Pdo extends Db
     public function query($sql, array $params = [], callable $callback = null)
     {
         $sql = $this->getRealSql($sql, $params);
-        $sql = self::encode($sql);
+        $sql = iconv('UTF-8', 'GBK', $sql);
 
-        if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->pdo->exec($sql);
-            $rst = $this->pdo->query('SELECT @@IDENTITY');
-            $row = $rst->fetch();
-            return $row[0];
-        }elseif (stripos($sql, "SELECT") === 0) {
+        if (stripos($sql, "SELECT") === 0) {
             $sql = $this->getRealSql($sql, $params);
             if ($callback !== null) {
                 foreach ($this->pdo->query($sql) as $row) {
                     array_walk($row, function(&$value){
-                        $value = self::decode($value);
+                        $value = iconv('GBK', 'UTF-8', $value);
                     });
                     $callback($row);
                 }
@@ -136,13 +93,13 @@ class Pdo extends Db
                 $rows = [];
                 foreach ($this->pdo->query($sql) as $row) {
                     array_walk($row, function(&$value){
-                        $value = self::decode($value);
+                        $value = iconv('GBK', 'UTF-8', $value);
                     });
                     $rows[] = $row;
                 }
                 return $rows;
             }
         }
-        return $this->queryPdo($sql, [], $callback);
+        return $this->queryPdo($sql);
     }
 }

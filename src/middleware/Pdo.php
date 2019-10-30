@@ -74,7 +74,7 @@ trait Pdo
      * @param string $sql SQL语句，支持原生的pdo问号预处理
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组或不返回，INSERT/REPLACE返回自增ID，其余返回受影响行数
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      * @throws Exception
      */
     public function query($sql, array $params = [], callable $callback = null)
@@ -99,10 +99,7 @@ trait Pdo
             throw new Exception($this->pdo->errorInfo()[2], $this->pdo->errorCode());
         }
 
-        if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $id = $this->pdo->lastInsertId(); //@todo lastInsertId支持name参数
-            return $id; //返回自增ID
-        } elseif (stripos($sql, "SELECT") === 0) {
+        if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
                 while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
                     $callback($row);
@@ -115,11 +112,10 @@ trait Pdo
                     $rows[] = $row;
                 }
                 $stmt->closeCursor();
-                return $rows; //返回数组
+                return $rows;
             }
         } else {
-            $num = $stmt->rowCount();
-            return $num; //返回受影响条数
+            return $stmt->rowCount();
         }
     }
 
@@ -145,5 +141,15 @@ trait Pdo
     public function rollback()
     {
         $this->pdo->rollBack();
+    }
+
+    /**
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称
+     * @return int|string
+     */
+    public function lastInsertId($name = null)
+    {
+        return $this->pdo->lastInsertId($name);
     }
 }

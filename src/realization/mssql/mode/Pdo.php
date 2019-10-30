@@ -26,19 +26,17 @@ class Pdo extends Db
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param mixed $port 端口号，选填，MSSQL默认是1433
      * @param string $charset 指定数据库编码，选填，默认GBK
      * @param array $opts PDO连接的其他选项，选填
      */
-    public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "GBK", array $opts = [])
+    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "GBK", array $opts = [])
     {
         $charset = strtoupper($charset);
         $charset_map = [
             'UTF8' => 'UTF-8',
         ];
         $charset = isset($charset_map[$charset]) ? $charset_map[$charset] : $charset;
-        $this->tablePrefix = $prefix;
         $dsn = "sqlsrv:Server={$host}";
         if (!empty($port)) {
             $dsn .= ",{$port}";

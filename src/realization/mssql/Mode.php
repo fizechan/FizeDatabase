@@ -22,14 +22,13 @@ class Mode implements ModeInterface
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param mixed $port 端口号，选填，MySQL默认是3306
      * @param string $driver 指定ODBC驱动名称。
      * @return Odbc
      */
-    public static function odbc($host, $user, $pwd, $dbname, $prefix = "", $port = "", $driver = null)
+    public static function odbc($host, $user, $pwd, $dbname, $port = "", $driver = null)
     {
-        return new Odbc($host, $user, $pwd, $dbname, $prefix, $port, $driver);
+        return new Odbc($host, $user, $pwd, $dbname, $port, $driver);
     }
 
     /**
@@ -39,14 +38,13 @@ class Mode implements ModeInterface
      * @param string $user 数据库登录账户
      * @param string $pwd 数据库登录密码
      * @param string $dbname 数据库名
-     * @param string $prefix 指定前缀，选填，默认空字符
      * @param mixed $port 数据库服务器端口，选填，默认是1433(默认设置)
      * @param string $charset 指定数据库编码，默认GBK,(不区分大小写)
      * @return Sqlsrv
      */
-    public static function sqlsrv($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "GBK")
+    public static function sqlsrv($host, $user, $pwd, $dbname, $port = "", $charset = "GBK")
     {
-        return new Sqlsrv($host, $user, $pwd, $dbname, $prefix, $port, $charset);
+        return new Sqlsrv($host, $user, $pwd, $dbname, $port, $charset);
     }
 
     /**
@@ -56,15 +54,14 @@ class Mode implements ModeInterface
      * @param string $user 用户名，必填
      * @param string $pwd 用户密码，必填
      * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param string $port 端口号，选填，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param array $opts PDO连接的其他选项，选填
      * @return Pdo
      */
-    public static function pdo($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "GBK", array $opts = [])
+    public static function pdo($host, $user, $pwd, $dbname, $port = "", $charset = "GBK", array $opts = [])
     {
-        return new Pdo($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts);
+        return new Pdo($host, $user, $pwd, $dbname, $port, $charset, $opts);
     }
 
     /**
@@ -76,36 +73,33 @@ class Mode implements ModeInterface
     public static function getInstance(array $config)
     {
         $mode = isset($config['mode']) ? $config['mode'] : 'odbc';
-        $db_cfg = $config['config'];
-        $db = null;
+        $dbcfg = $config['config'];
+        $default_dbcfg = [
+            'port'        => '',
+            'prefix'      => '',
+            'driver'      => null,
+            'charset'     => 'GBK',
+            'new_feature' => true,
+            'opts'        => []
+        ];
+        $dbcfg = array_merge($default_dbcfg, $dbcfg);
         switch ($mode) {
             case 'adodb':
                 break;
             case 'odbc':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
-                $db = self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $driver);
+                $db = self::odbc($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['driver']);
                 break;
             case 'pdo':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'GBK';
-                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
-                $db = self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts);
+                $db = self::pdo($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts']);
                 break;
             case 'sqlsrv':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'GBK';
-                $db = self::sqlsrv($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset);
+                $db = self::sqlsrv($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset']);
                 break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
-        if(isset($db_cfg['new_feature'])) {
-            $db->newFeature($db_cfg['new_feature']);  //开启新特性支持
-        }
+        $db->prefix($dbcfg['prefix']);
+        $db->newFeature($dbcfg['new_feature']);
         return $db;
     }
 }
