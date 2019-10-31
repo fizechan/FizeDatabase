@@ -14,20 +14,34 @@ abstract class Db extends Base
     use Feature;
 
     /**
-     * 指定每页记录集数量，为0时表示不指定，全部返回。
-     * @var int
+     * 自己实现的安全化值
+     * @param mixed $value 要安全化的值
+     * @return string
+     */
+    protected function parseValue($value)
+    {
+        if (is_string($value)) {
+            $value = "'" . str_replace("'", "''", $value) . "'";
+        } elseif (is_bool($value)) {
+            $value = $value ? '1' : '0';
+        } elseif (is_null($value)) {
+            $value = 'NULL';
+        }
+        return $value;
+    }
+
+    /**
+     * @var int 指定每页记录集数量，为0时表示不指定，全部返回。
      */
     protected $size = 0;
 
     /**
-     * 指定游标指针位移，为null时不指定，不移动。
-     * @var int
+     * @var int 指定游标指针位移，为null时不指定，不移动。
      */
     protected $offset = null;
 
     /**
-     * TOP语句
-     * @var string
+     * @var string TOP语句
      */
     protected $top = "";
 

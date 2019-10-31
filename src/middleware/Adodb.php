@@ -58,26 +58,6 @@ trait Adodb
     }
 
     /**
-     * 根据SQL预处理语句和绑定参数，返回实际的SQL
-     * @param string $sql SQL语句，支持原生的ODBC问号预处理
-     * @param array $params 可选的绑定参数
-     * @return string
-     */
-    private function getRealSql($sql, array $params = [])
-    {
-        if (!$params) {
-            return $sql;
-        }
-        $temp = explode('?', $sql);
-        $last_sql = "";
-        for ($i = 0; $i < count($temp) - 1; $i++) {
-            $last_sql .= $temp[$i] . $this->parseValue($params[$i]);
-        }
-        $last_sql .= $temp[count($temp) - 1];
-        return $last_sql;
-    }
-
-    /**
      * 执行一个SQL语句并返回相应结果
      * @param string $sql SQL语句，支持模拟问号占位符预处理语句
      * @param array $params 可选的绑定参数

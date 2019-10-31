@@ -24,7 +24,7 @@ class Odbc extends Db
      */
     public function __construct($file, $pwd = null, $driver = null)
     {
-        if (is_null($driver)) {  //默认驱动名
+        if (is_null($driver)) {
             $driver = "Microsoft Access Driver (*.mdb, *.accdb)";
         }
         $dsn = "Driver={" . $driver . "};DSN='';DBQ=" . realpath($file) . ";";
@@ -38,26 +38,6 @@ class Odbc extends Db
     {
         $this->odbcDestruct();
         parent::__destruct();
-    }
-
-    /**
-     * 根据SQL预处理语句和绑定参数，返回实际的SQL
-     * @param string $sql SQL语句，支持原生的ODBC问号预处理
-     * @param array $params 可选的绑定参数
-     * @return string
-     */
-    private function getRealSql($sql, array $params = [])
-    {
-        if (!$params) {
-            return $sql;
-        }
-        $temp = explode('?', $sql);
-        $last_sql = "";
-        for ($i = 0; $i < count($temp) - 1; $i++) {
-            $last_sql .= $temp[$i] . $this->parseValue($params[$i]);
-        }
-        $last_sql .= $temp[count($temp) - 1];
-        return $last_sql;
     }
 
     /**
@@ -75,8 +55,10 @@ class Odbc extends Db
         if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
                 while ($row = $result->fetchArray()) {
-                    array_walk($assoc, function (&$value) {
-                        $value = iconv('GBK', 'UTF-8', $value);
+                    array_walk($row, function (&$value) {
+                        if(is_string($value)) {
+                            $value = iconv('GBK', 'UTF-8', $value);
+                        }
                     });
                     $callback($row);
                 }
@@ -86,7 +68,9 @@ class Odbc extends Db
                 $rows = [];
                 while ($row = $result->fetchArray()) {
                     array_walk($row, function (&$value) {
-                        $value = iconv('GBK', 'UTF-8', $value);
+                        if(is_string($value)) {
+                            $value = iconv('GBK', 'UTF-8', $value);
+                        }
                     });
                     $rows[] = $row;
                 }

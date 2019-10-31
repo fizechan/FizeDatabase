@@ -52,24 +52,6 @@ trait Pdo
     }
 
     /**
-     * PDO实现的安全化值
-     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
-     * @param mixed $value
-     * @return string
-     */
-    protected function parseValue($value)
-    {
-        if (is_string($value)) {
-            $value = $this->pdo->quote($value);
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'null';
-        }
-        return $value;
-    }
-
-    /**
      * 执行一个SQL语句并返回相应结果
      * @param string $sql SQL语句，支持原生的pdo问号预处理
      * @param array $params 可选的绑定参数
@@ -81,8 +63,10 @@ trait Pdo
     {
         $stmt = $this->pdo->prepare($sql);
 
-        if (!$stmt) {
+        if ($stmt === false) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
+            //var_dump($this->pdo->errorInfo());
+            //throw new Exception($this->pdo->errorCode() . ":" . iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]));
             throw new Exception($this->pdo->errorCode() . ":" . $this->pdo->errorInfo()[2]);
         }
 
@@ -92,7 +76,7 @@ trait Pdo
             $result = $stmt->execute();
         }
 
-        if (!$result) {
+        if ($result === false) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
             throw new Exception($this->pdo->errorInfo()[2], $this->pdo->errorCode());
         }

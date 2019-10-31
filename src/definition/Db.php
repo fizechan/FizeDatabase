@@ -151,7 +151,6 @@ abstract class Db
      * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
      * @param mixed $value 要安全化的值
      * @return string
-     * @todo 待更优化方法
      */
     protected function parseValue($value)
     {
@@ -163,6 +162,41 @@ abstract class Db
             $value = 'null';
         }
         return $value;
+    }
+
+    /**
+     * 根据SQL预处理语句和绑定参数，返回实际的SQL
+     * @param string $sql SQL语句，支持原生的ODBC问号预处理
+     * @param array $params 可选的绑定参数
+     * @return string
+     */
+    protected function getRealSql($sql, array $params = [])
+    {
+        if (!$params) {
+            return $sql;
+        }
+        $temp = explode('?', $sql);
+        $last_sql = "";
+        for ($i = 0; $i < count($temp) - 1; $i++) {
+            $last_sql .= $temp[$i] . $this->parseValue($params[$i]);
+        }
+        $last_sql .= $temp[count($temp) - 1];
+        return $last_sql;
+    }
+
+    /**
+     * 获取最后组装的SQL
+     * 仅供日志使用的SQL语句，由于本身存在SQL危险请不要真正用于执行
+     * @param bool $real 是否返回最终SQL语句而非预处理语句
+     * @return string
+     */
+    public function getLastSql($real = false)
+    {
+        if ($real) {
+            return $this->getRealSql($this->sql, $this->params);
+        } else {
+            return $this->sql;
+        }
     }
 
     /**
@@ -451,27 +485,6 @@ abstract class Db
     }
 
     /**
-     * 获取最后运行的SQL
-     * 仅供日志使用的SQL语句，由于本身存在SQL危险请不要真正用于执行
-     * @param bool $real 是否返回最终SQL语句而非预处理语句
-     * @return string
-     */
-    public function getLastSql($real = false)
-    {
-        if ($real) {
-            $temp = explode('?', $this->sql);
-            $last_sql = "";
-            for ($i = 0; $i < count($temp) - 1; $i++) {
-                $last_sql .= $temp[$i] . $this->parseValue($this->params[$i]);
-            }
-            $last_sql .= $temp[count($temp) - 1];
-            return $last_sql;
-        } else {
-            return $this->sql;
-        }
-    }
-
-    /**
      * 解析插入数值的SQL部分语句，用于数值原样写入
      * @param array $datas 要写入的数值数组
      * @param array $params 可能要操作的参数数组
@@ -490,7 +503,7 @@ abstract class Db
                 $params[] = $val;
             }
         }
-        return '(' . implode(',', $fields) . ') VALUES (' . implode(',', $holdes) . ')';
+        return ' (' . implode(',', $fields) . ') VALUES (' . implode(',', $holdes) . ')';
     }
 
     /**
@@ -523,10 +536,12 @@ abstract class Db
     protected function clear()
     {
         //以下注释请不要删除，用于提示不需要重置的条件
-        //$this->tablePrefix = "";
-        //$this->tableName = "";
         //$this->sql = "";
         //$this->params = [];
+
+        //$this->tablePrefix = "";
+
+        //$this->tableName = "";  //@todo 考虑进入重置条件
 
         //清空一次性条件
         $this->alias = "";
@@ -880,6 +895,7 @@ abstract class Db
 
     /**
      * 批量插入记录
+     * @todo 非原生方法，待移除
      * @param array $data_sets 数据集
      * @param array $fields 可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入成功的记录数

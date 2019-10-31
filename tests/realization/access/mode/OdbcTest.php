@@ -2,10 +2,10 @@
 
 namespace realization\access\mode;
 
-use fize\db\realization\access\mode\Adodb;
+use fize\db\realization\access\mode\Odbc;
 use PHPUnit\Framework\TestCase;
 
-class AdodbTest extends TestCase
+class OdbcTest extends TestCase
 {
 
     public function test__construct()
@@ -14,12 +14,12 @@ class AdodbTest extends TestCase
 
         $file = $test_dir . '/data/test_with_password.mdb';
         $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Odbc($file, $password);
         var_dump($db);
         self::assertIsObject($db);
 
         $file = $test_dir . '/data/test.mdb';
-        $db = new Adodb($file);
+        $db = new Odbc($file);
         var_dump($db);
         self::assertIsObject($db);
     }
@@ -29,7 +29,7 @@ class AdodbTest extends TestCase
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test_with_password.mdb';
         $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Odbc($file, $password);
         var_dump($db);
         self::assertIsObject($db);
         unset($db);
@@ -41,7 +41,7 @@ class AdodbTest extends TestCase
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test_with_password.mdb';
         $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Odbc($file, $password);
         $data = [
             'name'     => "!乱/七\八'糟\"的*字?符%串`一#大@堆(",
             'add_time' => time()
@@ -59,7 +59,7 @@ class AdodbTest extends TestCase
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test_with_password.mdb';
         $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Odbc($file, $password);
         $prototype = $db->prototype();
         var_dump($prototype);
         self::assertIsObject($prototype);
@@ -69,7 +69,7 @@ class AdodbTest extends TestCase
     {
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test.mdb';
-        $db = new Adodb($file);
+        $db = new Odbc($file);
 
         //增
         $sql = 'INSERT INTO [user] ([name],[add_time]) VALUES (?,?)';
@@ -100,7 +100,7 @@ class AdodbTest extends TestCase
     {
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test.mdb';
-        $db = new Adodb($file);
+        $db = new Odbc($file);
         $db->startTrans();
         $db->commit();
         self::assertTrue(true);
@@ -111,12 +111,12 @@ class AdodbTest extends TestCase
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test_with_password.mdb';
         $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Odbc($file, $password);
 
         $db->startTrans();
 
         $sql = 'UPDATE [user] SET [name] = ? WHERE id = 6';
-        $num = $db->query($sql, ["陈峰展1630"]);
+        $num = $db->query($sql, ["陈峰展2327"]);
         var_dump($num);
         self::assertIsInt($num);
 
@@ -125,7 +125,7 @@ class AdodbTest extends TestCase
         $sql = 'SELECT * FROM [user] WHERE id = 6';
         $rows = $db->query($sql);
         var_dump($rows[0]);
-        self::assertEquals($rows[0]['name'], '陈峰展1630');
+        self::assertEquals($rows[0]['name'], '陈峰展2327');
 
     }
 
@@ -134,12 +134,12 @@ class AdodbTest extends TestCase
         $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
         $file = $test_dir . '/data/test_with_password.mdb';
         $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Odbc($file, $password);
 
         $db->startTrans();
 
         $sql = 'UPDATE [user] SET [name] = ? WHERE id = 6';
-        $num = $db->query($sql, ["陈峰展1632"]);
+        $num = $db->query($sql, ["陈峰展23272"]);
         var_dump($num);
         self::assertIsInt($num);
 
@@ -148,6 +148,6 @@ class AdodbTest extends TestCase
         $sql = 'SELECT * FROM [user] WHERE id = 6';
         $rows = $db->query($sql);
         var_dump($rows[0]);
-        self::assertEquals($rows[0]['name'], '陈峰展1630');
+        self::assertEquals($rows[0]['name'], '陈峰展2327');
     }
 }
