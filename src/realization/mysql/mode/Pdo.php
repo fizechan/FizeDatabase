@@ -15,11 +15,11 @@ class Pdo extends Db
     use Middleware;
 
     /**
-     * Pdo方式构造必须实例化$this->_pdo
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
+     * Pdo方式构造
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
      * @param string $prefix 指定全局前缀，选填，默认空字符
      * @param int $port 端口号，选填，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8

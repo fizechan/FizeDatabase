@@ -13,9 +13,7 @@ use fize\db\middleware\Odbc as Middleware;
  */
 class Odbc extends Db
 {
-    use Middleware {
-        Middleware::query as protected queryOdbc;  //使用别名来解决ODBC本身占用了query方法的问题
-    }
+    use Middleware;
 
     /**
      * 构造
@@ -51,41 +49,13 @@ class Odbc extends Db
     }
 
     /**
-     * 安全化值
-     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
-     * ODBC为驱动层，安全化值应由各数据库自行实现
-     * @param mixed $value
-     * @return string
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称,该参数在mysql中无效
+     * @return int|string
      */
-    protected function parseValue($value)
+    public function lastInsertId($name = null)
     {
-        if (is_string($value)) {
-            $value = "'" . addcslashes($value, "'") . "'";
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'null';
-        }
-        return $value;
-    }
-
-    /**
-     * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，支持原生的ODBC问号预处理
-     * @param array $params 可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int|null SELECT语句返回数组或不返回，INSERT/REPLACE返回自增ID，其余返回受影响行数
-     */
-    public function query($sql, array $params = [], callable $callback = null)
-    {
-        $result = $this->queryOdbc($sql, $params, $callback);
-        if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $this->driver->exec("SELECT @@IDENTITY");
-            return $this->driver->result(1);  //返回自增ID
-        } elseif (stripos($sql, "SELECT") === 0) {
-            return $result;
-        } else {
-            return $this->driver->numRows();  //返回受影响条数
-        }
+        $result = $this->driver->exec("SELECT @@IDENTITY");
+        return $result->result(1);
     }
 }

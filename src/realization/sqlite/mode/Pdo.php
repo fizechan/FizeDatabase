@@ -15,12 +15,10 @@ class Pdo extends Db
 
     /**
      * Pdo constructor.
-     * @param string $filename
-     * @param string $prefix
+     * @param string $filename 数据库文件路径
      */
-    public function __construct($filename, $prefix = "")
+    public function __construct($filename)
     {
-        $this->tablePrefix = $prefix;
         $dsn = "sqlite:{$filename}";
         $this->pdoConstruct($dsn, '', '');
     }

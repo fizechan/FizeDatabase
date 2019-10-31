@@ -10,28 +10,24 @@ use Exception;
 
 /**
  * SQLite3数据库模型类
- * 驱动相关：php_sqlite3.dll
  */
 class Sqlite3 extends Db
 {
 
     /**
-     * 使用的SQLite3对象
-     * @var Driver
+     * @var Driver 使用的SQLite3对象
      */
     private $driver = null;
 
     /**
      * 构造
      * @param string $filename 数据库文件路径
-     * @param string $prefix 表前缀
      * @param int $flags 模式，默认是SQLITE3_OPEN_READWRITE
      * @param string $encryption_key 加密密钥
-     * @param int $busy_timeout
+     * @param int $busy_timeout 超时时间
      */
-    public function __construct($filename, $prefix = "", $flags = 2, $encryption_key = null, $busy_timeout = 30000)
+    public function __construct($filename, $flags = 2, $encryption_key = null, $busy_timeout = 30000)
     {
-        $this->tablePrefix = $prefix;
         $this->driver = new Driver($filename, $flags, $encryption_key);
         $this->driver->busyTimeout($busy_timeout);
     }
@@ -76,14 +72,13 @@ class Sqlite3 extends Db
      * @param string $sql SQL语句，支持原生的问号预处理
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组或不返回，INSERT/REPLACE返回自增ID，其余返回受影响行数
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      * @throws Exception
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
         $stmt = $this->driver->prepare($sql);
-
-        if(!$stmt){
+        if (!$stmt) {
             throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
         }
 
@@ -106,15 +101,11 @@ class Sqlite3 extends Db
         }
         $result = $stmt->execute();
 
-        if($result === false){
+        if ($result === false) {
             throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
         }
 
-        if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $id = $this->driver->lastInsertRowID();
-            $stmt->close();
-            return $id; //返回自增ID
-        } elseif (stripos($sql, "SELECT") === 0) {
+        if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
                 while ($assoc = $result->fetchArray(SQLITE3_ASSOC)) {
                     $callback($assoc);
@@ -127,12 +118,12 @@ class Sqlite3 extends Db
                     $out[] = $assoc;
                 }
                 $stmt->close();
-                return $out; //返回数组
+                return $out;
             }
         } else {
             $rows = $this->driver->changes();
             $stmt->close();
-            return $rows; //返回受影响条数
+            return $rows;
         }
     }
 
@@ -161,5 +152,15 @@ class Sqlite3 extends Db
     public function rollback()
     {
         $this->driver->query('ROLLBACK');
+    }
+
+    /**
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称,该参数在sqlite3中无效
+     * @return int|string
+     */
+    public function lastInsertId($name = null)
+    {
+        return $this->driver->lastInsertRowID();
     }
 }

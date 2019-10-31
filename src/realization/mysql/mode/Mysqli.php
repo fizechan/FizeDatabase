@@ -17,10 +17,14 @@ class Mysqli extends Db
 {
 
     /**
-     * 使用的mysqli对象
-     * @var Driver
+     * @var Driver 使用的mysqli对象
      */
     private $driver = null;
+
+    /**
+     * @var int|string 最后插入的自增ID或序列号
+     */
+    protected $lastInsertId = null;
 
     /**
      * 构造
@@ -137,7 +141,7 @@ class Mysqli extends Db
      * @param string $sql SQL语句，支持原生的mysqli问号占位符预处理
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组($callback有定义时不返回)，INSERT/REPLACE返回自增ID，其余返回受影响行数
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      * @throws Exception
      */
     public function query($sql, array $params = [], callable $callback = null)
@@ -178,9 +182,10 @@ class Mysqli extends Db
         }
 
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            $id = $stmt->insert_id;
+            $this->lastInsertId = $stmt->insert_id;
+            $rows = $stmt->affected_rows;
             $stmt->close();
-            return $id; //返回自增ID
+            return $rows;
         } elseif (stripos($sql, "SELECT") === 0) {
             //$meta = $stmt->result_metadata();
             $meta = $stmt->get_result();
@@ -198,18 +203,17 @@ class Mysqli extends Db
                 }
                 $meta->free();
                 $stmt->close();
-                return $out; //返回数组
+                return $out;
             }
         } else {
             $rows = $stmt->affected_rows;
             $stmt->close();
-            return $rows; //返回受影响条数
+            return $rows;
         }
     }
 
     /**
      * 开始事务
-     * @return void
      */
     public function startTrans()
     {
@@ -218,7 +222,6 @@ class Mysqli extends Db
 
     /**
      * 执行事务
-     * @return void
      */
     public function commit()
     {
@@ -227,10 +230,19 @@ class Mysqli extends Db
 
     /**
      * 回滚事务
-     * @return void
      */
     public function rollback()
     {
         $this->driver->rollback();
+    }
+
+    /**
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称,该参数在mysql中无效
+     * @return int|string
+     */
+    public function lastInsertId($name = null)
+    {
+        return $this->lastInsertId;
     }
 }

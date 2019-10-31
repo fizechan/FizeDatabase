@@ -16,8 +16,7 @@ class Pgsql extends Db
 {
 
     /**
-     * 使用的Pgsql驱动对象
-     * @var Driver
+     * @var Driver 使用的Pgsql驱动对象
      */
     protected $driver = null;
 
@@ -70,10 +69,10 @@ class Pgsql extends Db
 
     /**
      * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，将原$*占位符统一变更为?占位符
+     * @param string $sql SQL语句，原$*占位符统一变更为?占位符
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int|null SELECT语句返回数组，INSERT/REPLACE返回自增ID，其余返回受影响行数。
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -91,9 +90,7 @@ class Pgsql extends Db
             throw new Exception($this->driver->lastError());
         }
 
-        if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-            return 0;
-        } elseif (stripos($sql, "SELECT") === 0) {
+        if (stripos($sql, "SELECT") === 0) {
             if ($callback !== null) {
                 while ($row = $result->fetchAssoc()) {
                     $callback($row);
@@ -130,5 +127,18 @@ class Pgsql extends Db
     public function rollback()
     {
         $this->driver->query("ROLLBACK");
+    }
+
+    /**
+     * 返回最后插入行的ID或序列值
+     * @param string $name 应该返回ID的那个序列对象的名称,该参数在PostgreSQL中必须指定
+     * @return int|string
+     */
+    public function lastInsertId($name = null)
+    {
+        $sql = "SELECT currval('{$name}')";
+        $result = $this->driver->query($sql);
+        $row = $result->fetchRow();
+        return $row[0];
     }
 }

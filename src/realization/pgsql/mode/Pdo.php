@@ -15,10 +15,10 @@ class Pdo extends Db
 
     /**
      * PDO方式PostgreSQL数据库模型类
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
      * @param int $port 端口号，选填，PostgreSQL默认是5432
      * @param array $opts PDO连接的其他选项，选填
      */

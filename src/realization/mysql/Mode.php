@@ -4,7 +4,6 @@ namespace fize\db\realization\mysql;
 
 
 use fize\db\definition\Mode as ModeInterface;
-use fize\db\realization\mysql\mode\Adodb;
 use fize\db\realization\mysql\mode\Odbc;
 use fize\db\realization\mysql\mode\Mysqli;
 use fize\db\realization\mysql\mode\Pdo;
@@ -15,11 +14,6 @@ use fize\db\exception\Exception;
  */
 class Mode implements ModeInterface
 {
-
-    public static function adodb()
-    {
-        return new Adodb();
-    }
 
     /**
      * odbc方式构造
@@ -89,35 +83,33 @@ class Mode implements ModeInterface
     public static function getInstance(array $config)
     {
         $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
-        $db_cfg = $config['config'];
+        $dbcfg = $config['config'];
+        $default_dbcfg = [
+            'port'        => '',
+            'charset'     => 'utf8',
+            'prefix'      => '',
+            'opts'        => [],
+            'real'        => true,
+            'socket'      => null,
+            'ssl_set'     => [],
+            'flags'       => null,
+            'driver'      => null
+        ];
+        $dbcfg = array_merge($default_dbcfg, $dbcfg);
         switch ($mode) {
-            case 'adodb':
-                return self::adodb();  //todo
             case 'odbc':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
-                $driver = isset($db_cfg['driver']) ? $db_cfg['driver'] : null;
-                return self::odbc($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $driver);
+                $db = self::odbc($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['driver']);
+                break;
             case 'mysqli':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
-                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
-                $real = isset($db_cfg['real']) ? $db_cfg['real'] : true;
-                $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
-                $ssl_set = isset($db_cfg['ssl_set']) ? $db_cfg['ssl_set'] : [];
-                $flags = isset($db_cfg['flags']) ? $db_cfg['flags'] : null;
-                return self::mysqli($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+                $db = self::mysqli($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts'], $dbcfg['real'], $dbcfg['socket'], $dbcfg['ssl_set'], $dbcfg['flags']);
+                break;
             case 'pdo':
-                $prefix = isset($db_cfg['prefix']) ? $db_cfg['prefix'] : '';
-                $port = isset($db_cfg['port']) ? $db_cfg['port'] : '';
-                $charset = isset($db_cfg['charset']) ? $db_cfg['charset'] : 'utf8';
-                $opts = isset($db_cfg['opts']) ? $db_cfg['opts'] : [];
-                $socket = isset($db_cfg['socket']) ? $db_cfg['socket'] : null;
-                return self::pdo($db_cfg['host'], $db_cfg['user'], $db_cfg['password'], $db_cfg['dbname'], $prefix, $port, $charset, $opts, $socket);
+                $db = self::pdo($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts'], $dbcfg['socket']);
+                break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
+        $db->prefix($dbcfg['prefix']);
+        return $db;
     }
 }

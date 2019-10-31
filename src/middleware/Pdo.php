@@ -94,8 +94,6 @@ trait Pdo
 
         if (!$result) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            //var_dump($this->_pdo->errorInfo());
-            //var_dump($this->_pdo->errorCode());
             throw new Exception($this->pdo->errorInfo()[2], $this->pdo->errorCode());
         }
 

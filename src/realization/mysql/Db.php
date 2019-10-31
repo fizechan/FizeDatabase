@@ -13,20 +13,17 @@ abstract class Db extends Base
     use Feature;
 
     /**
-     * LIMIT语句
-     * @var string
+     * @var string LIMIT语句
      */
     protected $limit = "";
 
     /**
-     * 本次查询是否启用LOCK锁
-     * @var bool
+     * @var bool 本次查询是否启用LOCK锁
      */
     protected $lock = false;
 
     /**
-     * LOCK语句主体
-     * @var string
+     * @var string LOCK语句主体
      */
     protected $lock_sql = "";
 

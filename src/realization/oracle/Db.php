@@ -15,8 +15,7 @@ abstract class Db extends Base
     use Feature;
 
     /**
-     * LIMIT语句
-     * @var string
+     * @var string LIMIT语句
      */
     protected $limit = "";
 

@@ -14,7 +14,7 @@ class Adodb extends Db
     use Middleware;
 
     /**
-     * Adodb constructor.
+     * 构造时创建Adodb连接
      * @see https://www.connectionstrings.com/ace-oledb-12-0/
      * @param string $file 数据库文件路径
      * @param string $pwd 密码

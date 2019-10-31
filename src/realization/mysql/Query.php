@@ -3,7 +3,6 @@
 namespace fize\db\realization\mysql;
 
 use fize\db\definition\Query as Base;
-use fize\db\Query as DbQuery;
 
 
 /**
@@ -18,7 +17,8 @@ class Query extends Base
      * @param string $value REGEXP正则字符串
      * @return $this
      */
-    public function regExp($value){
+    public function regExp($value)
+    {
         return $this->condition("REGEXP", $value);
     }
 
@@ -27,7 +27,8 @@ class Query extends Base
      * @param string $value NOT REGEXP正则字符串
      * @return $this
      */
-    public function notRegExp($value){
+    public function notRegExp($value)
+    {
         return $this->condition("NOT REGEXP", $value);
     }
 
@@ -36,7 +37,8 @@ class Query extends Base
      * @param string $value RLIKE正则字符串
      * @return $this
      */
-    public function rLike($value){
+    public function rLike($value)
+    {
         return $this->condition("RLIKE", $value);
     }
 
@@ -45,7 +47,8 @@ class Query extends Base
      * @param string $value NOT RLIKE正则字符串
      * @return $this
      */
-    public function notRLike($value){
+    public function notRLike($value)
+    {
         return $this->condition("NOT RLIKE", $value);
     }
 
@@ -55,9 +58,8 @@ class Query extends Base
      */
     protected function analyzeArrayParams(array $value)
     {
-        if(is_string($value[0]))
-        {
-            switch(strtoupper(trim($value[0]))){
+        if (is_string($value[0])) {
+            switch (strtoupper(trim($value[0]))) {
                 case "NOT REGEXP":
                     $this->notRegExp($value[1]);
                     return;
