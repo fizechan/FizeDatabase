@@ -1,35 +1,23 @@
 <?php
 
-namespace realization\access\mode;
+namespace realization\mysql\mode;
 
-use fize\db\realization\access\mode\Adodb;
+use fize\db\realization\mysql\mode\Mysqli;
 use PHPUnit\Framework\TestCase;
 
-class AdodbTest extends TestCase
+class MysqliTest extends TestCase
 {
 
     public function test__construct()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-
-        $file = $test_dir . '/data/test_with_password.mdb';
-        $password = '123456';
-        $db = new Adodb($file, $password);
-        var_dump($db);
-        self::assertIsObject($db);
-
-        $file = $test_dir . '/data/test.mdb';
-        $db = new Adodb($file);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
         var_dump($db);
         self::assertIsObject($db);
     }
 
     public function test__destruct()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test_with_password.mdb';
-        $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
         var_dump($db);
         self::assertIsObject($db);
         unset($db);
@@ -38,10 +26,7 @@ class AdodbTest extends TestCase
 
     public function testLastInsertId()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test_with_password.mdb';
-        $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
         $data = [
             'name'     => "!乱/七\八'糟\"的*字?符%串`一#大@堆(",
             'add_time' => time()
@@ -56,10 +41,7 @@ class AdodbTest extends TestCase
 
     public function testPrototype()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test_with_password.mdb';
-        $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
         $prototype = $db->prototype();
         var_dump($prototype);
         self::assertIsObject($prototype);
@@ -67,30 +49,28 @@ class AdodbTest extends TestCase
 
     public function testQuery()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test.mdb';
-        $db = new Adodb($file);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
 
         //增
-        $sql = 'INSERT INTO [user] ([name],[add_time]) VALUES (?,?)';
+        $sql = 'INSERT INTO `user` (`name`,`add_time`) VALUES (?,?)';
         $num = $db->query($sql, ["!乱/七\八'糟\"的*字?符%串`一#大@堆(", time()]);
         var_dump($num);
         self::assertIsInt($num);
 
         //删
-        $sql = 'DELETE FROM [user] WHERE id <= 7';
+        $sql = 'DELETE FROM `user` WHERE id <= 7';
         $num = $db->query($sql);
         var_dump($num);
         self::assertIsInt($num);
 
         //改
-        $sql = 'UPDATE [user] SET [name] = ? WHERE id = 17';
+        $sql = 'UPDATE `user` SET `name` = ? WHERE id = 17';
         $num = $db->query($sql, ["陈峰展"]);
         var_dump($num);
         self::assertIsInt($num);
 
         //查
-        $sql = 'SELECT * FROM [user]';
+        $sql = 'SELECT * FROM `user`';
         $rows = $db->query($sql);
         var_dump($rows);
         self::assertIsArray($rows);
@@ -98,9 +78,7 @@ class AdodbTest extends TestCase
 
     public function testStartTrans()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test.mdb';
-        $db = new Adodb($file);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
         $db->startTrans();
         $db->commit();
         self::assertTrue(true);
@@ -108,46 +86,49 @@ class AdodbTest extends TestCase
 
     public function testCommit()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test_with_password.mdb';
-        $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
 
         $db->startTrans();
 
-        $sql = 'UPDATE [user] SET [name] = ? WHERE id = 6';
+        $sql = 'UPDATE `user` SET `name` = ? WHERE id = 101';
         $num = $db->query($sql, ["陈峰展1630"]);
         var_dump($num);
         self::assertIsInt($num);
 
         $db->commit();
 
-        $sql = 'SELECT * FROM [user] WHERE id = 6';
+        $sql = 'SELECT * FROM `user` WHERE id = 101';
         $rows = $db->query($sql);
         var_dump($rows[0]);
         self::assertEquals($rows[0]['name'], '陈峰展1630');
-
     }
 
     public function testRollback()
     {
-        $test_dir = dirname(dirname(dirname(dirname(__FILE__))));
-        $file = $test_dir . '/data/test_with_password.mdb';
-        $password = '123456';
-        $db = new Adodb($file, $password);
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
 
         $db->startTrans();
 
-        $sql = 'UPDATE [user] SET [name] = ? WHERE id = 6';
+        $sql = 'UPDATE `user` SET `name` = ? WHERE id = 101';
         $num = $db->query($sql, ["陈峰展1632"]);
         var_dump($num);
         self::assertIsInt($num);
 
         $db->rollback();
 
-        $sql = 'SELECT * FROM [user] WHERE id = 6';
+        $sql = 'SELECT * FROM `user` WHERE id = 101';
         $rows = $db->query($sql);
         var_dump($rows[0]);
         self::assertEquals($rows[0]['name'], '陈峰展1630');
+    }
+
+    public function testMultiQuery()
+    {
+        $db = new Mysqli('127.0.0.1', 'root', '123456', 'gm_test');
+        $sqls[] = 'SELECT * FROM `user` WHERE id = 101';
+        $sqls[] = 'SELECT * FROM `user` WHERE id < 100';
+        $results = $db->multiQuery($sqls);
+        var_dump($results);
+        self::assertIsArray($results);
     }
 }

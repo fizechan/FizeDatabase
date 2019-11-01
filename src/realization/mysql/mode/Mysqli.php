@@ -32,7 +32,6 @@ class Mysqli extends Db
      * @param string $user 用户名
      * @param string $pwd 用户密码
      * @param string $dbname 指定数据库
-     * @param string $prefix 指定全局前缀
      * @param mixed $port 端口号，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param array $opts 设置MYSQL连接选项
@@ -42,9 +41,8 @@ class Mysqli extends Db
      * @param int $flags 设置连接参数，选填，如MYSQLI_CLIENT_SSL等
      * @throws Exception
      */
-    public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
+    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
     {
-        $this->tablePrefix = $prefix;
         $port = (int)$port;  //mysqli有对类型进行了检查
         if ($real) {
             $this->driver = new Driver();
@@ -119,24 +117,6 @@ class Mysqli extends Db
     }
 
     /**
-     * mysqli函数实现的安全化值
-     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
-     * @param mixed $value
-     * @return string
-     */
-    protected function parseValue($value)
-    {
-        if (is_string($value)) {
-            $value = "'" . $this->driver->escape_string($value) . "'";
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'null';
-        }
-        return $value;
-    }
-
-    /**
      * 执行一个SQL语句并返回相应结果
      * @param string $sql SQL语句，支持原生的mysqli问号占位符预处理
      * @param array $params 可选的绑定参数
@@ -148,8 +128,8 @@ class Mysqli extends Db
     {
         $stmt = $this->driver->prepare($sql);
 
-        if(!$stmt){
-            throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
+        if($stmt === false){
+            throw new Exception($this->driver->error, $this->driver->errno);
         }
 
         if (!empty($params)) {
@@ -166,7 +146,7 @@ class Mysqli extends Db
                 } else {
                     $vtypes .= "s";
                 }
-                $all_params[] = &$val;
+                $all_params[] = $val;
             }
             array_unshift($all_params, $vtypes); //插入数值类型
             $fun_params = [];

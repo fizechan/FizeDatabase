@@ -3,6 +3,7 @@
 
 namespace fize\db\middleware\driver;
 
+use Exception;
 use fize\db\exception\DriverException;
 use fize\db\middleware\driver\odbc\Statement;
 
@@ -35,13 +36,16 @@ class Odbc
      */
     public function __construct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
     {
-        if ($pconnect) {
-            $this->connection = @odbc_pconnect($dsn, $user, $pwd, $cursor_type);
-        } else {
-            $this->connection = @odbc_connect($dsn, $user, $pwd, $cursor_type);
-        }
-        if (!$this->connection) {
-            throw new DriverException("SQL state " . odbc_error() . ":" . iconv('GB2312', 'UTF-8', odbc_errormsg()));
+        try {
+            if ($pconnect) {
+                $this->connection = odbc_pconnect($dsn, $user, $pwd, $cursor_type);
+            } else {
+                $this->connection = odbc_connect($dsn, $user, $pwd, $cursor_type);
+            }
+        } catch (Exception $e) {
+            $code = $e->getCode();
+            $message = iconv('GB2312', 'UTF-8', $e->getMessage());
+            throw new DriverException($message, $code);
         }
     }
 

@@ -16,31 +16,12 @@ class Mode implements ModeInterface
 {
 
     /**
-     * odbc方式构造
-     * @notice ODBC本身未实现数据库特性，仅适用于一般性调用
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
-     * @param mixed $port 端口号，选填，MySQL默认是3306
-     * @param string $charset 指定编码，选填，默认utf8
-     * @param string $driver 指定ODBC驱动名称。
-     * @return Odbc
-     */
-    public static function odbc($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", $driver = null)
-    {
-        return new Odbc($host, $user, $pwd, $dbname, $prefix, $port, $charset, $driver);
-    }
-
-    /**
      * mysqli方式构造
      * @notice mysqli最终还是会被淘汰的，建议谨慎使用
      * @param string $host 服务器地址
      * @param string $user 用户名
      * @param string $pwd 用户密码
      * @param string $dbname 指定数据库
-     * @param string $prefix 指定全局前缀
      * @param mixed $port 端口号，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param array $opts 设置MYSQL连接选项
@@ -50,28 +31,44 @@ class Mode implements ModeInterface
      * @param int $flags 设置连接参数，选填，如MYSQLI_CLIENT_SSL等
      * @return Mysqli
      */
-    public static function mysqli($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
+    public static function mysqli($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", array $opts = [], $real = true, $socket = null, array $ssl_set = [], $flags = null)
     {
-        return new Mysqli($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+        return new Mysqli($host, $user, $pwd, $dbname, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+    }
+
+    /**
+     * odbc方式构造
+     * @notice ODBC本身未实现数据库特性，仅适用于一般性调用
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
+     * @param mixed $port 端口号，选填，MySQL默认是3306
+     * @param string $charset 指定编码，选填，默认utf8
+     * @param string $driver 指定ODBC驱动名称。
+     * @return Odbc
+     */
+    public static function odbc($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", $driver = null)
+    {
+        return new Odbc($host, $user, $pwd, $dbname, $port, $charset, $driver);
     }
 
     /**
      * Pdo方式构造
      * 强烈推荐使用
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
      * @param int $port 端口号，选填，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param array $opts PDO连接的其他选项，选填
      * @param string $socket 指定应使用的套接字或命名管道,windows不可用，选填，默认不指定
      * @return Pdo
      */
-    public static function pdo($host, $user, $pwd, $dbname, $prefix = "", $port = null, $charset = "utf8", array $opts = [], $socket = null)
+    public static function pdo($host, $user, $pwd, $dbname, $port = null, $charset = "utf8", array $opts = [], $socket = null)
     {
-        return new Pdo($host, $user, $pwd, $dbname, $prefix, $port, $charset, $opts, $socket);
+        return new Pdo($host, $user, $pwd, $dbname, $port, $charset, $opts, $socket);
     }
 
     /**
@@ -97,11 +94,11 @@ class Mode implements ModeInterface
         ];
         $dbcfg = array_merge($default_dbcfg, $dbcfg);
         switch ($mode) {
-            case 'odbc':
-                $db = self::odbc($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['driver']);
-                break;
             case 'mysqli':
                 $db = self::mysqli($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts'], $dbcfg['real'], $dbcfg['socket'], $dbcfg['ssl_set'], $dbcfg['flags']);
+                break;
+            case 'odbc':
+                $db = self::odbc($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['driver']);
                 break;
             case 'pdo':
                 $db = self::pdo($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts'], $dbcfg['socket']);

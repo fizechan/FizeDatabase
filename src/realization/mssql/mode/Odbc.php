@@ -14,9 +14,7 @@ use Exception;
  */
 class Odbc extends Db
 {
-    use Middleware {
-        Middleware::query as protected queryOdbc;
-    }
+    use Middleware;
 
     /**
      * 构造
@@ -72,7 +70,9 @@ class Odbc extends Db
             if ($callback !== null) {
                 while ($assoc = $result->fetchArray()) {
                     array_walk($assoc, function (&$value) {
-                        $value = iconv('GBK', 'UTF-8', $value);
+                        if(is_string($value)) {
+                            $value = iconv('GBK', 'UTF-8', $value);
+                        }
                     });
                     $callback($assoc);
                 }
@@ -82,7 +82,9 @@ class Odbc extends Db
                 $rows = [];
                 while ($row = $result->fetchArray()) {
                     array_walk($row, function (&$value) {
-                        $value = iconv('GBK', 'UTF-8', $value);
+                        if(is_string($value)) {
+                            $value = iconv('GBK', 'UTF-8', $value);
+                        }
                     });
                     $rows[] = $row;
                 }

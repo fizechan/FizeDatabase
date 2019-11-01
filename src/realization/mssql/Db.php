@@ -31,6 +31,23 @@ abstract class Db extends Base
     protected $new_feature = true;
 
     /**
+     * 自己实现的安全化值
+     * @param mixed $value 要安全化的值
+     * @return string
+     */
+    protected function parseValue($value)
+    {
+        if (is_string($value)) {
+            $value = "'" . str_replace("'", "''", $value) . "'";
+        } elseif (is_bool($value)) {
+            $value = $value ? '1' : '0';
+        } elseif (is_null($value)) {
+            $value = 'NULL';
+        }
+        return $value;
+    }
+
+    /**
      * @param bool $bool 设置是否支持新特性
      */
     public function newFeature($bool)

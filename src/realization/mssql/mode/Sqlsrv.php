@@ -16,8 +16,7 @@ class Sqlsrv extends Db
 {
 
     /**
-     * 使用的MSSQL对象
-     * @var Driver
+     * @var Driver 使用的MSSQL对象
      */
     protected $driver = null;
 

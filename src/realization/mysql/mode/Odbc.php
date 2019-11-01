@@ -17,20 +17,18 @@ class Odbc extends Db
 
     /**
      * 构造
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
-     * @param string $prefix 指定全局前缀，选填，默认空字符
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
      * @param mixed $port 端口号，选填，MySQL默认是3306
      * @param string $charset 指定编码，选填，默认utf8
      * @param string $driver 指定ODBC驱动名称。
      */
-    public function __construct($host, $user, $pwd, $dbname, $prefix = "", $port = "", $charset = "utf8", $driver = null)
+    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "utf8", $driver = null)
     {
-        $this->tablePrefix = $prefix;
-        if (is_null($driver)) {  //默认驱动名
-            $driver = "{MySQL ODBC 5.3 ANSI Driver}";
+        if (is_null($driver)) {
+            $driver = "{MySQL ODBC 8.0 ANSI Driver}";
         }
         $dsn = "DRIVER={$driver};SERVER={$host};DATABASE={$dbname};CHARSET={$charset}";
         if (!empty($port)) {
