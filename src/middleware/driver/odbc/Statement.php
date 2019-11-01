@@ -53,7 +53,7 @@ class Statement
      * @param array $parameters_array 可选的参数
      * @throws DriverException
      */
-    public function execute(array $parameters_array = null)
+    public function execute(array $parameters_array = [])
     {
         $rst = odbc_execute($this->statement, $parameters_array);
         if($rst === false){

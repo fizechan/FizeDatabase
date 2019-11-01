@@ -71,10 +71,10 @@ class Mode implements ModeInterface
             'port'         => '5432',
             'charset'      => 'UTF8',
             'prefix'       => '',
-            'driver' => null,
-            'pconnect' => false,
+            'driver'       => null,
+            'pconnect'     => false,
             'connect_type' => null,
-            'opts' => []
+            'opts'         => []
         ];
         $dbcfg = array_merge($default_dbcfg, $dbcfg);
         switch ($mode) {

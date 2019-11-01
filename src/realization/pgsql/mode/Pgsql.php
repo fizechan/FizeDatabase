@@ -50,24 +50,6 @@ class Pgsql extends Db
     }
 
     /**
-     * pgsql函数实现的安全化值
-     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
-     * @param mixed $value
-     * @return string
-     */
-    protected function parseValue($value)
-    {
-        if (is_string($value)) {
-            $value = "'" . $this->driver->escapeString($value);
-        } elseif (is_bool($value)) {
-            $value = $value ? '1' : '0';
-        } elseif (is_null($value)) {
-            $value = 'null';
-        }
-        return $value;
-    }
-
-    /**
      * 执行一个SQL语句并返回相应结果
      * @param string $sql SQL语句，原$*占位符统一变更为?占位符
      * @param array $params 可选的绑定参数
