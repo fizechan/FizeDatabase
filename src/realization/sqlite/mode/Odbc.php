@@ -42,28 +42,6 @@ class Odbc extends Db
         parent::__destruct();
     }
 
-//    /**
-//     * 执行一个SQL语句并返回相应结果
-//     * @param string $sql SQL语句，支持原生的ODBC问号预处理
-//     * @param array $params 可选的绑定参数
-//     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-//     * @return mixed SELECT语句返回数组或不返回，INSERT/REPLACE返回自增ID，其余返回受影响行数
-//     */
-//    public function query2($sql, array $params = [], callable $callback = null)
-//    {
-//        $result = $this->queryOdbc($sql, $params, $callback);
-//        if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
-//            $this->driver->exec("SELECT LAST_INSERT_ROWID()");
-//            return $this->driver->result(1);  //返回自增ID
-//        } elseif (stripos($sql, "SELECT") === 0) {
-//            return $result;
-//        } else {
-//            $this->driver->exec("SELECT CHANGES()");
-//            $rows = $this->driver->result(1);
-//            return (int)$rows; //返回受影响条数
-//        }
-//    }
-
     /**
      * 返回最后插入行的ID或序列值
      * @param string $name 应该返回ID的那个序列对象的名称,该参数在sqlite3中无效
