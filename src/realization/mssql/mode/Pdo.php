@@ -22,10 +22,10 @@ class Pdo extends Db
 
     /**
      * 构造
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
      * @param mixed $port 端口号，选填，MSSQL默认是1433
      * @param string $charset 指定数据库编码，选填，默认GBK
      * @param array $opts PDO连接的其他选项，选填

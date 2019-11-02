@@ -74,7 +74,7 @@ trait Adodb
             while (!$rs->Eof) {
                 $row = [];
                 foreach ($rs->Fields as $field) {
-                    $row[$field->Name] = $field->Value;
+                    $row[$field->Name] = (string)$field->Value;
                 }
                 $rows[] = $row;
                 $rs->MoveNext();

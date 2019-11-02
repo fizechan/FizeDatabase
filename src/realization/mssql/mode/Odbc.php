@@ -18,18 +18,19 @@ class Odbc extends Db
 
     /**
      * 构造
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
-     * @param mixed $port 端口号，选填，MySQL默认是1344
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
+     * @param mixed $port 端口号，选填，MSQL默认是1433
      * @param string $driver 指定ODBC驱动名称。
      * @throws Exception
      */
     public function __construct($host, $user, $pwd, $dbname, $port = "", $driver = null)
     {
-        if (is_null($driver)) {  //默认驱动名
-            $driver = "{SQL Server}";
+        if (is_null($driver)) {
+            //$driver = "{SQL Server}";  最低兼容
+            $driver = "{SQL Server Native Client 11.0}";
         }
         if (empty($port)) {
             $server = $host;
@@ -55,7 +56,6 @@ class Odbc extends Db
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array|int SELECT语句返回数组，其余返回受影响行数。
-     * @throws Exception
      */
     public function query($sql, array $params = [], callable $callback = null)
     {

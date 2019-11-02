@@ -37,19 +37,13 @@ class Sqlsrv extends Db
         ];
         $charset = isset($charset_map[$charset]) ? $charset_map[$charset] : $charset;
         $server = empty($port) ? $host : "{$host},{$port}";
+        $config = [
+            'UID'      => $user,
+            'PWD'      => $pwd,
+            'Database' => $dbname,
+        ];
         if ($charset != "UTF-8") {
-            $config = [
-                'UID'          => $user,
-                'PWD'          => $pwd,
-                'CharacterSet' => 'UTF-8',
-                'Database'     => $dbname,
-            ];
-        } else {
-            $config = [
-                'UID'      => $user,
-                'PWD'      => $pwd,
-                'Database' => $dbname,
-            ];
+            $config['CharacterSet'] = 'UTF-8';
         }
         $this->driver = new Driver($server, $config);
     }
@@ -76,7 +70,7 @@ class Sqlsrv extends Db
      * @param string $sql SQL语句，支持问号预处理
      * @param array $params 可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组(错误返回false)，INSERT/REPLACE返回自增ID，其余返回受影响行数
+     * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -103,7 +97,6 @@ class Sqlsrv extends Db
 
     /**
      * 开始事务
-     * @return void
      */
     public function startTrans()
     {
@@ -112,7 +105,6 @@ class Sqlsrv extends Db
 
     /**
      * 执行事务
-     * @return void
      */
     public function commit()
     {
@@ -121,7 +113,6 @@ class Sqlsrv extends Db
 
     /**
      * 回滚事务
-     * @return void
      */
     public function rollback()
     {

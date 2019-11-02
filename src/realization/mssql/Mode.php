@@ -92,9 +92,9 @@ class Mode implements ModeInterface
         $default_dbcfg = [
             'port'        => '',
             'prefix'      => '',
+            'new_feature' => true,
             'driver'      => null,
             'charset'     => 'GBK',
-            'new_feature' => true,
             'opts'        => []
         ];
         $dbcfg = array_merge($default_dbcfg, $dbcfg);

@@ -16,17 +16,18 @@ class Adodb extends Db
 
     /**
      * 构造时创建Adodb连接
-     * @param string $host 服务器地址，必填
-     * @param string $user 用户名，必填
-     * @param string $pwd 用户密码，必填
-     * @param string $dbname 数据库名，必填
-     * @param mixed $port 端口号，选填，MySQL默认是1344
+     * @param string $host 服务器地址
+     * @param string $user 用户名
+     * @param string $pwd 用户密码
+     * @param string $dbname 数据库名
+     * @param mixed $port 端口号，选填，MSSQL默认是1433
      * @param string $driver 指定ADODB驱动名称。
      */
     public function __construct($host, $user, $pwd, $dbname, $port = "", $driver = null)
     {
         if (is_null($driver)) {
-            $driver = "SQLNCLI11";
+            $driver = "SQLNCLI11";  //速度快
+            //$driver = "sqloledb";  //最低兼容
         }
         $dsn = "Provider={$driver};Server=" . $host;
         if($port) {
