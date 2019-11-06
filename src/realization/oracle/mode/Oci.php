@@ -64,10 +64,21 @@ class Oci extends Db
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
+        if($params) {  //将?占位符还原为:$*占位符以方便处理
+            $parts = explode('?', $sql);
+            $temp_sql = $parts[0];
+            for ($i = 1; $i < count($parts); $i++) {
+                $temp_sql .= ":$" . $i . $parts[$i];
+            }
+            $sql = $temp_sql;
+        }
+
         $stmt = $this->driver->parse($sql);
         if($params) {
-            foreach ($params as $name => $value) {
-                $stmt->bindByName(":{$name}", $value);
+            $index = 0;
+            foreach ($params as $value) {
+                $index++;
+                $stmt->bindByName(":${$index}", $value);
             }
         }
         $stmt->execute($this->mode);

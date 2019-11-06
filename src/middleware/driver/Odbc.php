@@ -18,15 +18,13 @@ class Odbc
 {
 
     /**
-     * 当前连接标识符
-     * @var resource
+     * @var resource 当前连接标识符
      */
     private $connection = null;
 
     /**
      * 构造
      * @see https://www.connectionstrings.com/ 可用DSN参见
-     * @todo 驱动问题导致的中文乱码错误的统一解决方法。
      * @param string $dsn 连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
      * @param string $user 用户名
      * @param string $pwd 密码
