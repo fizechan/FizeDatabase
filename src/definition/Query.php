@@ -254,7 +254,9 @@ class Query
     }
 
     /**
-     * 使用“EXISTS”子语句设置条件，使用EXISTS语句时不需要指定对象object，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
+     * 使用“EXISTS”子语句设置条件
+     *
+     * 使用EXISTS语句时不需要指定对象object，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
      * @param string $expression EXISTS语句部分、注意是不含EXISTS
      * @param array|false|null $params 参数绑定数组
      * @param string $premodifier 前置修饰
@@ -273,7 +275,9 @@ class Query
     }
 
     /**
-     * 使用“NOT EXISTS”子语句设置条件，使用EXISTS语句时不需要指定对象obj，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
+     * 使用“NOT EXISTS”子语句设置条件
+     *
+     * 使用EXISTS语句时不需要指定对象obj，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
      * @param string $expression EXISTS语句部分、注意是不含EXISTS
      * @param array|false|null $params 参数绑定数组
      * @return $this

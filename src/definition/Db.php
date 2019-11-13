@@ -148,6 +148,7 @@ abstract class Db
 
     /**
      * 安全化值
+     *
      * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
      * @param mixed $value 要安全化的值
      * @return string
@@ -186,6 +187,7 @@ abstract class Db
 
     /**
      * 获取最后组装的SQL
+     *
      * 仅供日志使用的SQL语句，由于本身存在SQL危险请不要真正用于执行
      * @param bool $real 是否返回最终SQL语句而非预处理语句
      * @return string
@@ -316,6 +318,7 @@ abstract class Db
 
     /**
      * 设置WHERE语句
+     *
      * 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
      * @param Query|array|string $statements “Query对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
@@ -353,6 +356,7 @@ abstract class Db
 
     /**
      * HAVING语句
+     *
      * 通常情况下，我们使用简洁方式来更简便地定义条件，对于复杂条件无法满足的，可以使用查询器或者直接使用预处理语句
      * @param Query|array|string $statements “QueryMysql对象”或者“查询数组”或者“WHERE子语句”，其中“WHERE子语句”支持原生的PDO问号预处理占位符;
      * @param array $parse 如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
@@ -531,6 +535,7 @@ abstract class Db
 
     /**
      * 清空当前条件，以便于下次查询
+     *
      * 子类可根据需要进行重写
      */
     protected function clear()
@@ -558,6 +563,7 @@ abstract class Db
 
     /**
      * 根据当前条件构建SQL语句
+     *
      * 子类可根据需要进行重写
      * @param string $action SQL语句类型
      * @param array $data 可能需要的数据
@@ -646,6 +652,7 @@ abstract class Db
 
     /**
      * 遍历当前结果集
+     *
      * 由于少了一层循环和转化，fetch方法比select性能上略有提升，但不方便外部调用，特别是MVC等架构
      * @param callable $func 遍历函数
      */

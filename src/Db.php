@@ -98,6 +98,7 @@ class Db
 
     /**
      * 获取最后运行的SQL
+     *
      * 仅供日志使用的SQL语句，由于本身存在SQL危险请不要真正用于执行
      * @param bool $real 是否返回最终SQL语句而非预处理语句
      * @return string

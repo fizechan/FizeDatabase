@@ -55,6 +55,7 @@ class Mode implements ModeInterface
 
     /**
      * Pdo方式构造
+     *
      * 强烈推荐使用
      * @param string $host 服务器地址
      * @param string $user 用户名

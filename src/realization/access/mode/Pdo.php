@@ -110,6 +110,7 @@ class Pdo extends Db
 
     /**
      * 返回最后插入行的ID或序列值
+     *
      * pdo连接odbc不支持lastInsertId方法，故使用原生查询获取
      * @param string $name 应该返回ID的那个序列对象的名称,该参数在access中无效
      * @return int|string

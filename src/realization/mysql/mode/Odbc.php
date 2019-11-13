@@ -8,6 +8,7 @@ use fize\db\middleware\Odbc as Middleware;
 
 /**
  * ODBC方式MySQL数据库模型类
+ *
  * 注意ODBC返回的类型都为字符串格式(null除外)
  * @package fize\db\realization\mysql\mode
  */

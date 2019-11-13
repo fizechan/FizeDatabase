@@ -48,6 +48,7 @@ class Mode implements ModeInterface
 
     /**
      * sqlsrv方式构造
+     *
      * 微软官方支持，可以放心使用
      * @param string $host 数据库服务器
      * @param string $user 数据库登录账户
@@ -64,6 +65,7 @@ class Mode implements ModeInterface
 
     /**
      * Pdo方式构造
+     *
      * 强烈推荐使用
      * @param string $host 服务器地址
      * @param string $user 用户名

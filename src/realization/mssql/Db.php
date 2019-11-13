@@ -206,6 +206,7 @@ abstract class Db extends Base
 
     /**
      * 完整分页，执行该方法可以获取到分页记录、完整记录数、总页数，可用于分页输出
+     *
      * 针对MSSQL的再处理，删除非必要的中间字段
      * @param int $page 页码
      * @param int $size 每页记录数量，默认每页10个

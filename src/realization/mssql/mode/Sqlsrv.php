@@ -9,6 +9,7 @@ use fize\db\realization\mssql\mode\driver\Sqlsrv as Driver;
 
 /**
  * MSSQL的ORM模型
+ *
  * php_sqlsrv.dll需要本地客户端支持，不同版本使用的客户端不同，可以在错误信息中获取相关资料。
  * php_sqlsrv.dll由微软官方提供技术支持，推荐使用。
  */
