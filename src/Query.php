@@ -50,6 +50,7 @@ class Query
 
     /**
      * 设定当前操作字段
+     *
      * 实际上是object方法的别名
      * @param string $field_name 字段名
      * @return Driver

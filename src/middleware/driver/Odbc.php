@@ -49,6 +49,7 @@ class Odbc
 
     /**
      * 析构
+     *
      * 由于调用closeAll时会关闭所有链接，导致影响close的执行，故析构时并没有将链接关闭，需要时，请手动关闭。
      */
     public function __destruct()
