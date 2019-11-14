@@ -7,8 +7,9 @@ use fize\db\realization\mssql\Db;
 use fize\db\middleware\Adodb as Middleware;
 
 /**
+ * ADODB
+ *
  * ADODB方式连接MSSQL数据库
- * @package fize\db\realization\mssql\mode
  */
 class Adodb extends Db
 {

@@ -8,6 +8,8 @@ use fize\db\realization\pgsql\Db;
 use fize\db\middleware\Odbc as Middleware;
 
 /**
+ * ODBC
+ *
  * ODBC方式PostgreSQL数据库模型类
  */
 class Odbc extends Db

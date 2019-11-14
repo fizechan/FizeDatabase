@@ -11,6 +11,8 @@ use fize\db\exception\Exception;
 
 
 /**
+ * 模式
+ *
  * Sqlite的ORM模型
  */
 class Mode implements ModeInterface

@@ -10,6 +10,8 @@ use fize\db\realization\mssql\mode\driver\sqlsrv\Statement;
 
 
 /**
+ * Sqlsrv
+ *
  * MSSQL的官方支持方法对应类
  */
 class Sqlsrv

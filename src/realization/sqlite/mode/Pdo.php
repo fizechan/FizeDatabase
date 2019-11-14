@@ -7,6 +7,8 @@ use fize\db\realization\sqlite\Db;
 use fize\db\middleware\Pdo as Middleware;
 
 /**
+ * PDO
+ *
  * PDO方式Sqlite3数据库模型类
  */
 class Pdo extends Db

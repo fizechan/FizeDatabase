@@ -6,7 +6,9 @@ namespace fize\db\middleware\driver\odbc;
 
 use fize\db\exception\DriverException;
 
-
+/**
+ * ODBC预处理语句
+ */
 class Statement
 {
 

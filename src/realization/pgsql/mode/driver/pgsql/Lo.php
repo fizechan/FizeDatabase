@@ -7,7 +7,6 @@ namespace fize\db\realization\pgsql\mode\driver\pgsql;
 
 /**
  * PostgreSQL大对象
- * @package fize\db\realization\pgsql\mode\driver\pgsql
  */
 class Lo
 {

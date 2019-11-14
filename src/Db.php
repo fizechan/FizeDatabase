@@ -7,7 +7,9 @@ use fize\db\definition\Db as Driver;
 use fize\db\definition\Mode;
 
 /**
- * 数据库模型统一调用类
+ * 数据库
+ *
+ * 使用该类静态方法来便捷的进行SQL操作
  */
 class Db
 {

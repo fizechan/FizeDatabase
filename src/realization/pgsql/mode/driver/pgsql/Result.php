@@ -6,7 +6,6 @@ namespace fize\db\realization\pgsql\mode\driver\pgsql;
 
 /**
  * PostgreSQL结果集
- * @package fize\db\realization\pgsql\mode\driver\pgsql
  */
 class Result
 {

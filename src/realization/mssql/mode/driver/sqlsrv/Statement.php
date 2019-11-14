@@ -5,8 +5,7 @@
 namespace fize\db\realization\mssql\mode\driver\sqlsrv;
 
 /**
- * Sqlsrv预处理语句
- * @package fize\db\realization\mssql\mode\driver\sqlsrv
+ * 处理语句
  */
 class Statement
 {

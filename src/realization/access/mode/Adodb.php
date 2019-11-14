@@ -6,7 +6,9 @@ use fize\db\realization\access\Db;
 use fize\db\middleware\Adodb as Middleware;
 
 /**
- * ADODB方式(推荐使用)连接access数据库
+ * ADODB
+ *
+ * (推荐使用)ADODB方式连接access数据库
  */
 class Adodb extends Db
 {

@@ -4,7 +4,7 @@ namespace fize\db\realization\mssql;
 
 
 /**
- * Mssql数据库特征项trait
+ * 特征项
  */
 trait Feature
 {

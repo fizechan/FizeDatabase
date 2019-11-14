@@ -6,7 +6,6 @@ namespace fize\db\realization\oracle\mode\driver\oci;
 
 /**
  * Oci预处理语句
- * @package fize\db\realization\oracle\mode\driver
  */
 class Statement
 {

@@ -10,6 +10,8 @@ use fize\db\realization\mysql\mode\Pdo;
 use fize\db\exception\Exception;
 
 /**
+ * 模式
+ *
  * MySQL数据库模型类
  */
 class Mode implements ModeInterface

@@ -4,7 +4,7 @@ namespace fize\db\realization\mysql;
 
 
 /**
- * Mysql数据库特征项trait
+ * 特征项
  */
 trait Feature
 {

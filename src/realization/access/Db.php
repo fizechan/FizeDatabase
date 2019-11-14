@@ -6,8 +6,10 @@ use fize\db\definition\Db as Base;
 
 
 /**
- * Access数据库类
- * @notice 使用该类库需要安装access数据库引擎(AccessDatabaseEngine)，如果使用32位驱动，则IIS程序池还得开启32位支持。
+ * 数据库
+ *
+ * 使用该类库需要安装access数据库引擎(AccessDatabaseEngine)。
+ * 如果使用32位驱动，则IIS程序池还得开启32位支持。
  */
 abstract class Db extends Base
 {

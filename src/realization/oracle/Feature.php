@@ -3,7 +3,9 @@
 
 namespace fize\db\realization\oracle;
 
-
+/**
+ * 特征项
+ */
 trait Feature
 {
 

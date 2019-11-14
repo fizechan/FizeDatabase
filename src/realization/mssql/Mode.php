@@ -12,7 +12,7 @@ use fize\db\exception\Exception;
 
 
 /**
- * MSSQL的ORM模型
+ * 模式
  */
 class Mode implements ModeInterface
 {

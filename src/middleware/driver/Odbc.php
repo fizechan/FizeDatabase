@@ -9,10 +9,10 @@ use fize\db\middleware\driver\odbc\Statement;
 
 
 /**
- * ODBC驱动类
- * @notice ODBC的SQL预处理语句对中文支持跟ODBC驱动有关，例如{MySQL ODBC 5.3 ANSI Driver}、{MySQL ODBC 5.3 Unicode Driver}。
- * @notice 如果发现中文乱码问题，可以尝试替换驱动。
- * @package fize\db\middleware\driver
+ * ODBC驱动
+ *
+ * ODBC的SQL预处理语句对中文支持跟ODBC驱动有关，例如{MySQL ODBC 5.3 ANSI Driver}、{MySQL ODBC 5.3 Unicode Driver}。
+ * 如果发现中文乱码问题，可以尝试替换驱动。
  */
 class Odbc
 {

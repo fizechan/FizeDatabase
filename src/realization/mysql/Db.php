@@ -6,7 +6,7 @@ namespace fize\db\realization\mysql;
 use fize\db\definition\Db as Base;
 
 /**
- * MYSQL的ORM模型
+ * 数据库
  */
 abstract class Db extends Base
 {

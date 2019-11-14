@@ -3,7 +3,9 @@
 
 namespace fize\db\realization\access;
 
-
+/**
+ * 特征项
+ */
 trait Feature
 {
 

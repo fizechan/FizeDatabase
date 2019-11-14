@@ -10,7 +10,7 @@ use fize\db\exception\Exception;
 
 
 /**
- * Access数据库模型类
+ * 模式
  */
 class Mode implements ModeInterface
 {

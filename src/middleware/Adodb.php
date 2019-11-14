@@ -10,8 +10,7 @@ namespace fize\db\middleware;
 use COM;
 
 /**
- * ADODB中间层
- * @package fize\db\middleware
+ * ADODB
  */
 trait Adodb
 {

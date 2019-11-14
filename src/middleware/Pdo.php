@@ -8,7 +8,7 @@ use PDO as Driver;
 use fize\db\exception\Exception;
 
 /**
- * PDO中间层
+ * PDO
  */
 trait Pdo
 {

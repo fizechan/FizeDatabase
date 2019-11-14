@@ -8,8 +8,9 @@ use fize\db\realization\oracle\Db;
 use fize\db\realization\oracle\mode\driver\Oci as Driver;
 
 /**
+ * Oci
+ *
  * Oci方式Oracle数据库模型类
- * @package fize\db\realization\oracle\mode
  */
 class Oci extends Db
 {

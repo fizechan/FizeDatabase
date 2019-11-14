@@ -7,6 +7,8 @@ use fize\db\realization\pgsql\Db;
 use fize\db\middleware\Pdo as Middleware;
 
 /**
+ * PDO
+ *
  * PDO方式(推荐使用)PostgreSQL数据库模型类
  */
 class Pdo extends Db

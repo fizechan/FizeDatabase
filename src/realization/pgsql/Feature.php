@@ -4,7 +4,7 @@ namespace fize\db\realization\pgsql;
 
 
 /**
- * PostgreSQL数据库特征项trait
+ * 特征项
  */
 trait Feature
 {

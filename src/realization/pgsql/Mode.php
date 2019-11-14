@@ -10,6 +10,8 @@ use fize\db\realization\pgsql\mode\Pdo;
 use fize\db\exception\Exception;
 
 /**
+ * 模式
+ *
  * PostgreSQL数据库模型类
  */
 class Mode implements ModeInterface

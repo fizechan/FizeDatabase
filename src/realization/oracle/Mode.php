@@ -10,6 +10,8 @@ use fize\db\realization\oracle\mode\Odbc;
 use fize\db\realization\oracle\mode\Pdo;
 
 /**
+ * 模式
+ *
  * Oracle数据库模型类
  */
 class Mode implements ModeInterface

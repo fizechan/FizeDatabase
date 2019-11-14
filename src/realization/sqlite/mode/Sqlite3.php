@@ -9,6 +9,8 @@ use SQLite3 as Driver;
 use Exception;
 
 /**
+ * Sqlite3
+ *
  * SQLite3数据库模型类
  */
 class Sqlite3 extends Db

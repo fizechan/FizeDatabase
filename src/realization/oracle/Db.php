@@ -8,6 +8,8 @@ use fize\db\definition\Db as Base;
 
 
 /**
+ * 数据库
+ *
  * Oracle的ORM模型
  */
 abstract class Db extends Base

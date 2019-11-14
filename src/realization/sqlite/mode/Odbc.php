@@ -7,6 +7,8 @@ use fize\db\realization\sqlite\Db;
 use fize\db\middleware\Odbc as Middleware;
 
 /**
+ * ODBC
+ *
  * ODBC方式Sqlite3数据库模型类
  */
 class Odbc extends Db

@@ -4,8 +4,9 @@
 namespace fize\db\definition;
 
 /**
- * 数据库使用模式
- * @package fize\db\definition
+ * 模式
+ *
+ * 模式需要实现getInstance来进行模式的统一调用
  */
 interface Mode
 {

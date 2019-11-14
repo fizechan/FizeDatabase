@@ -5,7 +5,7 @@ namespace fize\db\realization\sqlite;
 
 
 /**
- * sqlite3数据库特征项trait
+ * 特征项
  */
 trait Feature
 {

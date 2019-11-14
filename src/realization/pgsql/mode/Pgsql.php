@@ -9,8 +9,9 @@ use fize\db\realization\pgsql\mode\driver\Pgsql as Driver;
 use fize\db\exception\Exception;
 
 /**
+ * Pgsql
+ *
  * PGSQL原生方式PostgreSQL数据库模型类
- * @package fize\db\realization\pgsql\mode
  */
 class Pgsql extends Db
 {

@@ -10,9 +10,9 @@ use OCI_Lob;
 use OCI_Collection;
 
 /**
- * Oci驱动类
- * @notice 需要启用扩展ext-oci8
- * @package fize\db\realization\oracle\mode\driver
+ * Oci驱动
+ *
+ * 需要启用扩展ext-oci8
  */
 class Oci
 {

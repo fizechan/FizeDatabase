@@ -10,8 +10,9 @@ use PDO as Driver;
 
 
 /**
- * PDO方式MSSQL数据库模型类
+ * PDO
  *
+ * PDO模式MSSQL数据库模型类
  * php_pdo_sqlsrv.dll需要本地客户端支持，不同版本使用的客户端不同，可以在错误信息中获取相关资料。
  * php_pdo_sqlsrv.dll由微软官方提供技术支持，推荐使用。
  * @see https://docs.microsoft.com/en-us/sql/connect/php/system-requirements-for-the-php-sql-driver

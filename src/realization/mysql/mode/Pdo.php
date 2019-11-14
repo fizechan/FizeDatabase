@@ -7,6 +7,8 @@ use fize\db\realization\mysql\Db;
 use fize\db\middleware\Pdo as Middleware;
 
 /**
+ * PDO
+ *
  * PDO方式(推荐使用)MySQL数据库模型类
  * @package fize\db\realization\mysql\mode
  */

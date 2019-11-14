@@ -10,8 +10,9 @@ use mysqli as Driver;
 use Exception;
 
 /**
+ * MySQLi
+ *
  * MySQLi方式MySQL数据库模型类
- * @package fize\db\realization\mysql\mode
  */
 class Mysqli extends Db
 {

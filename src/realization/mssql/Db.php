@@ -7,7 +7,7 @@ use fize\db\definition\Db as Base;
 
 
 /**
- * MSSQL的ORM模型
+ * 数据库
  */
 abstract class Db extends Base
 {

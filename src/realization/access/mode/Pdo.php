@@ -10,7 +10,9 @@ use fize\db\exception\Exception;
 
 
 /**
- * PDO方式(推荐使用)ACCESS数据库模型类
+ * PDO
+ *
+ * (推荐使用)PDO方式ACCESS数据库模型
  */
 class Pdo extends Db
 {

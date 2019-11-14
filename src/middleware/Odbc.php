@@ -7,7 +7,7 @@ namespace fize\db\middleware;
 use fize\db\middleware\driver\Odbc as Driver;
 
 /**
- * ODBC中间层
+ * ODBC
  * @todo ODBC返回的类型都为字符串格式(null除外)，应进行统一处理
  */
 trait Odbc

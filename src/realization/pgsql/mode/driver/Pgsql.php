@@ -9,8 +9,7 @@ use fize\db\realization\pgsql\mode\driver\pgsql\Lo;
 
 
 /**
- * PostgreSQL数据库
- * @package fize\db\realization\pgsql\mode\driver
+ * PostgreSQL驱动
  */
 class Pgsql
 {

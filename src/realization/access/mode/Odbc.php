@@ -8,7 +8,9 @@ use fize\db\realization\access\Db;
 use fize\db\middleware\Odbc as Middleware;
 
 /**
- * ODBC方式Access数据库模型类
+ * ODBC
+ *
+ * ODBC方式Access数据库模型
  */
 class Odbc extends Db
 {

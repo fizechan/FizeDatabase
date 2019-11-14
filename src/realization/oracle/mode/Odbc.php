@@ -7,9 +7,11 @@ use fize\db\realization\oracle\Db;
 use fize\db\middleware\Odbc as Middleware;
 
 /**
+ * ODBC
+ *
  * ODBC方式Oracle数据库模型类
- * @todo 未测试通过，暂无法使用
  * 注意ODBC返回的类型都为字符串格式(null除外)
+ * @todo 未测试通过，暂无法使用
  */
 class Odbc extends Db
 {

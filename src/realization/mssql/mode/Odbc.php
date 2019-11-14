@@ -10,7 +10,9 @@ use fize\db\middleware\Odbc as Middleware;
 use Exception;
 
 /**
- * ODBC方式MSSQL数据库模型类
+ * ODBC
+ *
+ * ODBC模式MSSQL数据库模型类
  */
 class Odbc extends Db
 {

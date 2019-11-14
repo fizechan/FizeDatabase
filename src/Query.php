@@ -6,8 +6,9 @@ namespace fize\db;
 use fize\db\definition\Query as Driver;
 
 /**
- * 查询器模型统一调用类
- * @package fize\db
+ * 查询器
+ *
+ * 通常我们直接调用查询器的静态方法来构建SQL查询条件语句
  */
 class Query
 {

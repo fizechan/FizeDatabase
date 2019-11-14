@@ -5,8 +5,9 @@ namespace fize\db\definition;
 
 
 /**
- * 条件查询器，占位符统一为问号
- * @package fize\db\definition
+ * 查询器
+ *
+ * 占位符统一为`?`
  */
 class Query
 {

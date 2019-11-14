@@ -7,6 +7,8 @@ use fize\db\definition\Db as Base;
 
 
 /**
+ * 数据库
+ *
  * Sqlite的ORM模型
  */
 abstract class Db extends Base
