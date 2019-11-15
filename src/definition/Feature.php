@@ -4,6 +4,8 @@
 namespace fize\db\definition;
 
 /**
+ * 特征项
+ *
  * 特征项定义
  */
 trait Feature

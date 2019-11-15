@@ -7,6 +7,8 @@ use fize\db\exception\DataNotFoundException;
 use fize\db\exception\Exception;
 
 /**
+ * 数据库
+ *
  * 数据库基础定义
  */
 abstract class Db
