@@ -28,13 +28,12 @@ class Db
      * 初始化
      * @param array $config 配置项
      */
-    public static function init(array $config)
+    public function __construct(array $config)
     {
         self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $config['type'] . '\\Mode';
         $class = self::$mode;
         self::$db = $class::getInstance($config);
-        
-        Query::init($config['type']);
+        new Query($config['type']);
     }
 
     /**

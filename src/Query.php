@@ -22,7 +22,7 @@ class Query
      * 初始化
      * @param string $db_type 数据库类型
      */
-    public static function init($db_type)
+    public function __construct($db_type)
     {
         self::$class = '\\' . __NAMESPACE__ . '\\realization\\' . $db_type . '\\Query';
     }
