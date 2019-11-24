@@ -23,7 +23,7 @@ class MysqlTest extends TestCase
             ]
         ];
 
-        Db::init($options);
+        new Db($options);
     }
 
     public function testAdd()
