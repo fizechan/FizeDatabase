@@ -65,48 +65,48 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
+     * @param string $mode 连接模式
      * @param array $config 数据库参数选项
      * @return Db
      * @throws Exception
      */
-    public static function getInstance(array $config)
+    public static function getInstance($mode, array $config)
     {
-        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
-        $dbcfg = $config['config'];
-        $default_dbcfg = [
+        $mode = $mode ? $mode : 'pdo';
+        $default_config = [
             'port'         => '',
             'charset'      => 'UTF8',
             'prefix'       => '',
             'session_mode' => null,
             'connect_type' => 1,
             'opts'         => [],
-            'driver'      => null
+            'driver'       => null
         ];
-        $dbcfg = array_merge($default_dbcfg, $dbcfg);
+        $config = array_merge($default_config, $config);
         switch ($mode) {
             case 'oci':
-                $connection_string = $dbcfg['host'];
-                if ($dbcfg['port']) {
-                    $connection_string .= ':' . $dbcfg['port'];
+                $connection_string = $config['host'];
+                if ($config['port']) {
+                    $connection_string .= ':' . $config['port'];
                 }
-                $connection_string .= '/' . $dbcfg['dbname'];
-                $db = self::oci($dbcfg['username'], $dbcfg['password'], $connection_string, $dbcfg['charset'], $dbcfg['session_mode'], $dbcfg['connect_type']);
+                $connection_string .= '/' . $config['dbname'];
+                $db = self::oci($config['username'], $config['password'], $connection_string, $config['charset'], $config['session_mode'], $config['connect_type']);
                 break;
             case 'odbc':
-                $sid = $dbcfg['host'];
-                if ($dbcfg['port']) {
-                    $sid .= ':' . $dbcfg['port'];
+                $sid = $config['host'];
+                if ($config['port']) {
+                    $sid .= ':' . $config['port'];
                 }
-                $sid .= '/' . $dbcfg['dbname'];
-                $db = self::odbc($dbcfg['username'], $dbcfg['password'], $sid, $dbcfg['port'], $dbcfg['charset'], $dbcfg['driver']);
+                $sid .= '/' . $config['dbname'];
+                $db = self::odbc($config['username'], $config['password'], $sid, $config['port'], $config['charset'], $config['driver']);
                 break;
             case 'pdo':
-                $db = self::pdo($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts']);
+                $db = self::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts']);
                 break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
-        $db->prefix($dbcfg['prefix']);
+        $db->prefix($config['prefix']);
         return $db;
     }
 }

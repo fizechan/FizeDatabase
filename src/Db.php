@@ -26,28 +26,32 @@ class Db
 
     /**
      * 初始化
-     * @param array $config 配置项
+     * @param string $type 数据库类型
+     * @param array $config 数据库配置项
+     * @param string $mode 连接模式
      */
-    public function __construct(array $config)
+    public function __construct($type, array $config, $mode = null)
     {
-        self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $config['type'] . '\\Mode';
+        self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $type . '\\Mode';
         $class = self::$mode;
-        self::$db = $class::getInstance($config);
+        self::$db = $class::getInstance($mode, $config);
         new Query($config['type']);
     }
 
     /**
      * 取得一个新的连接
-     * @param array $config 配置项
+     * @param string $type 数据库类型
+     * @param array $config 数据库配置项
+     * @param string $mode 连接模式
      * @return Driver
      */
-    public static function connect(array $config)
+    public static function connect($type, array $config, $mode = null)
     {
         /**
          * @var $class Mode
          */
-        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $config['type'] . '\\Mode';
-        return $class::getInstance($config);
+        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $type . '\\Mode';
+        return $class::getInstance($mode, $config);
     }
 
     /**

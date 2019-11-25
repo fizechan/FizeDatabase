@@ -53,35 +53,34 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
+     * @param string $mode 连接模式
      * @param array $config 数据库参数选项
      * @return Db
      * @throws Exception
      */
-    public static function getInstance(array $config)
+    public static function getInstance($mode, array $config)
     {
-        $mode = isset($config['mode']) ? $config['mode'] : 'adodb';
-        $dbcfg = $config['config'];
-        $default_dbcfg = [
+        $mode = $mode ? $mode : 'adodb';
+        $default_config = [
             'password' => null,
             'prefix'   => '',
             'driver'   => null
         ];
-        $dbcfg = array_merge($default_dbcfg, $dbcfg);
-
+        $config = array_merge($default_config, $config);
         switch ($mode) {
             case 'adodb':
-                $db = self::adodb($dbcfg['file'], $dbcfg['password'], $dbcfg['driver']);
+                $db = self::adodb($config['file'], $config['password'], $config['driver']);
                 break;
             case 'odbc':
-                $db = self::odbc($dbcfg['file'], $dbcfg['password'], $dbcfg['driver']);
+                $db = self::odbc($config['file'], $config['password'], $config['driver']);
                 break;
             case 'pdo':
-                $db = self::pdo($dbcfg['file'], $dbcfg['password'], $dbcfg['driver']);
+                $db = self::pdo($config['file'], $config['password'], $config['driver']);
                 break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
-        $db->prefix($dbcfg['prefix']);
+        $db->prefix($config['prefix']);
         return $db;
     }
 }

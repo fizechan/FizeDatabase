@@ -83,15 +83,15 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
+     * @param string $mode 连接模式
      * @param array $config 数据库参数选项
      * @return Db
      * @throws Exception
      */
-    public static function getInstance(array $config)
+    public static function getInstance($mode, array $config)
     {
-        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
-        $dbcfg = $config['config'];
-        $default_dbcfg = [
+        $mode = $mode ? $mode : 'pdo';
+        $default_config = [
             'port'        => '',
             'prefix'      => '',
             'new_feature' => true,
@@ -99,25 +99,25 @@ class Mode implements ModeInterface
             'charset'     => 'GBK',
             'opts'        => []
         ];
-        $dbcfg = array_merge($default_dbcfg, $dbcfg);
+        $config = array_merge($default_config, $config);
         switch ($mode) {
             case 'adodb':
-                $db = self::adodb($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['driver']);
+                $db = self::adodb($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['driver']);
                 break;
             case 'odbc':
-                $db = self::odbc($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['driver']);
+                $db = self::odbc($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['driver']);
                 break;
             case 'pdo':
-                $db = self::pdo($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset'], $dbcfg['opts']);
+                $db = self::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts']);
                 break;
             case 'sqlsrv':
-                $db = self::sqlsrv($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['charset']);
+                $db = self::sqlsrv($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset']);
                 break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
-        $db->prefix($dbcfg['prefix']);
-        $db->newFeature($dbcfg['new_feature']);
+        $db->prefix($config['prefix']);
+        $db->newFeature($config['new_feature']);
         return $db;
     }
 }

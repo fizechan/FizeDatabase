@@ -4,17 +4,13 @@ require_once "../vendor/autoload.php";
 use fize\db\Db;
 
 $config = [
-    'type'   => 'mysql',
-    'mode'   => 'pdo',
-    'config' => [
-        'host'     => 'localhost',
-        'user'     => 'root',
-        'password' => '123456',
-        'dbname'   => 'gm_test'
-    ]
+    'host'     => 'localhost',
+    'user'     => 'root',
+    'password' => '123456',
+    'dbname'   => 'gm_test'
 ];
 
-new Db($config);
+new Db('mysql', $config);
 
 //使用 paginate() 方法取得分页所需的所有参数
 

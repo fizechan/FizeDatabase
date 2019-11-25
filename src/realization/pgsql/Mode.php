@@ -61,15 +61,15 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
+     * @param string $mode 连接模式
      * @param array $config 数据库参数选项
      * @return Db
      * @throws Exception
      */
-    public static function getInstance(array $config)
+    public static function getInstance($mode, array $config)
     {
-        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
-        $dbcfg = $config['config'];
-        $default_dbcfg = [
+        $mode = $mode ? $mode : 'pdo';
+        $default_config = [
             'port'         => '5432',
             'charset'      => 'UTF8',
             'prefix'       => '',
@@ -78,27 +78,27 @@ class Mode implements ModeInterface
             'connect_type' => null,
             'opts'         => []
         ];
-        $dbcfg = array_merge($default_dbcfg, $dbcfg);
+        $config = array_merge($default_config, $config);
         switch ($mode) {
             case 'odbc':
-                $db = self::odbc($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['driver']);
+                $db = self::odbc($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['driver']);
                 break;
             case 'pgsql':
-                $host = $dbcfg['host'];
-                $port = $dbcfg['port'];
-                $dbname = $dbcfg['dbname'];
-                $user = $dbcfg['user'];
-                $password = $dbcfg['password'];
+                $host = $config['host'];
+                $port = $config['port'];
+                $dbname = $config['dbname'];
+                $user = $config['user'];
+                $password = $config['password'];
                 $connection_string = "host={$host} port={$port} dbname={$dbname} user={$user} password={$password}";
-                $db = self::pgsql($connection_string, $dbcfg['pconnect'], $dbcfg['connect_type']);
+                $db = self::pgsql($connection_string, $config['pconnect'], $config['connect_type']);
                 break;
             case 'pdo':
-                $db = self::pdo($dbcfg['host'], $dbcfg['user'], $dbcfg['password'], $dbcfg['dbname'], $dbcfg['port'], $dbcfg['opts']);
+                $db = self::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['opts']);
                 break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
-        $db->prefix($dbcfg['prefix']);
+        $db->prefix($config['prefix']);
         return $db;
     }
 }

@@ -59,15 +59,15 @@ class Mode implements ModeInterface
 
     /**
      * 数据库实例
+     * @param string $mode 连接模式
      * @param array $config 数据库参数选项
      * @return Db
      * @throws Exception
      */
-    public static function getInstance(array $config)
+    public static function getInstance($mode, array $config)
     {
-        $mode = isset($config['mode']) ? $config['mode'] : 'pdo';
-        $dbcfg = $config['config'];
-        $default_dbcfg = [
+        $mode = $mode ? $mode : 'pdo';
+        $default_config = [
             'prefix'         => '',
             'long_names'     => 0,
             'time_out'       => 1000,
@@ -79,21 +79,21 @@ class Mode implements ModeInterface
             'encryption_key' => null,
             'busy_timeout'   => 30000
         ];
-        $dbcfg = array_merge($default_dbcfg, $dbcfg);
+        $config = array_merge($default_config, $config);
         switch ($mode) {
             case 'odbc':
-                $db = self::odbc($dbcfg['file'], $dbcfg['long_names'], $dbcfg['time_out'], $dbcfg['no_txn'], $dbcfg['sync_pragma'], $dbcfg['step_api'], $dbcfg['driver']);
+                $db = self::odbc($config['file'], $config['long_names'], $config['time_out'], $config['no_txn'], $config['sync_pragma'], $config['step_api'], $config['driver']);
                 break;
             case 'sqlite3':
-                $db = self::sqlite3($dbcfg['file'], $dbcfg['flags'], $dbcfg['encryption_key'], $dbcfg['busy_timeout']);
+                $db = self::sqlite3($config['file'], $config['flags'], $config['encryption_key'], $config['busy_timeout']);
                 break;
             case 'pdo':
-                $db = self::pdo($dbcfg['file']);
+                $db = self::pdo($config['file']);
                 break;
             default:
                 throw new Exception("error db mode: {$mode}");
         }
-        $db->prefix($dbcfg['prefix']);
+        $db->prefix($config['prefix']);
         return $db;
     }
 }
