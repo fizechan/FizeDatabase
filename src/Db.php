@@ -35,7 +35,7 @@ class Db
         self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $type . '\\Mode';
         $class = self::$mode;
         self::$db = $class::getInstance($mode, $config);
-        new Query($config['type']);
+        new Query($type);
     }
 
     /**
