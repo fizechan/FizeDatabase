@@ -12,18 +12,14 @@ class MysqlTest extends TestCase
     {
         parent::__construct($name, $data, $dataName);
 
-        $options = [
-            'type'   => 'mysql',
-            'mode'   => 'pdo',
-            'config' => [
-                'host'     => 'localhost',
-                'user'     => 'root',
-                'password' => '123456',
-                'dbname'   => 'gm_test'
-            ]
+        $config = [
+            'host'     => 'localhost',
+            'user'     => 'root',
+            'password' => '123456',
+            'dbname'   => 'gm_test2'
         ];
 
-        new Db($options);
+        new Db('mysql', $config, 'pdo');
     }
 
     public function testAdd()

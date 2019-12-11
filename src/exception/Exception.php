@@ -23,7 +23,7 @@ class Exception extends BaseException
      */
     public function __construct($message = "", $code = 0, $sql = '')
     {
-        parent::__construct($message, $code);
+        parent::__construct($message, (int)$code);
         $this->sql = $sql;
     }
 

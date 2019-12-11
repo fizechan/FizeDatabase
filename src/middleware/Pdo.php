@@ -5,6 +5,7 @@
 namespace fize\db\middleware;
 
 use PDO as Driver;
+use PDOException;
 use fize\db\exception\Exception;
 
 /**
@@ -13,8 +14,7 @@ use fize\db\exception\Exception;
 trait Pdo
 {
     /**
-     * 使用的PDO对象
-     * @var Driver
+     * @var Driver 使用的PDO对象
      */
     private $pdo = null;
 
@@ -32,6 +32,7 @@ trait Pdo
         } else {
             $this->pdo = new Driver($dsn, $user, $pwd);
         }
+        $this->pdo->setAttribute(Driver::ATTR_ERRMODE, Driver::ERRMODE_EXCEPTION);
     }
 
     /**
@@ -61,43 +62,34 @@ trait Pdo
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
-        $stmt = $this->pdo->prepare($sql);
-
-        if ($stmt === false) {
-            //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            //var_dump($this->pdo->errorInfo());
-            //throw new Exception($this->pdo->errorCode() . ":" . iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]));
-            throw new Exception($this->pdo->errorCode() . ":" . $this->pdo->errorInfo()[2]);
-        }
-
-        if (!empty($params)) {
-            $result = $stmt->execute($params); //绑定参数
-        } else {
-            $result = $stmt->execute();
-        }
-
-        if ($result === false) {
-            //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            throw new Exception($this->pdo->errorInfo()[2], $this->pdo->errorCode());
-        }
-
-        if (stripos($sql, "SELECT") === 0) {
-            if ($callback !== null) {
-                while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
-                    $callback($row);
-                }
-                $stmt->closeCursor();
-                return null;
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            if (!empty($params)) {
+                $stmt->execute($params); //绑定参数
             } else {
-                $rows = [];
-                while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
-                    $rows[] = $row;
-                }
-                $stmt->closeCursor();
-                return $rows;
+                $stmt->execute();
             }
-        } else {
-            return $stmt->rowCount();
+
+            if (stripos($sql, "SELECT") === 0) {
+                if ($callback !== null) {
+                    while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
+                        $callback($row);
+                    }
+                    $stmt->closeCursor();
+                    return null;
+                } else {
+                    $rows = [];
+                    while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
+                        $rows[] = $row;
+                    }
+                    $stmt->closeCursor();
+                    return $rows;
+                }
+            } else {
+                return $stmt->rowCount();
+            }
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage(), $e->getCode(), $this->getLastSql(true));
         }
     }
 
