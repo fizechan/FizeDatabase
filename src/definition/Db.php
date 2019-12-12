@@ -215,7 +215,11 @@ abstract class Db
 
     /**
      * 指定要查询的字段，支持链式调用
-     * @param array|string $fields 要查询的字段组成的数组或者字符串,如果需要指定别名，则使用：别名=>实际名称
+     *
+     * 参数 `$fields` :
+     *   传入字符串时，则原样传入；
+     *   为数组时会进行相应格式化，如果需要指定别名，则使用：别名=>实际名称。
+     * @param array|string $fields 要查询的字段
      * @return $this
      */
     public function field($fields)
@@ -231,7 +235,7 @@ abstract class Db
             }
             $this->field = join(', ', $parts);
         } else {
-            $this->field = $this->formatField($fields);
+            $this->field = $fields;
         }
         return $this;
     }
