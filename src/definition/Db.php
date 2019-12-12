@@ -229,7 +229,7 @@ abstract class Db
                     $parts[] = "{$this->formatField($field)} AS {$this->formatField($alias)}";
                 }
             }
-            $this->field = join(',', $parts);
+            $this->field = join(', ', $parts);
         } else {
             $this->field = $this->formatField($fields);
         }
@@ -394,25 +394,31 @@ abstract class Db
     }
 
     /**
-     * JOIN条件,可以使用所有JOIN变种
-     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
-     * @param string $type JOIN形式,默认为JOIN
-     * @param string $on ON条件，建议ON条件单独开来
-     * @param string $using USING字段
+     * JOIN 条件
+     *
+     * 可以使用所有JOIN变种
+     * 参数 `$table` :
+     *   类型为字符串时表示不含前缀的表名，
+     *   类型为数组时，格式为[$table, $alias, $prefix],其中$alias, $prefix为可选值。
+     * @param string|array $table 要 JOIN 的表
+     * @param string $type JOIN 形式,默认为 JOIN
+     * @param string $on ON 条件
+     * @param string $using USING 字段
      * @return $this
      */
     public function join($table, $type = "JOIN", $on = null, $using = null)
     {
-        $ttable = '';
         if (is_array($table)) {
-            if (count($table) != 1) {
-                return $this;
-            }
-            foreach ($table as $alias => $tname) {
-                $ttable = "{$this->formatTable($tname)} AS {$this->formatTable($alias)}";
+            $alias = isset($table[1]) ? $table[1] : null;
+            $prefix = isset($table[2]) ? $table[2] : $this->tablePrefix;
+            $table = $table[0];
+            if($alias) {
+                $ttable = "{$this->formatTable($prefix . $table)} AS {$this->formatTable($alias)}";
+            } else {
+                $ttable = $this->formatTable($prefix . $table);
             }
         } else {
-            $ttable = $this->formatTable($table);
+            $ttable = $this->formatTable($this->tablePrefix . $table);
         }
         $this->join .= " {$type} {$ttable}";
         if (!is_null($on)) {
@@ -425,9 +431,9 @@ abstract class Db
     }
 
     /**
-     * INNER JOIN条件
-     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
-     * @param string $on ON条件，建议ON条件单独开来
+     * INNER JOIN 条件
+     * @param string|array $table 要 INNER JOIN 的表
+     * @param string $on ON条件
      * @return $this
      */
     public function innerJoin($table, $on = null)
@@ -436,9 +442,9 @@ abstract class Db
     }
 
     /**
-     * LEFT JOIN条件
-     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
-     * @param string $on ON条件，建议ON条件单独开来
+     * LEFT JOIN 条件
+     * @param string|array $table 要 LEFT JOIN 的表
+     * @param string $on ON条件
      * @return $this
      */
     public function leftJoin($table, $on = null)
@@ -447,9 +453,9 @@ abstract class Db
     }
 
     /**
-     * RIGHT JOIN条件
-     * @param string|array $table 表名，是数组时是形如别名=>表名，且只能有一个元素，否则无效
-     * @param string $on ON条件，建议ON条件单独开来
+     * RIGHT JOIN 条件
+     * @param string|array $table 要 RIGHT JOIN 的表
+     * @param string $on ON条件
      * @return $this
      */
     public function rightJoin($table, $on = null)
@@ -458,9 +464,12 @@ abstract class Db
     }
 
     /**
-     * UNION语句
-     * @param string $sql 要UNION的SQL语句
-     * @param string $union_type 类型，可选值UNION、UNION ALL、UNION DISTINCT，默认UNION
+     * UNION 语句
+     *
+     * 参数 `$union_type` :
+     *   可选值UNION、UNION ALL、UNION DISTINCT，默认UNION
+     * @param string $sql 要 UNION 的 SQL 语句
+     * @param string $union_type 类型
      * @return $this
      */
     public function union($sql, $union_type = "UNION")
@@ -470,8 +479,8 @@ abstract class Db
     }
 
     /**
-     * UNION ALL语句
-     * @param string $sql 要UNION ALL的SQL语句
+     * UNION ALL 语句
+     * @param string $sql 要 UNION ALL 的 SQL 语句
      * @return $this
      */
     public function unionAll($sql)
@@ -480,8 +489,8 @@ abstract class Db
     }
 
     /**
-     * UNION DISTINCT语句
-     * @param string $sql 要UNION DISTINCT的SQL语句
+     * UNION DISTINCT 语句
+     * @param string $sql 要 UNION DISTINCT 的 SQL 语句
      * @return $this
      */
     public function unionDistinct($sql)
@@ -490,7 +499,7 @@ abstract class Db
     }
 
     /**
-     * 解析插入数值的SQL部分语句，用于数值原样写入
+     * 解析插入数值的 SQL 部分语句，用于数值原样写入
      * @param array $datas 要写入的数值数组
      * @param array $params 可能要操作的参数数组
      * @return string
@@ -512,7 +521,7 @@ abstract class Db
     }
 
     /**
-     * 解析更新数值的SQL部分语句，用于数值原样更新
+     * 解析更新数值的 SQL 部分语句，用于数值原样更新
      * @param array $datas 要更新的数值数组
      * @param array $params 可能要操作的参数数组
      * @return string
@@ -563,13 +572,13 @@ abstract class Db
     }
 
     /**
-     * 根据当前条件构建SQL语句
+     * 根据当前条件构建 SQL 语句
      *
      * 子类可根据需要进行重写
-     * @param string $action SQL语句类型
+     * @param string $action SQL 语句类型
      * @param array $data 可能需要的数据
-     * @param bool $clear 是否清理当前条件，默认true
-     * @return string 最后组装的SQL语句
+     * @param bool $clear 是否清理当前条件
+     * @return string 最后组装的 SQL 语句
      * @throws Exception
      */
     protected function build($action, array $data = [], $clear = true)
@@ -640,7 +649,7 @@ abstract class Db
     }
 
     /**
-     * 插入记录,并返回最后插入行的ID或序列值
+     * 插入记录,并返回最后插入行的 ID 或序列值
      * @param array $data 数据
      * @param string $name 序列名
      * @return int|string
@@ -654,7 +663,7 @@ abstract class Db
     /**
      * 遍历当前结果集
      *
-     * 由于少了一层循环和转化，fetch方法比select性能上略有提升，但不方便外部调用，特别是MVC等架构
+     * 由于少了一层循环和转化，fetch 方法比 select 性能上略有提升，但不方便外部调用，特别是 MVC 等架构
      * @param callable $func 遍历函数
      */
     public function fetch(callable $func)
@@ -686,7 +695,7 @@ abstract class Db
 
     /**
      * 执行查询，返回结果记录列表
-     * @param bool $cache 是否使用搜索缓存，默认true
+     * @param bool $cache 是否使用搜索缓存
      * @return array
      */
     public function select($cache = true)
@@ -704,7 +713,7 @@ abstract class Db
 
     /**
      * 执行查询，获取单条记录
-     * @param bool $cache 是否使用搜索缓存，默认false
+     * @param bool $cache 是否使用搜索缓存
      * @return array 如果无记录则返回null
      */
     public function findOrNull($cache = false)
@@ -718,7 +727,7 @@ abstract class Db
 
     /**
      * 执行查询，获取单条记录,如果未找到则抛出错误
-     * @param bool $cache 是否使用搜索缓存，默认false
+     * @param bool $cache 是否使用搜索缓存
      * @return array
      * @throws DataNotFoundException
      */
@@ -768,7 +777,7 @@ abstract class Db
     }
 
     /**
-     * 使用模拟的LIMIT语句进行简易分页,支持链式调用
+     * 使用模拟的 LIMIT 语句进行简易分页,支持链式调用
      * @param int $index 页码
      * @param int $prepg 每页记录数量
      * @return $this
@@ -781,7 +790,7 @@ abstract class Db
     }
 
     /**
-     * COUNT查询
+     * COUNT 查询
      * @param string $field 字段名
      * @return int
      */
@@ -791,7 +800,7 @@ abstract class Db
     }
 
     /**
-     * SUM查询
+     * SUM 查询
      * @param string $field 字段名
      * @return int
      */
@@ -805,7 +814,7 @@ abstract class Db
     }
 
     /**
-     * MIN查询
+     * MIN 查询
      * @param string $field 字段名
      * @param bool $force 强制转为数字类型
      * @return mixed 如果$force为true时真返回数字类型
@@ -816,7 +825,7 @@ abstract class Db
     }
 
     /**
-     * MAX查询
+     * MAX 查询
      * @param string $field 字段名
      * @param bool $force 强制转为数字类型
      * @return mixed 如果$force为true时真返回数字类型
@@ -827,7 +836,7 @@ abstract class Db
     }
 
     /**
-     * AVG查询
+     * AVG 查询
      * @param string $field 字段名
      * @return mixed
      */
