@@ -8,6 +8,7 @@ namespace fize\db\definition;
  * 查询器
  *
  * 占位符统一为`?`
+ * @todo 暴露的接口含内部使用接口，应优化
  */
 class Query
 {
@@ -44,7 +45,10 @@ class Query
 
     /**
      * 设置本对象当前每个条件的组合逻辑
-     * @param string|bool $logic 组合逻辑，不区分大小写，未调用该方法是默认组合逻辑为“AND”,特殊值true表示AND，false表示OR
+     *
+     * 参数 `$logic` :
+     *   不区分大小写，未调用该方法是默认组合逻辑为“AND”,特殊值true表示AND，false表示OR
+     * @param string|bool $logic 组合逻辑
      * @return $this
      */
     public function logic($logic)
@@ -61,6 +65,7 @@ class Query
 
     /**
      * 设定当前操作对象
+     * @todo 待移除该方法
      * @param string $object 操作对象，通常为字段名
      * @return $this
      */
@@ -87,6 +92,7 @@ class Query
 
     /**
      * 返回查询语句SQL预处理语句块
+     * @todo 命名待优化
      * @return string
      */
     public function sql()
@@ -96,6 +102,7 @@ class Query
 
     /**
      * 获取完整的参数绑定数组
+     * @todo 命名待优化
      * @return array
      */
     public function params()
@@ -259,15 +266,12 @@ class Query
      *
      * 使用EXISTS语句时不需要指定对象object，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
      * @param string $expression EXISTS语句部分、注意是不含EXISTS
-     * @param array|false|null $params 参数绑定数组
+     * @param array|null $params 参数绑定数组
      * @param string $premodifier 前置修饰
      * @return $this
      */
     public function exists($expression, $params = null, $premodifier = '')
     {
-        if ($params === false) {  // exists语句的false值等同于null，做兼容性处理
-            $params = null;
-        }
         $object = $this->object;  //暂存当前操作对象
         $this->object = null;  //EXISTS语句不需要object
         $query = $this->exp(trim("{$premodifier} EXISTS ({$expression})"), $params);
@@ -280,7 +284,7 @@ class Query
      *
      * 使用EXISTS语句时不需要指定对象obj，指定时在exists方法中也没有任何作用，但可以作为对象内条件合并使用
      * @param string $expression EXISTS语句部分、注意是不含EXISTS
-     * @param array|false|null $params 参数绑定数组
+     * @param array|null $params 参数绑定数组
      * @return $this
      */
     public function notExists($expression, $params = null)
@@ -290,6 +294,7 @@ class Query
 
     /**
      * 使用“IN”语句设置条件
+     * @todo 方法名待优化
      * @param array|string $values 可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
      * @param string $premodifier 前置修饰
      * @return $this
@@ -362,6 +367,7 @@ class Query
 
     /**
      * 使用“IS NULL”语句设置条件
+     * @todo 命名待优化
      * @return $this
      */
     public function isNull()
@@ -398,11 +404,11 @@ class Query
         } else {
             switch (strtoupper(trim($value[0]))) {
                 case "BETWEEN":
-                    if ($count == 2) {  // 该种情况下，参数2必须为数组，且硬性规定必须参数数组长度为2，否则废弃
+                    if ($count == 2) {  // 该种情况下，参数2必须为数组，且硬性规定必须参数数组长度为2，否则废弃(不建议使用该方式，该方式后续版本将移除)
                         if (is_array($value[1]) && count($value[1]) == 2) {
                             $this->between($value[1][0], $value[1][1]);
                         }
-                    } elseif ($count == 3) {  // 3个参数的情况分两种
+                    } elseif ($count == 3) {  // 3个参数的情况分两种(该方法将统一为2、3参数是数值)
                         if (is_array($value[1]) && count($value[1]) == 2) {  //参数2是最终所需的参数
                             $this->between($value[1][0], $value[1][1]);
                         } else {  //如果第二个参数不是数组的话，当第3个参数是BETWEEN的第二个值
@@ -420,7 +426,7 @@ class Query
                     } elseif ($count == 3) {  // 该种情况下，参数2为判断符，参数3为值
                         $this->condition($value[1], $value[2]);
                     } elseif ($count == 4) {  // 4个参数的情况分两种
-                        if (is_bool($value[3])) {  //第4个参数为bool值时则认为该参数是组合逻辑(不建议使用该方式)
+                        if (is_bool($value[3])) {  //第4个参数为bool值时则认为该参数是组合逻辑(不建议使用该方式，该方式后续版本将移除)
                             $this->logic($value[3]);
                             $this->condition($value[1], $value[2]);
                         } else {  //默认认为参数2为判断符，参数3为值，参数4为绑定值或者数组
@@ -442,6 +448,13 @@ class Query
                 case "EQ":
                 case "=":
                     $this->eq($value[1]);
+                    break;
+                case 'EXP':
+                    if (isset($value[3])) {
+                        $this->logic($value[3]);
+                    }
+                    $params = isset($value[2]) ? $value[2] : null;
+                    $this->exp($value[1], $params);
                     break;
                 case "GT":
                 case ">":
@@ -508,18 +521,20 @@ class Query
 
     /**
      * 解析一个条件数组，返回Query
+     *
+     * @todo 待转移到外部
      * @param array $maps 一定格式的条件数组
      * @return $this
      */
     public function analyze(array $maps)
     {
         foreach ($maps as $key => $value) {
+            $this->logic("AND");  //将默认组合逻辑改为AND
             if (is_string($key)) {  // $key为字段名
                 $this->object($key);
                 if (is_array($value)) {
                     $this->analyzeArrayParams($value);
                 } else {  //非数组情况下，如果value为null则使用isNull，否则认为“=”
-                    $this->logic("AND");  //将默认组合逻辑改为AND
                     if (is_null($value)) {
                         $this->isNull();
                     } else {
@@ -527,8 +542,7 @@ class Query
                     }
                 }
             } else {  // 没有显式指定$key则认为使用不指定字段名的子语句
-                $this->logic("AND");  //将默认组合逻辑改为AND
-                $this->object = null;
+                $this->field(null);
                 if (is_array($value)) {
                     $count = count($value);
                     switch (strtoupper(trim($value[0]))) {
@@ -548,11 +562,10 @@ class Query
                                 $this->notExists($value[1], $params);
                             }
                             break;
-                        default :  //  默认情况下，认为是表达式语句
-                            $logic = isset($value[3]) ? $value[3] : "AND";
-                            $params = isset($value[1]) ? $value[1] : null;
-                            $this->logic($logic);
-                            $this->exp($value[0], $params);
+                        default :  //  默认情况
+                            $field = array_shift($value);  //首个元素为字段名
+                            $this->field($field);
+                            $this->analyzeArrayParams($value);
                     }
                 } else {  //$value作为字符时，认为是SQL表达式
                     $this->exp($value);
@@ -564,6 +577,8 @@ class Query
 
     /**
      * 以指定形式组合Query对象,或者指可以使用analyze()的数组
+     *
+     * @todo 待转移到外部
      * @param string $logic 组合逻辑
      * @param Query|array $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
@@ -582,6 +597,8 @@ class Query
 
     /**
      * 以AND形式组合Query对象,或者指可以使用analyze()的数组
+     *
+     * @todo 待转移到外部
      * @param Query|array $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
@@ -592,6 +609,8 @@ class Query
 
     /**
      * 以OR形式组合Query对象,或者指可以使用analyze()的数组
+     *
+     * @todo 待转移到外部
      * @param Query|array $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
