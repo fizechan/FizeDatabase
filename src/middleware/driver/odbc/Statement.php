@@ -1,6 +1,4 @@
 <?php
-/** @noinspection PhpComposerExtensionStubsInspection */
-
 
 namespace fize\db\middleware\driver\odbc;
 
@@ -35,7 +33,7 @@ class Statement
     public function binmode($mode)
     {
         $rst = odbc_binmode($this->statement, $mode);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error(), odbc_errormsg());
         }
         return $rst;
@@ -58,7 +56,7 @@ class Statement
     public function execute(array $parameters_array = [])
     {
         $rst = odbc_execute($this->statement, $parameters_array);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error(), odbc_errormsg());
         }
     }
@@ -76,14 +74,14 @@ class Statement
     /**
      * 遍历结果集到指定数组
      * @param array $result_array 结果集将添加到该数组
-     * @param int $rownumber 指定要检索的行数
+     * @param int   $rownumber    指定要检索的行数
      * @return int 返回结果行数
      * @throws DriverException
      */
     public function fetchInto(array &$result_array, $rownumber = null)
     {
         $rst = odbc_fetch_into($this->statement, $result_array, $rownumber);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error(), odbc_errormsg());
         }
         return $rst;
@@ -112,7 +110,7 @@ class Statement
     /**
      * 获取字段的长度(精度)
      * @param int $field_number 字段下标(从1开始)
-     * @return false|int 失败时返回false
+     * @return int 失败时返回false
      */
     public function fieldLen($field_number)
     {
@@ -122,7 +120,7 @@ class Statement
     /**
      * 获取字段名称
      * @param int $field_number 字段下标(从1开始)
-     * @return false|string 失败时返回false
+     * @return string 失败时返回false
      */
     public function fieldName($field_number)
     {
@@ -132,7 +130,7 @@ class Statement
     /**
      * 获取字段下标(从1开始)
      * @param string $field_name 字段名称
-     * @return false|int 失败时返回false
+     * @return int 失败时返回false
      */
     public function fieldNum($field_name)
     {
@@ -141,10 +139,10 @@ class Statement
 
     /**
      * 获取字段的长度(精度)
-     * @notice 该方法是fieldLen的别名
-     * @deprecated 别名方法，建议统一使用fieldLen方法
+     * @notice     该方法是fieldLen的别名
      * @param int $field_number 字段下标(从1开始)
-     * @return false|int 失败时返回false
+     * @return int 失败时返回false
+     * @deprecated 别名方法，建议统一使用fieldLen方法
      */
     public function fieldPrecision($field_number)
     {
@@ -154,7 +152,7 @@ class Statement
     /**
      * 获取字段的小数位数
      * @param int $field_number 字段下标(从1开始)
-     * @return false|int 失败时返回false
+     * @return int 失败时返回false
      */
     public function fieldScale($field_number)
     {
@@ -164,7 +162,7 @@ class Statement
     /**
      * 获取字段的类型
      * @param int $field_number 字段下标(从1开始)
-     * @return false|string 失败时返回false
+     * @return string 失败时返回false
      */
     public function fieldType($field_number)
     {
@@ -228,7 +226,7 @@ class Statement
     public function resultAll($format = null)
     {
         $rst = odbc_result_all($this->statement, $format);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error(), odbc_errormsg());
         }
         return $rst;
@@ -247,7 +245,7 @@ class Statement
     /**
      * 改变属性
      * @param int $option 属性名
-     * @param int $param 属性值
+     * @param int $param  属性值
      * @return bool
      */
     public function setoption($option, $param)

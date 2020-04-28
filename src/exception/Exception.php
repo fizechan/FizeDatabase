@@ -18,8 +18,8 @@ class Exception extends BaseException
     /**
      * Exception constructor.
      * @param string $message 错误信息
-     * @param int $code 错误码
-     * @param string $sql SQL语句
+     * @param int    $code    错误码
+     * @param string $sql     SQL语句
      */
     public function __construct($message = "", $code = 0, $sql = '')
     {

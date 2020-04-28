@@ -1,5 +1,4 @@
 <?php
-/** @noinspection PhpComposerExtensionStubsInspection */
 
 namespace fize\db\middleware\driver;
 
@@ -25,11 +24,11 @@ class Odbc
     /**
      * 构造
      * @see https://www.connectionstrings.com/ 可用DSN参见
-     * @param string $dsn 连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
-     * @param string $user 用户名
-     * @param string $pwd 密码
-     * @param int $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
-     * @param bool $pconnect 是否使用长链接，默认false
+     * @param string $dsn         连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
+     * @param string $user        用户名
+     * @param string $pwd         密码
+     * @param int    $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
+     * @param bool   $pconnect    是否使用长链接，默认false
      * @throws DriverException
      */
     public function __construct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
@@ -69,7 +68,7 @@ class Odbc
         } else {
             $rst = odbc_autocommit($this->connection, $OnOff);
         }
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
@@ -96,18 +95,18 @@ class Odbc
 
     /**
      * 列出给定表的列和相关联的特权
-     * @todo 20170613测试，一直为空，不知为何。
-     * @param string $qualifier 限定符。
-     * @param string $owner 所有人，支持%(零个或多个字符)_(1个字符)
-     * @param string $table_name 表名，支持%(零个或多个字符)_(1个字符)
+     * @param string $qualifier   限定符。
+     * @param string $owner       所有人，支持%(零个或多个字符)_(1个字符)
+     * @param string $table_name  表名，支持%(零个或多个字符)_(1个字符)
      * @param string $column_name 列名，支持%(零个或多个字符)_(1个字符)
      * @return Statement
      * @throws DriverException
+     * @todo 20170613测试，一直为空，不知为何。
      */
     public function columnprivileges($qualifier, $owner, $table_name, $column_name)
     {
         $rst = odbc_columnprivileges($this->connection, $qualifier, $owner, $table_name, $column_name);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return new Statement($rst);
@@ -115,9 +114,9 @@ class Odbc
 
     /**
      * 列出指定表中的列名。
-     * @param string $qualifier 限定符。
-     * @param string $schema 所有人，支持%(零个或多个字符)_(1个字符)
-     * @param string $table_name $table_name 表名，支持%(零个或多个字符)_(1个字符)
+     * @param string $qualifier   限定符。
+     * @param string $schema      所有人，支持%(零个或多个字符)_(1个字符)
+     * @param string $table_name  $table_name 表名，支持%(零个或多个字符)_(1个字符)
      * @param string $column_name 列名，支持%(零个或多个字符)_(1个字符)
      * @return Statement
      * @throws DriverException
@@ -125,7 +124,7 @@ class Odbc
     public function columns($qualifier = null, $schema = null, $table_name = null, $column_name = null)
     {
         $rst = odbc_columns($this->connection, $qualifier, $schema, $table_name, $column_name);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return new Statement($rst);
@@ -138,7 +137,7 @@ class Odbc
     public function commit()
     {
         $rst = odbc_commit($this->connection);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
     }
@@ -152,7 +151,7 @@ class Odbc
     public function dataSource($fetch_type)
     {
         $rst = odbc_data_source($this->connection, $fetch_type);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return $rst;
@@ -161,14 +160,14 @@ class Odbc
     /**
      * 执行一个SQL语句，返回结果集
      * @param string $query_string SQL语句
-     * @param int $flags 此参数目前没有使用
+     * @param int    $flags        此参数目前没有使用
      * @return Statement
      * @throws DriverException
      */
     public function exec($query_string, $flags = null)
     {
         $rst = odbc_exec($this->connection, $query_string, $flags);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return new Statement($rst);
@@ -177,18 +176,18 @@ class Odbc
     /**
      * 获取检索外键的列表。
      * @param string $pk_qualifier 主键限定符。
-     * @param string $pk_owner 主键所有者。
-     * @param string $pk_table 主键表。
+     * @param string $pk_owner     主键所有者。
+     * @param string $pk_table     主键表。
      * @param string $fk_qualifier 外键限定符。
-     * @param string $fk_owner 外键所有者。
-     * @param string $fk_table 外键表。
+     * @param string $fk_owner     外键所有者。
+     * @param string $fk_table     外键表。
      * @return Statement 返回结果集
      * @throws DriverException
      */
     public function foreignkeys($pk_qualifier, $pk_owner, $pk_table, $fk_qualifier, $fk_owner, $fk_table)
     {
         $rst = odbc_foreignkeys($this->connection, $pk_qualifier, $pk_owner, $pk_table, $fk_qualifier, $fk_owner, $fk_table);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return new Statement($rst);
@@ -214,7 +213,7 @@ class Odbc
     public function prepare($query_string)
     {
         $rst = odbc_prepare($this->connection, $query_string);
-        if($rst === false){
+        if ($rst === false) {
             throw new DriverException(odbc_error($this->connection), odbc_errormsg($this->connection));
         }
         return new Statement($rst);
@@ -223,8 +222,8 @@ class Odbc
     /**
      * 获取指定表的主键
      * @param string $qualifier 限定符
-     * @param string $owner 所有者
-     * @param string $table 表名
+     * @param string $owner     所有者
+     * @param string $table     表名
      * @return Statement 结果集
      */
     public function primarykeys($qualifier, $owner, $table)
@@ -235,12 +234,12 @@ class Odbc
 
     /**
      * 检索参数到过程的信息
-     * @deprecated 非常见用法，不建议使用
      * @param string $qualifier 限定符
-     * @param string $owner 所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
-     * @param string $proc 过程。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
-     * @param string $column 列名。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $owner     所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $proc      过程。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $column    列名。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
      * @return Statement 结果集
+     * @deprecated 非常见用法，不建议使用
      */
     public function procedurecolumns($qualifier = null, $owner = null, $proc = null, $column = null)
     {
@@ -250,11 +249,11 @@ class Odbc
 
     /**
      * 获取存储在特定数据源中的过程列表。
-     * @deprecated 非常见用法，不建议使用
      * @param string $qualifier 限定符
-     * @param string $owner 所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
-     * @param string $name 名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $owner     所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $name      名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
      * @return Statement 结果集
+     * @deprecated 非常见用法，不建议使用
      */
     public function procedures($qualifier = null, $owner = null, $name = null)
     {
@@ -274,7 +273,7 @@ class Odbc
     /**
      * 改变属性
      * @param int $option 属性名
-     * @param int $param 属性值
+     * @param int $param  属性值
      * @return bool
      */
     public function setoption($option, $param)
@@ -284,12 +283,12 @@ class Odbc
 
     /**
      * 获取指定表的索引
-     * @param int $type 指定类型，可选SQL_BEST_ROWID | SQL_ROWVER特殊值
+     * @param int    $type      指定类型，可选SQL_BEST_ROWID | SQL_ROWVER特殊值
      * @param string $qualifier 限定符
-     * @param string $owner 所有者
-     * @param string $table 表名
-     * @param int $scope 命令结果集的作用域。
-     * @param int $nullable null选项
+     * @param string $owner     所有者
+     * @param string $table     表名
+     * @param int    $scope     命令结果集的作用域。
+     * @param int    $nullable  null选项
      * @return Statement 结果集
      */
     public function specialcolumns($type, $qualifier, $owner, $table, $scope, $nullable)
@@ -300,11 +299,11 @@ class Odbc
 
     /**
      * 检索表的统计信息
-     * @param string $qualifier 限定符
-     * @param string $owner 所有者
+     * @param string $qualifier  限定符
+     * @param string $owner      所有者
      * @param string $table_name 表名
-     * @param int $unique 特有属性
-     * @param int $accuracy 准确性
+     * @param int    $unique     特有属性
+     * @param int    $accuracy   准确性
      * @return Statement 结果集
      */
     public function statistics($qualifier, $owner, $table_name, $unique, $accuracy)
@@ -316,8 +315,8 @@ class Odbc
     /**
      * 列出与每个表相关联的表和特权。
      * @param string $qualifier 限定符
-     * @param string $owner 所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
-     * @param string $name 名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $owner     所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $name      名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
      * @return Statement 结果集
      */
     public function tableprivileges($qualifier, $owner, $name)
@@ -329,9 +328,9 @@ class Odbc
     /**
      * 获取存储在特定数据源中的表名列表。
      * @param string $qualifier 限定符
-     * @param string $owner 所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
-     * @param string $name 名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
-     * @param string $types 指定类型，"'TABLE','VIEW'" or "TABLE, VIEW"
+     * @param string $owner     所有者。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $name      名称。此参数接受下列查询模式："%" 来匹配零到多个字符，"_" 来匹配单个字符。
+     * @param string $types     指定类型，"'TABLE','VIEW'" or "TABLE, VIEW"
      * @return Statement 结果集
      */
     public function tables($qualifier = null, $owner = null, $name = null, $types = null)

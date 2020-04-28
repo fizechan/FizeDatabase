@@ -1,9 +1,8 @@
 <?php
 
-
 namespace fize\db;
 
-use fize\db\definition\Query as Driver;
+use fize\db\core\Query as Driver;
 
 /**
  * 查询器
@@ -24,18 +23,18 @@ class Query
      */
     public function __construct($db_type)
     {
-        self::$class = '\\' . __NAMESPACE__ . '\\realization\\' . $db_type . '\\Query';
+        self::$class = '\\' . __NAMESPACE__ . '\\extend\\' . $db_type . '\\Query';
     }
 
     /**
      * 获取指定数据库类型的查询器对象
      * @param string $db_type 数据库类型
-     * @param string $object 要进行判断的对象，一般为字段名
+     * @param string $object  要进行判断的对象，一般为字段名
      * @return Driver
      */
     public static function construct($db_type, $object = null)
     {
-        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $db_type . '\\Query';
+        $class = '\\' . __NAMESPACE__ . '\\extend\\' . $db_type . '\\Query';
         return new $class($object);
     }
 
@@ -77,8 +76,8 @@ class Query
 
     /**
      * 以AND形式组合多个Query对象,或者指可以使用analyze()的数组
-     * @param string $logic 组合逻辑
-     * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
+     * @param string $logic  组合逻辑
+     * @param array  $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return Driver
      */
     public static function qMerge($logic, ...$querys)

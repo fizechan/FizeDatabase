@@ -1,8 +1,6 @@
 <?php
 
-
 namespace fize\db\middleware;
-
 
 use fize\db\middleware\driver\Odbc as Driver;
 
@@ -21,11 +19,11 @@ trait Odbc
     /**
      * 构建ODBC
      * @see https://www.connectionstrings.com/
-     * @param string $dsn 连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
-     * @param string $user 用户名
-     * @param string $pwd 密码
-     * @param int $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
-     * @param bool $pconnect 是否使用长链接，默认false
+     * @param string $dsn         连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
+     * @param string $user        用户名
+     * @param string $pwd         密码
+     * @param int    $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
+     * @param bool   $pconnect    是否使用长链接，默认false
      */
     protected function odbcConstruct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
     {
@@ -51,8 +49,8 @@ trait Odbc
 
     /**
      * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，支持原生的ODBC问号预处理
-     * @param array $params 可选的绑定参数
+     * @param string   $sql      SQL语句，支持原生的ODBC问号预处理
+     * @param array    $params   可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */

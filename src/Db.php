@@ -3,8 +3,8 @@
 
 namespace fize\db;
 
-use fize\db\definition\Db as Driver;
-use fize\db\definition\Mode;
+use fize\db\core\Db as Driver;
+use fize\db\core\Mode;
 
 /**
  * 数据库
@@ -26,13 +26,13 @@ class Db
 
     /**
      * 初始化
-     * @param string $type 数据库类型
-     * @param array $config 数据库配置项
-     * @param string $mode 连接模式
+     * @param string $type   数据库类型
+     * @param array  $config 数据库配置项
+     * @param string $mode   连接模式
      */
     public function __construct($type, array $config, $mode = null)
     {
-        self::$mode = '\\' . __NAMESPACE__ . '\\realization\\' . $type . '\\Mode';
+        self::$mode = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
         $class = self::$mode;
         self::$db = $class::getInstance($mode, $config);
         new Query($type);
@@ -40,9 +40,9 @@ class Db
 
     /**
      * 取得一个新的连接
-     * @param string $type 数据库类型
-     * @param array $config 数据库配置项
-     * @param string $mode 连接模式
+     * @param string $type   数据库类型
+     * @param array  $config 数据库配置项
+     * @param string $mode   连接模式
      * @return Driver
      */
     public static function connect($type, array $config, $mode = null)
@@ -50,14 +50,14 @@ class Db
         /**
          * @var $class Mode
          */
-        $class = '\\' . __NAMESPACE__ . '\\realization\\' . $type . '\\Mode';
+        $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
         return $class::getInstance($mode, $config);
     }
 
     /**
      * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，支持原生的pdo问号预处理
-     * @param array $params 可选的绑定参数
+     * @param string   $sql      SQL语句，支持原生的pdo问号预处理
+     * @param array    $params   可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return mixed SELECT语句返回数组，INSERT/REPLACE返回自增ID，其余返回受影响行数。
      */
@@ -92,7 +92,7 @@ class Db
 
     /**
      * 指定当前要操作的表,支持链式调用
-     * @param string $name 表名
+     * @param string $name   表名
      * @param string $prefix 表前缀，默认为null表示使用当前前缀
      * @return Driver
      */

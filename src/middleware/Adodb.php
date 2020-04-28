@@ -1,11 +1,6 @@
 <?php
-/** @noinspection PhpUndefinedFieldInspection */
-/** @noinspection PhpUndefinedMethodInspection */
-/** @noinspection PhpComposerExtensionStubsInspection */
-
 
 namespace fize\db\middleware;
-
 
 use COM;
 
@@ -28,8 +23,8 @@ trait Adodb
     /**
      * 构造Adodb
      * @see https://www.connectionstrings.com/
-     * @param string $dsn DSN字符串
-     * @param int $codepage 编码
+     * @param string $dsn      DSN字符串
+     * @param int    $codepage 编码
      */
     protected function adodbConstruct($dsn, $codepage)
     {
@@ -58,8 +53,8 @@ trait Adodb
 
     /**
      * 执行一个SQL语句并返回相应结果
-     * @param string $sql SQL语句，支持模拟问号占位符预处理语句
-     * @param array $params 可选的绑定参数
+     * @param string   $sql      SQL语句，支持模拟问号占位符预处理语句
+     * @param array    $params   可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array|int SELECT语句返回数组，其余返回受影响行数。
      */
