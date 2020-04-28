@@ -34,7 +34,7 @@ class Db
     {
         self::$mode = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
         $class = self::$mode;
-        self::$db = $class::getInstance($mode, $config);
+        self::$db = $class::create($mode, $config);
         new Query($type);
     }
 
@@ -51,7 +51,7 @@ class Db
          * @var $class Mode
          */
         $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
-        return $class::getInstance($mode, $config);
+        return $class::create($mode, $config);
     }
 
     /**
