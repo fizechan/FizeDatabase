@@ -2,8 +2,6 @@
 
 namespace fize\db\extend\sqlite;
 
-use fize\db\core\Mode as ModeInterface;
-use fize\db\exception\Exception;
 use fize\db\extend\sqlite\mode\Odbc;
 use fize\db\extend\sqlite\mode\Sqlite3;
 use fize\db\extend\sqlite\mode\Pdo;
@@ -13,7 +11,7 @@ use fize\db\extend\sqlite\mode\Pdo;
  *
  * Sqlite的ORM模型
  */
-class Mode implements ModeInterface
+class Mode
 {
 
     /**
@@ -53,45 +51,5 @@ class Mode implements ModeInterface
     public static function sqlite3($filename, $flags = 2, $encryption_key = null, $busy_timeout = 30000)
     {
         return new Sqlite3($filename, $flags, $encryption_key, $busy_timeout);
-    }
-
-    /**
-     * 数据库实例
-     * @param string $mode   连接模式
-     * @param array  $config 数据库参数选项
-     * @return Db
-     * @throws Exception
-     */
-    public static function create($mode, array $config)
-    {
-        $mode = $mode ? $mode : 'pdo';
-        $default_config = [
-            'prefix'         => '',
-            'long_names'     => 0,
-            'time_out'       => 1000,
-            'no_txn'         => 0,
-            'sync_pragma'    => 'NORMAL',
-            'step_api'       => 0,
-            'driver'         => null,
-            'flags'          => 2,
-            'encryption_key' => null,
-            'busy_timeout'   => 30000
-        ];
-        $config = array_merge($default_config, $config);
-        switch ($mode) {
-            case 'odbc':
-                $db = self::odbc($config['file'], $config['long_names'], $config['time_out'], $config['no_txn'], $config['sync_pragma'], $config['step_api'], $config['driver']);
-                break;
-            case 'sqlite3':
-                $db = self::sqlite3($config['file'], $config['flags'], $config['encryption_key'], $config['busy_timeout']);
-                break;
-            case 'pdo':
-                $db = self::pdo($config['file']);
-                break;
-            default:
-                throw new Exception("error db mode: {$mode}");
-        }
-        $db->prefix($config['prefix']);
-        return $db;
     }
 }

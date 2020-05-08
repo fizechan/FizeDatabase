@@ -4,7 +4,7 @@
 namespace fize\db;
 
 use fize\db\core\Db as Driver;
-use fize\db\core\Mode;
+use fize\db\core\ModeFactoryInterface;
 
 /**
  * 数据库
@@ -15,14 +15,9 @@ class Db
 {
 
     /**
-     * @var Driver
+     * @var Driver  DB对象
      */
     protected static $db;
-
-    /**
-     * @var Mode
-     */
-    private static $mode;
 
     /**
      * 初始化
@@ -32,8 +27,10 @@ class Db
      */
     public function __construct($type, array $config, $mode = null)
     {
-        self::$mode = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
-        $class = self::$mode;
+        /**
+         * @var $class ModeFactoryInterface
+         */
+        $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
         self::$db = $class::create($mode, $config);
         new Query($type);
     }
@@ -48,7 +45,7 @@ class Db
     public static function connect($type, array $config, $mode = null)
     {
         /**
-         * @var $class Mode
+         * @var $class ModeFactoryInterface
          */
         $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\Mode';
         return $class::create($mode, $config);

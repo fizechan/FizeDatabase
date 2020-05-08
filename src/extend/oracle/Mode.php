@@ -2,8 +2,6 @@
 
 namespace fize\db\extend\oracle;
 
-use fize\db\core\Mode as ModeInterface;
-use fize\db\exception\Exception;
 use fize\db\extend\oracle\mode\Oci;
 use fize\db\extend\oracle\mode\Odbc;
 use fize\db\extend\oracle\mode\Pdo;
@@ -13,7 +11,7 @@ use fize\db\extend\oracle\mode\Pdo;
  *
  * Oracle数据库模型类
  */
-class Mode implements ModeInterface
+class Mode
 {
 
     /**
@@ -60,52 +58,5 @@ class Mode implements ModeInterface
     public static function pdo($host, $user, $pwd, $dbname, $port = null, $charset = "utf8", array $opts = [])
     {
         return new Pdo($host, $user, $pwd, $dbname, $port, $charset, $opts);
-    }
-
-    /**
-     * 数据库实例
-     * @param string $mode   连接模式
-     * @param array  $config 数据库参数选项
-     * @return Db
-     * @throws Exception
-     */
-    public static function create($mode, array $config)
-    {
-        $mode = $mode ? $mode : 'pdo';
-        $default_config = [
-            'port'         => '',
-            'charset'      => 'UTF8',
-            'prefix'       => '',
-            'session_mode' => null,
-            'connect_type' => 1,
-            'opts'         => [],
-            'driver'       => null
-        ];
-        $config = array_merge($default_config, $config);
-        switch ($mode) {
-            case 'oci':
-                $connection_string = $config['host'];
-                if ($config['port']) {
-                    $connection_string .= ':' . $config['port'];
-                }
-                $connection_string .= '/' . $config['dbname'];
-                $db = self::oci($config['username'], $config['password'], $connection_string, $config['charset'], $config['session_mode'], $config['connect_type']);
-                break;
-            case 'odbc':
-                $sid = $config['host'];
-                if ($config['port']) {
-                    $sid .= ':' . $config['port'];
-                }
-                $sid .= '/' . $config['dbname'];
-                $db = self::odbc($config['username'], $config['password'], $sid, $config['port'], $config['charset'], $config['driver']);
-                break;
-            case 'pdo':
-                $db = self::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts']);
-                break;
-            default:
-                throw new Exception("error db mode: {$mode}");
-        }
-        $db->prefix($config['prefix']);
-        return $db;
     }
 }

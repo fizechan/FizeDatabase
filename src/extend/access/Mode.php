@@ -2,8 +2,6 @@
 
 namespace fize\db\extend\access;
 
-use fize\db\core\Mode as ModeInterface;
-use fize\db\exception\Exception;
 use fize\db\extend\access\mode\Adodb;
 use fize\db\extend\access\mode\Odbc;
 use fize\db\extend\access\mode\Pdo;
@@ -11,7 +9,7 @@ use fize\db\extend\access\mode\Pdo;
 /**
  * 模式
  */
-class Mode implements ModeInterface
+class Mode
 {
 
     /**
@@ -48,38 +46,5 @@ class Mode implements ModeInterface
     public static function pdo($file, $pwd = null, $driver = null)
     {
         return new Pdo($file, $pwd, $driver);
-    }
-
-    /**
-     * 数据库实例
-     * @param string $mode   连接模式
-     * @param array  $config 数据库参数选项
-     * @return Db
-     * @throws Exception
-     */
-    public static function create($mode, array $config)
-    {
-        $mode = $mode ? $mode : 'adodb';
-        $default_config = [
-            'password' => null,
-            'prefix'   => '',
-            'driver'   => null
-        ];
-        $config = array_merge($default_config, $config);
-        switch ($mode) {
-            case 'adodb':
-                $db = self::adodb($config['file'], $config['password'], $config['driver']);
-                break;
-            case 'odbc':
-                $db = self::odbc($config['file'], $config['password'], $config['driver']);
-                break;
-            case 'pdo':
-                $db = self::pdo($config['file'], $config['password'], $config['driver']);
-                break;
-            default:
-                throw new Exception("error db mode: {$mode}");
-        }
-        $db->prefix($config['prefix']);
-        return $db;
     }
 }

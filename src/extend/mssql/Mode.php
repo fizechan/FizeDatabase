@@ -2,8 +2,6 @@
 
 namespace fize\db\extend\mssql;
 
-use fize\db\core\Mode as ModeInterface;
-use fize\db\exception\Exception;
 use fize\db\extend\mssql\mode\Adodb;
 use fize\db\extend\mssql\mode\Odbc;
 use fize\db\extend\mssql\mode\Pdo;
@@ -12,7 +10,7 @@ use fize\db\extend\mssql\mode\Sqlsrv;
 /**
  * 模式
  */
-class Mode implements ModeInterface
+class Mode
 {
 
     /**
@@ -77,45 +75,5 @@ class Mode implements ModeInterface
     public static function pdo($host, $user, $pwd, $dbname, $port = "", $charset = "GBK", array $opts = [])
     {
         return new Pdo($host, $user, $pwd, $dbname, $port, $charset, $opts);
-    }
-
-    /**
-     * 数据库实例
-     * @param string $mode   连接模式
-     * @param array  $config 数据库参数选项
-     * @return Db
-     * @throws Exception
-     */
-    public static function create($mode, array $config)
-    {
-        $mode = $mode ? $mode : 'pdo';
-        $default_config = [
-            'port'        => '',
-            'prefix'      => '',
-            'new_feature' => true,
-            'driver'      => null,
-            'charset'     => 'GBK',
-            'opts'        => []
-        ];
-        $config = array_merge($default_config, $config);
-        switch ($mode) {
-            case 'adodb':
-                $db = self::adodb($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['driver']);
-                break;
-            case 'odbc':
-                $db = self::odbc($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['driver']);
-                break;
-            case 'pdo':
-                $db = self::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts']);
-                break;
-            case 'sqlsrv':
-                $db = self::sqlsrv($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset']);
-                break;
-            default:
-                throw new Exception("error db mode: {$mode}");
-        }
-        $db->prefix($config['prefix']);
-        $db->newFeature($config['new_feature']);
-        return $db;
     }
 }

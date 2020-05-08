@@ -2,8 +2,6 @@
 
 namespace fize\db\extend\mysql;
 
-use fize\db\core\Mode as ModeInterface;
-use fize\db\exception\Exception;
 use fize\db\extend\mysql\mode\Odbc;
 use fize\db\extend\mysql\mode\Mysqli;
 use fize\db\extend\mysql\mode\Pdo;
@@ -13,7 +11,7 @@ use fize\db\extend\mysql\mode\Pdo;
  *
  * MySQL数据库模型类
  */
-class Mode implements ModeInterface
+class Mode
 {
 
     /**
@@ -71,44 +69,5 @@ class Mode implements ModeInterface
     public static function pdo($host, $user, $pwd, $dbname, $port = null, $charset = "utf8", array $opts = [], $socket = null)
     {
         return new Pdo($host, $user, $pwd, $dbname, $port, $charset, $opts, $socket);
-    }
-
-    /**
-     * 数据库实例
-     * @param string $mode   连接模式
-     * @param array  $config 数据库参数选项
-     * @return Db
-     * @throws Exception
-     */
-    public static function create($mode, array $config)
-    {
-        $mode = $mode ? $mode : 'pdo';
-        $default_config = [
-            'port'    => '',
-            'charset' => 'utf8',
-            'prefix'  => '',
-            'opts'    => [],
-            'real'    => true,
-            'socket'  => null,
-            'ssl_set' => [],
-            'flags'   => null,
-            'driver'  => null
-        ];
-        $config = array_merge($default_config, $config);
-        switch ($mode) {
-            case 'mysqli':
-                $db = self::mysqli($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts'], $config['real'], $config['socket'], $config['ssl_set'], $config['flags']);
-                break;
-            case 'odbc':
-                $db = self::odbc($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['driver']);
-                break;
-            case 'pdo':
-                $db = self::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts'], $config['socket']);
-                break;
-            default:
-                throw new Exception("error db mode: {$mode}");
-        }
-        $db->prefix($config['prefix']);
-        return $db;
     }
 }
