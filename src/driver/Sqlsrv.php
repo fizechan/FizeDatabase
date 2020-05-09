@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\mssql\mode\driver;
+namespace fize\db\driver;
 
 use Exception;
-use fize\db\extend\mssql\mode\driver\sqlsrv\Statement;
+use fize\db\driver\sqlsrv\Statement;
 
 /**
  * Sqlsrv
@@ -28,7 +28,8 @@ class Sqlsrv
     {
         $this->conn = self::connect($serverName, $connectionInfo);
         if (!$this->conn) {
-            $error = end(self::errors(SQLSRV_ERR_ERRORS));
+            $errors = self::errors(SQLSRV_ERR_ERRORS);
+            $error = $errors[count($errors) - 1];
             throw new Exception($error['message'], $error['code']);
         }
     }

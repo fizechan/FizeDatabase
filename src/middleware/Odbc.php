@@ -2,7 +2,7 @@
 
 namespace fize\db\middleware;
 
-use fize\db\middleware\driver\Odbc as Driver;
+use fize\db\driver\Odbc as Driver;
 
 /**
  * ODBC

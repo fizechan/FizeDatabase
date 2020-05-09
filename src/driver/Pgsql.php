@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\pgsql\mode\driver;
+namespace fize\db\driver;
 
-use fize\db\extend\pgsql\mode\driver\pgsql\Result;
-use fize\db\extend\pgsql\mode\driver\pgsql\Lo;
+use fize\db\driver\pgsql\Lo;
+use fize\db\driver\pgsql\Result;
 
 /**
  * PostgreSQL驱动

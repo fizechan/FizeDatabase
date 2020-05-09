@@ -2,8 +2,8 @@
 
 namespace fize\db\extend\oracle\mode;
 
+use fize\db\driver\Oci as Driver;
 use fize\db\extend\oracle\Db;
-use fize\db\extend\oracle\mode\driver\Oci as Driver;
 
 /**
  * Oci

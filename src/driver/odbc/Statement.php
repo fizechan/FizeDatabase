@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\middleware\driver\odbc;
+namespace fize\db\driver\odbc;
 
 use fize\db\exception\DriverException;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace fize\db\extend\oracle\mode\driver;
+namespace fize\db\driver;
 
 use Exception;
 use OCI_Collection;
 use OCI_Lob;
-use fize\db\extend\oracle\mode\driver\oci\Statement;
+use fize\db\driver\oci\Statement;
 
 /**
  * Oci驱动

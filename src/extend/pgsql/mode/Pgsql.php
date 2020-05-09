@@ -2,9 +2,9 @@
 
 namespace fize\db\extend\pgsql\mode;
 
+use fize\db\driver\Pgsql as Driver;
 use fize\db\exception\Exception;
 use fize\db\extend\pgsql\Db;
-use fize\db\extend\pgsql\mode\driver\Pgsql as Driver;
 
 /**
  * Pgsql

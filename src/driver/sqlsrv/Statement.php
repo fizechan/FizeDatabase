@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\mssql\mode\driver\sqlsrv;
+namespace fize\db\driver\sqlsrv;
 
 /**
  * 处理语句

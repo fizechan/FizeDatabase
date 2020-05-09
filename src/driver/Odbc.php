@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\middleware\driver;
+namespace fize\db\driver;
 
 use Exception;
 use fize\db\exception\DriverException;
-use fize\db\middleware\driver\odbc\Statement;
+use fize\db\driver\odbc\Statement;
 
 
 /**

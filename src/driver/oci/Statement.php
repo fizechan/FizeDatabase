@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\oracle\mode\driver\oci;
+namespace fize\db\driver\oci;
 
 /**
  * Oci预处理语句
