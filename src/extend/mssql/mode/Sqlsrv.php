@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\mssql\mode;
+namespace fize\database\extend\mssql\mode;
 
-use fize\db\driver\Sqlsrv as Driver;
-use fize\db\extend\mssql\Db;
+use fize\database\driver\Sqlsrv as Driver;
+use fize\database\extend\mssql\Db;
 
 /**
  * Sqlsrv

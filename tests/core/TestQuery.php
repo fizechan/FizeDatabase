@@ -2,8 +2,8 @@
 
 namespace core;
 
-use fize\db\Db;
-use fize\db\core\Query;
+use fize\database\Db;
+use fize\database\core\Query;
 use PHPUnit\Framework\TestCase;
 
 class TestQuery extends TestCase

@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\mysql\mode;
+namespace fize\database\extend\mysql\mode;
 
 use Exception;
 use mysqli as Driver;
-use fize\db\extend\mysql\Db;
+use fize\database\extend\mysql\Db;
 
 /**
  * MySQLi

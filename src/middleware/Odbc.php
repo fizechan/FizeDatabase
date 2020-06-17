@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\middleware;
+namespace fize\database\middleware;
 
-use fize\db\driver\Odbc as Driver;
+use fize\database\driver\Odbc as Driver;
 
 /**
  * ODBC

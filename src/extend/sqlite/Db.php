@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\extend\sqlite;
+namespace fize\database\extend\sqlite;
 
-use fize\db\core\Db as Base;
+use fize\database\core\Db as Base;
 
 /**
  * 数据库

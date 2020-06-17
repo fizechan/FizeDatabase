@@ -2,7 +2,7 @@
 
 namespace core;
 
-use fize\db\core\Db;
+use fize\database\core\Db;
 use PHPUnit\Framework\TestCase;
 
 class TestDb extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\access;
+namespace fize\database\extend\access;
 
 /**
  * 特征项

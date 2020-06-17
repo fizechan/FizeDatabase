@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\mysql\mode;
+namespace fize\database\extend\mysql\mode;
 
 
-use fize\db\extend\mysql\Db;
-use fize\db\middleware\Odbc as Middleware;
+use fize\database\extend\mysql\Db;
+use fize\database\middleware\Odbc as Middleware;
 
 /**
  * ODBC

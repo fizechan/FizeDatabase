@@ -2,7 +2,7 @@
 
 namespace extend\access\mode;
 
-use fize\db\extend\access\mode\Pdo;
+use fize\database\extend\access\mode\Pdo;
 use PHPUnit\Framework\TestCase;
 
 class TestPdo extends TestCase

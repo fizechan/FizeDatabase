@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\driver\pgsql;
+namespace fize\database\driver\pgsql;
 
 /**
  * PostgreSQL大对象

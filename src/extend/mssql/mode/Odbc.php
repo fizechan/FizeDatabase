@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\mssql\mode;
+namespace fize\database\extend\mssql\mode;
 
 use Exception;
-use fize\db\extend\mssql\Db;
-use fize\db\middleware\Odbc as Middleware;
+use fize\database\extend\mssql\Db;
+use fize\database\middleware\Odbc as Middleware;
 
 /**
  * ODBC

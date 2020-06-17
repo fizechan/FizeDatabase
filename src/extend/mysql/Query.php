@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\extend\mysql;
+namespace fize\database\extend\mysql;
 
-use fize\db\core\Query as Base;
+use fize\database\core\Query as Base;
 
 /**
  * 查询器

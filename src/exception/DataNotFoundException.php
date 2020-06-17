@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\exception;
+namespace fize\database\exception;
 
 /**
  * 未找到数据

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace fize\db\extend\oracle;
+namespace fize\database\extend\oracle;
 
 
-use fize\db\core\Db as Base;
+use fize\database\core\Db as Base;
 
 
 /**

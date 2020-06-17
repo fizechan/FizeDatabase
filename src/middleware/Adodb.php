@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\middleware;
+namespace fize\database\middleware;
 
 use COM;
 

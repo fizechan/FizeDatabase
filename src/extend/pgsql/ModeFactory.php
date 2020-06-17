@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\pgsql;
+namespace fize\database\extend\pgsql;
 
-use fize\db\core\ModeFactoryInterface;
-use fize\db\exception\Exception;
+use fize\database\core\ModeFactoryInterface;
+use fize\database\exception\Exception;
 
 /**
  * 模式工厂

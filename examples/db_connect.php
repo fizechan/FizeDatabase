@@ -1,7 +1,7 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use fize\db\Db;
+use fize\database\Db;
 
 //设置默认连接
 $config = [

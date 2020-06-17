@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\extend\access;
+namespace fize\database\extend\access;
 
-use fize\db\core\Db as Base;
+use fize\database\core\Db as Base;
 
 /**
  * 数据库

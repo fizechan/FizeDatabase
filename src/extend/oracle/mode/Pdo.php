@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\oracle\mode;
+namespace fize\database\extend\oracle\mode;
 
-use fize\db\extend\oracle\Db;
-use fize\db\middleware\Pdo as Middleware;
+use fize\database\extend\oracle\Db;
+use fize\database\middleware\Pdo as Middleware;
 
 /**
  * PDO

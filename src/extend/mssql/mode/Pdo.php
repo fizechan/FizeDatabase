@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\mssql\mode;
+namespace fize\database\extend\mssql\mode;
 
 use PDO as Driver;
-use fize\db\extend\mssql\Db;
-use fize\db\middleware\Pdo as Middleware;
+use fize\database\extend\mssql\Db;
+use fize\database\middleware\Pdo as Middleware;
 
 /**
  * PDO

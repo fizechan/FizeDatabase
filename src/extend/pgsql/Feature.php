@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\pgsql;
+namespace fize\database\extend\pgsql;
 
 /**
  * 特征项

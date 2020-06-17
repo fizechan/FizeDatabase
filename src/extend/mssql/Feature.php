@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\mssql;
+namespace fize\database\extend\mssql;
 
 /**
  * 特征项

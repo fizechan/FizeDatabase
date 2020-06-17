@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\sqlite;
+namespace fize\database\extend\sqlite;
 
 /**
  * 特征项

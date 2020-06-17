@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\driver;
+namespace fize\database\driver;
 
 use Exception;
-use fize\db\driver\sqlsrv\Statement;
+use fize\database\driver\sqlsrv\Statement;
 
 /**
  * Sqlsrv

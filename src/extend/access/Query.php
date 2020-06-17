@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\extend\access;
+namespace fize\database\extend\access;
 
-use fize\db\core\Query as Base;
+use fize\database\core\Query as Base;
 
 /**
  * 查询器

@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\pgsql\mode;
+namespace fize\database\extend\pgsql\mode;
 
-use fize\db\extend\pgsql\Db;
-use fize\db\middleware\Odbc as Middleware;
+use fize\database\extend\pgsql\Db;
+use fize\database\middleware\Odbc as Middleware;
 
 /**
  * ODBC

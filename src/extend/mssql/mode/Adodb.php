@@ -1,10 +1,10 @@
 <?php
 
 
-namespace fize\db\extend\mssql\mode;
+namespace fize\database\extend\mssql\mode;
 
-use fize\db\extend\mssql\Db;
-use fize\db\middleware\Adodb as Middleware;
+use fize\database\extend\mssql\Db;
+use fize\database\middleware\Adodb as Middleware;
 
 /**
  * ADODB

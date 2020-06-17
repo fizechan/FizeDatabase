@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\pgsql\mode;
+namespace fize\database\extend\pgsql\mode;
 
-use fize\db\driver\Pgsql as Driver;
-use fize\db\exception\Exception;
-use fize\db\extend\pgsql\Db;
+use fize\database\driver\Pgsql as Driver;
+use fize\database\exception\Exception;
+use fize\database\extend\pgsql\Db;
 
 /**
  * Pgsql

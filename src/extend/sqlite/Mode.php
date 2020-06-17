@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\sqlite;
+namespace fize\database\extend\sqlite;
 
-use fize\db\extend\sqlite\mode\Odbc;
-use fize\db\extend\sqlite\mode\Sqlite3;
-use fize\db\extend\sqlite\mode\Pdo;
+use fize\database\extend\sqlite\mode\Odbc;
+use fize\database\extend\sqlite\mode\Sqlite3;
+use fize\database\extend\sqlite\mode\Pdo;
 
 /**
  * 模式

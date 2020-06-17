@@ -1,7 +1,7 @@
 <?php
 
 
-namespace fize\db\core;
+namespace fize\database\core;
 
 
 /**

@@ -1,7 +1,7 @@
 <?php
 
 
-use fize\db\Db;
+use fize\database\Db;
 use PHPUnit\Framework\TestCase;
 
 class TestDb extends TestCase

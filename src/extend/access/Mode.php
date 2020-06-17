@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\access;
+namespace fize\database\extend\access;
 
-use fize\db\extend\access\mode\Adodb;
-use fize\db\extend\access\mode\Odbc;
-use fize\db\extend\access\mode\Pdo;
+use fize\database\extend\access\mode\Adodb;
+use fize\database\extend\access\mode\Odbc;
+use fize\database\extend\access\mode\Pdo;
 
 /**
  * 模式

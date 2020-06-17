@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\core;
+namespace fize\database\core;
 
-use fize\db\exception\DataNotFoundException;
-use fize\db\exception\Exception;
+use fize\database\exception\DataNotFoundException;
+use fize\database\exception\Exception;
 
 /**
  * 数据库

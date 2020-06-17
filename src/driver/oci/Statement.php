@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\driver\oci;
+namespace fize\database\driver\oci;
 
 /**
  * Oci预处理语句

@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\exception;
+namespace fize\database\exception;
 
 use Exception as BaseException;
 
@@ -16,7 +16,7 @@ class Exception extends BaseException
     protected $sql;
 
     /**
-     * Exception constructor.
+     * 构造
      * @param string $message 错误信息
      * @param int    $code    错误码
      * @param string $sql     SQL语句

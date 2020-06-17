@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\extend\pgsql;
+namespace fize\database\extend\pgsql;
 
-use fize\db\core\Db as Base;
+use fize\database\core\Db as Base;
 
 /**
  * 数据库

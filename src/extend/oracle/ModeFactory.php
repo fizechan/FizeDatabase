@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\oracle;
+namespace fize\database\extend\oracle;
 
-use fize\db\core\ModeFactoryInterface;
-use fize\db\exception\Exception;
+use fize\database\core\ModeFactoryInterface;
+use fize\database\exception\Exception;
 
 /**
  * 模式工厂

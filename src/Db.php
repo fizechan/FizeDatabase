@@ -1,10 +1,10 @@
 <?php
 
 
-namespace fize\db;
+namespace fize\database;
 
-use fize\db\core\Db as Driver;
-use fize\db\core\ModeFactoryInterface;
+use fize\database\core\Db as Driver;
+use fize\database\core\ModeFactoryInterface;
 
 /**
  * 数据库

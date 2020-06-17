@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\access\mode;
+namespace fize\database\extend\access\mode;
 
-use fize\db\extend\access\Db;
-use fize\db\middleware\Odbc as Middleware;
+use fize\database\extend\access\Db;
+use fize\database\middleware\Odbc as Middleware;
 
 /**
  * ODBC

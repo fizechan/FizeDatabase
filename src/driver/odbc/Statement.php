@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db\driver\odbc;
+namespace fize\database\driver\odbc;
 
-use fize\db\exception\DriverException;
+use fize\database\exception\DriverException;
 
 /**
  * ODBC预处理语句

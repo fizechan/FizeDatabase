@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\driver\sqlsrv;
+namespace fize\database\driver\sqlsrv;
 
 /**
  * 处理语句

@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\mysql;
+namespace fize\database\extend\mysql;
 
 
-use fize\db\core\Db as Base;
+use fize\database\core\Db as Base;
 
 /**
  * 数据库

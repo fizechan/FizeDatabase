@@ -2,7 +2,7 @@
 
 namespace extend\access\mode;
 
-use fize\db\extend\access\mode\Odbc;
+use fize\database\extend\access\mode\Odbc;
 use PHPUnit\Framework\TestCase;
 
 class TestOdbc extends TestCase

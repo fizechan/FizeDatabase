@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\middleware;
+namespace fize\database\middleware;
 
 use PDO as Driver;
 use PDOException;
-use fize\db\exception\Exception;
+use fize\database\exception\Exception;
 
 /**
  * PDO

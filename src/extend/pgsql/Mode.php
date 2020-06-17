@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\pgsql;
+namespace fize\database\extend\pgsql;
 
-use fize\db\extend\pgsql\mode\Odbc;
-use fize\db\extend\pgsql\mode\Pgsql;
-use fize\db\extend\pgsql\mode\Pdo;
+use fize\database\extend\pgsql\mode\Odbc;
+use fize\database\extend\pgsql\mode\Pgsql;
+use fize\database\extend\pgsql\mode\Pdo;
 
 /**
  * 模式

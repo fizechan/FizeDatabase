@@ -1,11 +1,11 @@
 <?php
 
-namespace fize\db\extend\access\mode;
+namespace fize\database\extend\access\mode;
 
 use PDO as Driver;
-use fize\db\exception\Exception;
-use fize\db\extend\access\Db;
-use fize\db\middleware\Pdo as Middleware;
+use fize\database\exception\Exception;
+use fize\database\extend\access\Db;
+use fize\database\middleware\Pdo as Middleware;
 
 /**
  * PDO

@@ -2,7 +2,7 @@
 
 namespace extend\access\mode;
 
-use fize\db\extend\access\mode\Adodb;
+use fize\database\extend\access\mode\Adodb;
 use PHPUnit\Framework\TestCase;
 
 class TestAdodb extends TestCase

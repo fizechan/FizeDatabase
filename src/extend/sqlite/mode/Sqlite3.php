@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\sqlite\mode;
+namespace fize\database\extend\sqlite\mode;
 
 use Exception;
 use SQLite3 as Driver;
-use fize\db\extend\sqlite\Db;
+use fize\database\extend\sqlite\Db;
 
 /**
  * Sqlite3

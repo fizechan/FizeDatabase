@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\mysql;
+namespace fize\database\extend\mysql;
 
-use fize\db\extend\mysql\mode\Odbc;
-use fize\db\extend\mysql\mode\Mysqli;
-use fize\db\extend\mysql\mode\Pdo;
+use fize\database\extend\mysql\mode\Odbc;
+use fize\database\extend\mysql\mode\Mysqli;
+use fize\database\extend\mysql\mode\Pdo;
 
 /**
  * 模式

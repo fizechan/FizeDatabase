@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\oracle;
+namespace fize\database\extend\oracle;
 
 /**
  * 特征项

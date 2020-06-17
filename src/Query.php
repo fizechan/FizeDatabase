@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\db;
+namespace fize\database;
 
-use fize\db\core\Query as Driver;
+use fize\database\core\Query as Driver;
 
 /**
  * 查询器

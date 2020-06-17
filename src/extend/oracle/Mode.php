@@ -1,10 +1,10 @@
 <?php
 
-namespace fize\db\extend\oracle;
+namespace fize\database\extend\oracle;
 
-use fize\db\extend\oracle\mode\Oci;
-use fize\db\extend\oracle\mode\Odbc;
-use fize\db\extend\oracle\mode\Pdo;
+use fize\database\extend\oracle\mode\Oci;
+use fize\database\extend\oracle\mode\Odbc;
+use fize\database\extend\oracle\mode\Pdo;
 
 /**
  * 模式

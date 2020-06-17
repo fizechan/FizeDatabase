@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\mssql;
+namespace fize\database\extend\mssql;
 
 
-use fize\db\core\Db as Base;
+use fize\database\core\Db as Base;
 
 
 /**

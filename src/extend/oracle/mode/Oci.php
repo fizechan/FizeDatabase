@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\oracle\mode;
+namespace fize\database\extend\oracle\mode;
 
-use fize\db\driver\Oci as Driver;
-use fize\db\extend\oracle\Db;
+use fize\database\driver\Oci as Driver;
+use fize\database\extend\oracle\Db;
 
 /**
  * Oci

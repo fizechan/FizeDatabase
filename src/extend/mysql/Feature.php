@@ -1,6 +1,6 @@
 <?php
 
-namespace fize\db\extend\mysql;
+namespace fize\database\extend\mysql;
 
 /**
  * 特征项

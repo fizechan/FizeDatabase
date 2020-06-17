@@ -1,9 +1,9 @@
 <?php
 
-namespace fize\db\extend\sqlite\mode;
+namespace fize\database\extend\sqlite\mode;
 
-use fize\db\extend\sqlite\Db;
-use fize\db\middleware\Pdo as Middleware;
+use fize\database\extend\sqlite\Db;
+use fize\database\middleware\Pdo as Middleware;
 
 /**
  * PDO
