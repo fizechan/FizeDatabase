@@ -3,7 +3,7 @@
 
 namespace fize\database;
 
-use fize\database\core\Db as Driver;
+use fize\database\core\Db as CoreDb;
 use fize\database\core\ModeFactoryInterface;
 
 /**
@@ -15,7 +15,7 @@ class Db
 {
 
     /**
-     * @var Driver  DB对象
+     * @var CoreDb  DB对象
      */
     protected static $db;
 
@@ -40,7 +40,7 @@ class Db
      * @param string $type   数据库类型
      * @param array  $config 数据库配置项
      * @param string $mode   连接模式
-     * @return Driver
+     * @return CoreDb
      */
     public static function connect($type, array $config, $mode = null)
     {
@@ -91,7 +91,7 @@ class Db
      * 指定当前要操作的表,支持链式调用
      * @param string $name   表名
      * @param string $prefix 表前缀，默认为null表示使用当前前缀
-     * @return Driver
+     * @return CoreDb
      */
     public static function table($name, $prefix = null)
     {

@@ -66,33 +66,36 @@ class Sqlsrv extends Db
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持问号预处理
      * @param array    $params   可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
         $result = $this->driver->query($sql, $params);
-        if (stripos($sql, "SELECT") === 0) {
+        $rows = [];
+        $result->fetchArray(function ($row) use (&$rows, $callback) {
             if ($callback !== null) {
-                $result->fetchArray(function ($row) use (&$callback) {
-                    $callback($row);
-                });
-                $result->freeStmt();
-                return null;
-            } else {
-                $rows = [];
-                $result->fetchArray(function ($row) use (&$rows) {
-                    $rows[] = $row;
-                });
-                $result->freeStmt();
-                return $rows;
+                $callback($row);
             }
-        } else {
-            return $result->rowsAffected();
-        }
+            $rows[] = $row;
+        });
+        $result->freeStmt();
+        return $rows;
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        $result = $this->driver->query($sql, $params);
+        return $result->rowsAffected();
     }
 
     /**

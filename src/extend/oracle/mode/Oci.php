@@ -55,11 +55,11 @@ class Oci extends Db
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持原生的:value预处理
      * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
+     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -81,24 +81,44 @@ class Oci extends Db
             }
         }
         $stmt->execute($this->mode);
-        if (stripos($sql, "SELECT") === 0) {
+        $rows = [];
+        while ($row = $stmt->fetchAssoc()) {
             if ($callback !== null) {
-                while ($row = $stmt->fetchAssoc()) {
-                    $callback($row);
-                }
-                $stmt->freeStatement();
-                return null;
-            } else {
-                $rows = [];
-                while ($row = $stmt->fetchAssoc()) {
-                    $rows[] = $row;
-                }
-                $stmt->freeStatement();
-                return $rows;
+                $callback($row);
             }
-        } else {
-            return $stmt->numRows();
+            $rows[] = $row;
         }
+        $stmt->freeStatement();
+        return $rows;
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        if ($params) {  //将?占位符还原为:$*占位符以方便处理
+            $parts = explode('?', $sql);
+            $temp_sql = $parts[0];
+            for ($i = 1; $i < count($parts); $i++) {
+                $temp_sql .= ":$" . $i . $parts[$i];
+            }
+            $sql = $temp_sql;
+        }
+
+        $stmt = $this->driver->parse($sql);
+        if ($params) {
+            $index = 0;
+            foreach ($params as $value) {
+                $index++;
+                $stmt->bindByName(":${$index}", $value);
+            }
+        }
+        $stmt->execute($this->mode);
+        return $stmt->numRows();
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace extend\mysql\mode;
 
-use fize\db\extend\mysql\mode\Pdo;
+use fize\database\extend\mysql\mode\Pdo;
 use PHPUnit\Framework\TestCase;
 
 class TestPdo extends TestCase
@@ -51,29 +51,34 @@ class TestPdo extends TestCase
     {
         $db = new Pdo('127.0.0.1', 'root', '123456', 'gm_test');
 
-        //增
-        $sql = 'INSERT INTO `user` (`name`,`add_time`) VALUES (?,?)';
-        $num = $db->query($sql, ["!乱/七\八'糟\"的*字?符%串`一#大@堆(", time()]);
-        var_dump($num);
-        self::assertIsInt($num);
-
-        //删
-        $sql = 'DELETE FROM `user` WHERE id <= 7';
-        $num = $db->query($sql);
-        var_dump($num);
-        self::assertIsInt($num);
-
-        //改
-        $sql = 'UPDATE `user` SET `name` = ? WHERE id = 17';
-        $num = $db->query($sql, ["陈峰展"]);
-        var_dump($num);
-        self::assertIsInt($num);
-
         //查
         $sql = 'SELECT * FROM `user`';
         $rows = $db->query($sql);
         var_dump($rows);
         self::assertIsArray($rows);
+    }
+
+    public function testExecute()
+    {
+        $db = new Pdo('127.0.0.1', 'root', '123456', 'gm_test');
+
+        //增
+        $sql = 'INSERT INTO `user` (`name`,`add_time`) VALUES (?,?)';
+        $num = $db->execute($sql, ["!乱/七\八'糟\"的*字?符%串`一#大@堆(", time()]);
+        var_dump($num);
+        self::assertIsInt($num);
+
+        //删
+        $sql = 'DELETE FROM `user` WHERE id <= 7';
+        $num = $db->execute($sql);
+        var_dump($num);
+        self::assertIsInt($num);
+
+        //改
+        $sql = 'UPDATE `user` SET `name` = ? WHERE id = 17';
+        $num = $db->execute($sql, ["陈峰展"]);
+        var_dump($num);
+        self::assertIsInt($num);
     }
 
     public function testStartTrans()
@@ -91,7 +96,7 @@ class TestPdo extends TestCase
         $db->startTrans();
 
         $sql = 'UPDATE `user` SET `name` = ? WHERE id = 101';
-        $num = $db->query($sql, ["陈峰展1633"]);
+        $num = $db->execute($sql, ["陈峰展1633"]);
         var_dump($num);
         self::assertIsInt($num);
 
@@ -100,7 +105,7 @@ class TestPdo extends TestCase
         $sql = 'SELECT * FROM `user` WHERE id = 101';
         $rows = $db->query($sql);
         var_dump($rows[0]);
-        self::assertEquals($rows[0]['name'], '陈峰展1633');
+        self::assertEquals('陈峰展1633', $rows[0]['name']);
     }
 
     public function testRollback()
@@ -110,7 +115,7 @@ class TestPdo extends TestCase
         $db->startTrans();
 
         $sql = 'UPDATE `user` SET `name` = ? WHERE id = 101';
-        $num = $db->query($sql, ["陈峰展16332"]);
+        $num = $db->execute($sql, ["陈峰展16332"]);
         var_dump($num);
         self::assertIsInt($num);
 
@@ -119,6 +124,6 @@ class TestPdo extends TestCase
         $sql = 'SELECT * FROM `user` WHERE id = 101';
         $rows = $db->query($sql);
         var_dump($rows[0]);
-        self::assertEquals($rows[0]['name'], '陈峰展1633');
+        self::assertEquals('陈峰展1633', $rows[0]['name']);
     }
 }

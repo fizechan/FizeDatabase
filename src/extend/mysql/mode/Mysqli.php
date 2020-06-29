@@ -3,7 +3,7 @@
 namespace fize\database\extend\mysql\mode;
 
 use Exception;
-use mysqli as Driver;
+use mysqli as SysMysqli;
 use fize\database\extend\mysql\Db;
 
 /**
@@ -15,9 +15,9 @@ class Mysqli extends Db
 {
 
     /**
-     * @var Driver 使用的mysqli对象
+     * @var SysMysqli 使用的mysqli对象
      */
-    private $driver = null;
+    private $driver;
 
     /**
      * @var int|string 最后插入的自增ID或序列号
@@ -43,7 +43,7 @@ class Mysqli extends Db
     {
         $port = (int)$port;  //mysqli有对类型进行了检查
         if ($real) {
-            $this->driver = new Driver();
+            $this->driver = new SysMysqli();
             $this->driver->init();
             //real_connect之前只能使用options、ssl_set，其他方法无效
             foreach ($opts as $key => $value) {
@@ -54,7 +54,7 @@ class Mysqli extends Db
             }
             $this->driver->real_connect($host, $user, $pwd, $dbname, $port, $socket, $flags);
         } else {
-            $this->driver = new Driver($host, $user, $pwd, $dbname, $port, $socket);
+            $this->driver = new SysMysqli($host, $user, $pwd, $dbname, $port, $socket);
         }
 
         if ($this->driver->connect_errno) {
@@ -77,7 +77,7 @@ class Mysqli extends Db
 
     /**
      * 返回当前使用的数据库对象原型，用于原生操作
-     * @return Driver
+     * @return SysMysqli
      */
     public function prototype()
     {
@@ -115,12 +115,11 @@ class Mysqli extends Db
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持原生的mysqli问号占位符预处理
      * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
-     * @throws Exception
+     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -159,35 +158,69 @@ class Mysqli extends Db
             throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
         }
 
+        //$meta = $stmt->result_metadata();
+        $meta = $stmt->get_result();
+        $rows = [];
+        while ($row = $meta->fetch_assoc()) {
+            if ($callback !== null) {
+                $callback($row);
+            }
+            $rows[] = $row;
+        }
+        $meta->free();
+        $stmt->close();
+        return $rows;
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        $stmt = $this->driver->prepare($sql);
+
+        if ($stmt === false) {
+            throw new Exception($this->driver->error, $this->driver->errno);
+        }
+
+        if (!empty($params)) {
+            $all_params = [];
+            $vtypes = "";  // 数值类型
+            foreach ($params as $val) {
+                // 类型判断
+                if (is_integer($val)) {
+                    $vtypes .= "i";
+                } elseif (is_double($val)) {
+                    $vtypes .= "d";
+                } elseif (is_object($val) || is_resource($val)) {
+                    $vtypes .= "b";
+                } else {
+                    $vtypes .= "s";
+                }
+                $all_params[] = $val;
+            }
+            array_unshift($all_params, $vtypes);  // 插入数值类型
+            $fun_params = [];
+            foreach (array_keys($all_params) as $k) {
+                $fun_params[] = &$all_params[$k];  // 注意此处的引用
+            }
+            call_user_func_array([$stmt, "bind_param"], $fun_params);  // 由于bind_param方法的参数个数不确定，目前方法以call_user_func_array解决
+        }
+        $result = $stmt->execute();
+
+        if ($result === false) {
+            throw new Exception($this->driver->connect_error, $this->driver->connect_errno);
+        }
+
         if (stripos($sql, "INSERT") === 0 || stripos($sql, "REPLACE") === 0) {
             $this->lastInsertId = $stmt->insert_id;
-            $rows = $stmt->affected_rows;
-            $stmt->close();
-            return $rows;
-        } elseif (stripos($sql, "SELECT") === 0) {
-            //$meta = $stmt->result_metadata();
-            $meta = $stmt->get_result();
-            $out = [];
-            if ($callback !== null) {
-                while ($assoc = $meta->fetch_assoc()) {
-                    $callback($assoc);
-                }
-                $meta->free();
-                $stmt->close();
-                return null;
-            } else {
-                while ($assoc = $meta->fetch_assoc()) {
-                    $out[] = $assoc;
-                }
-                $meta->free();
-                $stmt->close();
-                return $out;
-            }
-        } else {
-            $rows = $stmt->affected_rows;
-            $stmt->close();
-            return $rows;
         }
+        $rows = $stmt->affected_rows;
+        $stmt->close();
+        return $rows;
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace extend\oracle\mode;
 
-use fize\db\extend\oracle\mode\Odbc;
+use fize\database\extend\oracle\mode\Odbc;
 use PHPUnit\Framework\TestCase;
 
 class TestOdbc extends TestCase

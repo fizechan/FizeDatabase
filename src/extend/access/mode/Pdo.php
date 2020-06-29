@@ -2,7 +2,7 @@
 
 namespace fize\database\extend\access\mode;
 
-use PDO as Driver;
+use PDO as SysPDO;
 use fize\database\exception\Exception;
 use fize\database\extend\access\Db;
 use fize\database\middleware\Pdo as Middleware;
@@ -44,12 +44,11 @@ class Pdo extends Db
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持原生的pdo问号预处理
      * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
-     * @throws Exception
+     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -78,34 +77,56 @@ class Pdo extends Db
             throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
         }
 
-        if (stripos($sql, "SELECT") === 0) {
+        $rows = [];
+        while ($row = $stmt->fetch(SysPDO::FETCH_ASSOC, SysPDO::FETCH_ORI_NEXT)) {
+            array_walk($row, function (&$value) {
+                if (is_string($value)) {
+                    $value = iconv('GBK', 'UTF-8', $value);
+                }
+            });
             if ($callback !== null) {
-                while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
-                    array_walk($row, function (&$value) {
-                        if (is_string($value)) {
-                            $value = iconv('GBK', 'UTF-8', $value);
-                        }
-                    });
-                    $callback($row);
-                }
-                $stmt->closeCursor();
-                return null;
-            } else {
-                $rows = [];
-                while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
-                    array_walk($row, function (&$value) {
-                        if (is_string($value)) {
-                            $value = iconv('GBK', 'UTF-8', $value);
-                        }
-                    });
-                    $rows[] = $row;
-                }
-                $stmt->closeCursor();
-                return $rows;
+                $callback($row);
             }
-        } else {
-            return $stmt->rowCount();
+            $rows[] = $row;
         }
+        $stmt->closeCursor();
+        return $rows;
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        $sql = iconv('UTF-8', 'GBK', $sql);
+        array_walk($params, function (&$value) {
+            if (is_string($value)) {
+                $value = iconv('UTF-8', 'GBK', $value);
+            }
+        });
+
+        $stmt = $this->pdo->prepare($sql);
+
+        if ($stmt === false) {
+            //0为数据库错误代码，1为驱动错误代码，2为错误描述
+            throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
+        }
+
+        if (!empty($params)) {
+            $result = $stmt->execute($params); //绑定参数
+        } else {
+            $result = $stmt->execute();
+        }
+
+        if ($result === false) {
+            //0为数据库错误代码，1为驱动错误代码，2为错误描述
+            throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
+        }
+
+        return $stmt->rowCount();
     }
 
     /**
@@ -118,7 +139,7 @@ class Pdo extends Db
     public function lastInsertId($name = null)
     {
         $stmt = $this->pdo->query("SELECT @@IDENTITY");
-        $row = $stmt->fetch(Driver::FETCH_NUM, Driver::FETCH_ORI_NEXT);
+        $row = $stmt->fetch(SysPDO::FETCH_NUM, SysPDO::FETCH_ORI_NEXT);
         return $row[0];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace extend\mssql\mode;
 
-use fize\db\extend\mssql\mode\Sqlsrv;
+use fize\database\extend\mssql\mode\Sqlsrv;
 use PHPUnit\Framework\TestCase;
 
 class TestSqlsrv extends TestCase

@@ -2,7 +2,7 @@
 
 namespace fize\database\middleware;
 
-use fize\database\driver\Odbc as Driver;
+use fize\database\driver\Odbc as SysOdbc;
 
 /**
  * ODBC
@@ -12,7 +12,7 @@ trait Odbc
 {
     /**
      * 使用的ODBC对象
-     * @var Driver
+     * @var SysOdbc
      */
     protected $driver = null;
 
@@ -27,7 +27,7 @@ trait Odbc
      */
     protected function odbcConstruct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
     {
-        $this->driver = new Driver($dsn, $user, $pwd, $cursor_type, $pconnect);
+        $this->driver = new SysOdbc($dsn, $user, $pwd, $cursor_type, $pconnect);
     }
 
     /**
@@ -40,7 +40,7 @@ trait Odbc
 
     /**
      * 返回当前使用的数据库对象原型，用于原生操作
-     * @return Driver
+     * @return SysOdbc
      */
     public function prototype()
     {
@@ -48,34 +48,38 @@ trait Odbc
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持原生的ODBC问号预处理
      * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
+     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
         $result = $this->driver->prepare($sql);
         $result->execute($params);
-        if (stripos($sql, "SELECT") === 0) {
+        $rows = [];
+        while ($row = $result->fetchArray()) {
+            $rows[] = $row;
             if ($callback !== null) {
-                while ($assoc = $result->fetchArray()) {
-                    $callback($assoc);
-                }
-                $result->freeResult();
-                return null;
-            } else {
-                $rows = [];
-                while ($row = $result->fetchArray()) {
-                    $rows[] = $row;
-                }
-                $result->freeResult();
-                return $rows;
+                $callback($row);
             }
-        } else {
-            return $result->numRows();
         }
+        $result->freeResult();
+        return $rows;
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        $result = $this->driver->prepare($sql);
+        $result->execute($params);
+        return $result->numRows();
     }
 
     /**

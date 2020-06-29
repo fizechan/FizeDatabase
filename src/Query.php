@@ -2,7 +2,7 @@
 
 namespace fize\database;
 
-use fize\database\core\Query as Driver;
+use fize\database\core\Query as CoreQuery;
 
 /**
  * 查询器
@@ -30,7 +30,7 @@ class Query
      * 获取指定数据库类型的查询器对象
      * @param string $db_type 数据库类型
      * @param string $object  要进行判断的对象，一般为字段名
-     * @return Driver
+     * @return CoreQuery
      */
     public static function construct($db_type, $object = null)
     {
@@ -41,7 +41,7 @@ class Query
     /**
      * 设定当前操作对象
      * @param string $object 操作对象，通常为字段名
-     * @return Driver
+     * @return CoreQuery
      */
     public static function object($object = null)
     {
@@ -53,7 +53,7 @@ class Query
      *
      * 实际上是object方法的别名
      * @param string $field_name 字段名
-     * @return Driver
+     * @return CoreQuery
      */
     public static function field($field_name)
     {
@@ -63,12 +63,12 @@ class Query
     /**
      * 解析一个条件数组，返回Query
      * @param array $maps 一定格式的条件数组
-     * @return Driver
+     * @return CoreQuery
      */
     public static function analyze(array $maps)
     {
         /**
-         * @var $query Driver
+         * @var $query CoreQuery
          */
         $query = new self::$class();
         return $query->analyze($maps);
@@ -78,12 +78,12 @@ class Query
      * 以AND形式组合多个Query对象,或者指可以使用analyze()的数组
      * @param string $logic  组合逻辑
      * @param array  $querys 可以是Query对象或者指可以使用analyze()的数组
-     * @return Driver
+     * @return CoreQuery
      */
     public static function qMerge($logic, ...$querys)
     {
         /**
-         * @var $query Driver
+         * @var $query CoreQuery
          */
         $query = $querys[0];
         if (is_array($querys[0])) {
@@ -93,7 +93,7 @@ class Query
 
         for ($i = 1; $i < count($querys); $i++) {
             /**
-             * @var $query2 Driver
+             * @var $query2 CoreQuery
              */
             $query2 = $querys[$i];
             if (is_array($querys[$i])) {
@@ -108,7 +108,7 @@ class Query
     /**
      * 以AND形式组合多个Query对象,或者指可以使用analyze()的数组
      * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
-     * @return Driver
+     * @return CoreQuery
      */
     public static function qAnd(...$querys)
     {
@@ -118,7 +118,7 @@ class Query
     /**
      * 以OR形式组合多个Query对象,或者指可以使用analyze()的数组
      * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
-     * @return Driver
+     * @return CoreQuery
      */
     public static function qOr(...$querys)
     {

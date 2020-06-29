@@ -3,7 +3,7 @@
 namespace fize\database\extend\sqlite\mode;
 
 use Exception;
-use SQLite3 as Driver;
+use SQLite3 as SysSQLite3;
 use fize\database\extend\sqlite\Db;
 
 /**
@@ -15,9 +15,9 @@ class Sqlite3 extends Db
 {
 
     /**
-     * @var Driver 使用的SQLite3对象
+     * @var SysSQLite3 使用的SQLite3对象
      */
-    private $driver = null;
+    private $driver;
 
     /**
      * 构造
@@ -28,7 +28,7 @@ class Sqlite3 extends Db
      */
     public function __construct($filename, $flags = 2, $encryption_key = null, $busy_timeout = 30000)
     {
-        $this->driver = new Driver($filename, $flags, $encryption_key);
+        $this->driver = new SysSQLite3($filename, $flags, $encryption_key);
         $this->driver->busyTimeout($busy_timeout);
     }
 
@@ -42,7 +42,7 @@ class Sqlite3 extends Db
 
     /**
      * 返回当前使用的数据库对象原型，用于原生操作
-     * @return Driver
+     * @return SysSQLite3
      */
     public function prototype()
     {
@@ -50,12 +50,11 @@ class Sqlite3 extends Db
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持原生的问号预处理
      * @param array    $params   可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
-     * @throws Exception
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -87,26 +86,56 @@ class Sqlite3 extends Db
             throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
         }
 
-        if (stripos($sql, "SELECT") === 0) {
+        $rows = [];
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
             if ($callback !== null) {
-                while ($assoc = $result->fetchArray(SQLITE3_ASSOC)) {
-                    $callback($assoc);
-                }
-                $stmt->close();
-                return null;
-            } else {
-                $out = [];
-                while ($assoc = $result->fetchArray(SQLITE3_ASSOC)) {
-                    $out[] = $assoc;
-                }
-                $stmt->close();
-                return $out;
+                $callback($row);
             }
-        } else {
-            $rows = $this->driver->changes();
-            $stmt->close();
-            return $rows;
+            $rows[] = $row;
         }
+        $stmt->close();
+        return $rows;
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        $stmt = $this->driver->prepare($sql);
+        if (!$stmt) {
+            throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
+        }
+
+        if (!empty($params)) {
+            foreach ($params as $key => $val) {
+                //类型判断
+                if (is_integer($val)) {
+                    $vtype = SQLITE3_INTEGER;
+                } elseif (is_double($val)) {
+                    $vtype = SQLITE3_FLOAT;
+                } elseif (is_object($val) || is_resource($val)) {
+                    $vtype = SQLITE3_BLOB;
+                } elseif (is_null($val)) {
+                    $vtype = SQLITE3_NULL;
+                } else {
+                    $vtype = SQLITE3_TEXT;
+                }
+                $stmt->bindValue($key + 1, $val, $vtype); //位置是从1开始而不是下标0,使用bindValue直接绑定值，而不是使用bindParam绑定引用
+            }
+        }
+        $result = $stmt->execute();
+
+        if ($result === false) {
+            throw new Exception($this->driver->lastErrorMsg(), $this->driver->lastErrorCode());
+        }
+
+        $rows = $this->driver->changes();
+        $stmt->close();
+        return $rows;
     }
 
     /**

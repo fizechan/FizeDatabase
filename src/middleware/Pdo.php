@@ -2,7 +2,7 @@
 
 namespace fize\database\middleware;
 
-use PDO as Driver;
+use PDO as SysPDO;
 use PDOException;
 use fize\database\exception\Exception;
 
@@ -12,7 +12,7 @@ use fize\database\exception\Exception;
 trait Pdo
 {
     /**
-     * @var Driver 使用的PDO对象
+     * @var SysPDO 使用的PDO对象
      */
     private $pdo = null;
 
@@ -26,11 +26,11 @@ trait Pdo
     protected function pdoConstruct($dsn, $user, $pwd, array $opts = [])
     {
         if (!empty($opts)) {
-            $this->pdo = new Driver($dsn, $user, $pwd, $opts);
+            $this->pdo = new SysPDO($dsn, $user, $pwd, $opts);
         } else {
-            $this->pdo = new Driver($dsn, $user, $pwd);
+            $this->pdo = new SysPDO($dsn, $user, $pwd);
         }
-        $this->pdo->setAttribute(Driver::ATTR_ERRMODE, Driver::ERRMODE_EXCEPTION);
+        $this->pdo->setAttribute(SysPDO::ATTR_ERRMODE, SysPDO::ERRMODE_EXCEPTION);
     }
 
     /**
@@ -43,7 +43,7 @@ trait Pdo
 
     /**
      * 返回当前使用的数据库对象原型，用于原生操作
-     * @return Driver
+     * @return SysPDO
      */
     public function prototype()
     {
@@ -54,9 +54,8 @@ trait Pdo
      * 执行一个SQL语句并返回相应结果
      * @param string   $sql      SQL语句，支持原生的pdo问号预处理
      * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
-     * @throws Exception
+     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @return array 返回结果数组
      */
     public function query($sql, array $params = [], callable $callback = null)
     {
@@ -67,25 +66,36 @@ trait Pdo
             } else {
                 $stmt->execute();
             }
-
-            if (stripos($sql, "SELECT") === 0) {
+            $rows = [];
+            while ($row = $stmt->fetch(SysPDO::FETCH_ASSOC, SysPDO::FETCH_ORI_NEXT)) {
+                $rows[] = $row;
                 if ($callback !== null) {
-                    while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
-                        $callback($row);
-                    }
-                    $stmt->closeCursor();
-                    return null;
-                } else {
-                    $rows = [];
-                    while ($row = $stmt->fetch(Driver::FETCH_ASSOC, Driver::FETCH_ORI_NEXT)) {
-                        $rows[] = $row;
-                    }
-                    $stmt->closeCursor();
-                    return $rows;
+                    $callback($row);
                 }
-            } else {
-                return $stmt->rowCount();
             }
+            $stmt->closeCursor();
+            return $rows;
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage(), $e->getCode(), $this->getLastSql(true));
+        }
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            if (!empty($params)) {
+                $stmt->execute($params); //绑定参数
+            } else {
+                $stmt->execute();
+            }
+            return $stmt->rowCount();
         } catch (PDOException $e) {
             throw new Exception($e->getMessage(), $e->getCode(), $this->getLastSql(true));
         }

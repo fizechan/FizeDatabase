@@ -3,7 +3,7 @@
 namespace extend\oracle\mode\driver;
 
 use PHPUnit\Framework\TestCase;
-use fize\db\extend\oracle\mode\driver\Oci;
+use fize\database\extend\oracle\mode\driver\Oci;
 
 class TestOci extends TestCase
 {

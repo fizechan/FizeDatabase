@@ -2,7 +2,7 @@
 
 namespace extend\mssql\mode;
 
-use fize\db\extend\mssql\mode\Adodb;
+use fize\database\extend\mssql\mode\Adodb;
 use PHPUnit\Framework\TestCase;
 
 class TestAdodb extends TestCase

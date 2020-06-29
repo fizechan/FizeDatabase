@@ -2,7 +2,7 @@
 
 namespace extend\oracle\mode;
 
-use fize\db\extend\oracle\mode\Pdo;
+use fize\database\extend\oracle\mode\Pdo;
 use PHPUnit\Framework\TestCase;
 
 class TestPdo extends TestCase

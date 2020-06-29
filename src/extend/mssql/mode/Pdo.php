@@ -2,7 +2,7 @@
 
 namespace fize\database\extend\mssql\mode;
 
-use PDO as Driver;
+use PDO as SysPDO;
 use fize\database\extend\mssql\Db;
 use fize\database\middleware\Pdo as Middleware;
 
@@ -43,17 +43,17 @@ class Pdo extends Db
         $dsn .= ";Database={$dbname}";
         if ($charset != "UTF-8") {
             $opts = $opts + [
-                    Driver::ATTR_CASE              => Driver::CASE_LOWER,
-                    Driver::ATTR_ERRMODE           => Driver::ERRMODE_EXCEPTION,
-                    Driver::ATTR_STRINGIFY_FETCHES => false,
-                    Driver::SQLSRV_ATTR_ENCODING   => Driver::SQLSRV_ENCODING_UTF8,
+                    SysPDO::ATTR_CASE              => SysPDO::CASE_LOWER,
+                    SysPDO::ATTR_ERRMODE           => SysPDO::ERRMODE_EXCEPTION,
+                    SysPDO::ATTR_STRINGIFY_FETCHES => false,
+                    SysPDO::SQLSRV_ATTR_ENCODING   => SysPDO::SQLSRV_ENCODING_UTF8,
                 ];
         } else {
             $opts = $opts + [
-                    Driver::ATTR_CASE              => Driver::CASE_LOWER,
-                    Driver::ATTR_ERRMODE           => Driver::ERRMODE_EXCEPTION,
-                    Driver::ATTR_STRINGIFY_FETCHES => false,
-                    Driver::SQLSRV_ATTR_ENCODING   => Driver::SQLSRV_ENCODING_DEFAULT,
+                    SysPDO::ATTR_CASE              => SysPDO::CASE_LOWER,
+                    SysPDO::ATTR_ERRMODE           => SysPDO::ERRMODE_EXCEPTION,
+                    SysPDO::ATTR_STRINGIFY_FETCHES => false,
+                    SysPDO::SQLSRV_ATTR_ENCODING   => SysPDO::SQLSRV_ENCODING_DEFAULT,
                 ];
         }
         $this->pdoConstruct($dsn, $user, $pwd, $opts);

@@ -2,7 +2,7 @@
 
 namespace extend\sqlite\mode;
 
-use fize\db\extend\sqlite\mode\Sqlite3;
+use fize\database\extend\sqlite\mode\Sqlite3;
 use PHPUnit\Framework\TestCase;
 
 class TestSqlite3 extends TestCase
@@ -50,21 +50,26 @@ class TestSqlite3 extends TestCase
     {
         $db = new Sqlite3('F:\data\sqlite3\gm_test.sqlite3');
 
-        //插入
-        $sql = 'INSERT INTO "user" ("name","sex","add_time") VALUES(?, ?, ?)';
-        $result = $db->query($sql, ['测试2', 5, 123456]);
-        var_dump($result);
-        self::assertEquals(1, $result);
-
         //查询
         $sql = 'SELECT * FROM "user" WHERE name = ?';
         $rows = $db->query($sql, ['测试2']);
         var_dump($rows);
         self::assertIsArray($rows);
+    }
+
+    public function testExecute()
+    {
+        $db = new Sqlite3('F:\data\sqlite3\gm_test.sqlite3');
+
+        //插入
+        $sql = 'INSERT INTO "user" ("name","sex","add_time") VALUES(?, ?, ?)';
+        $result = $db->execute($sql, ['测试2', 5, 123456]);
+        var_dump($result);
+        self::assertEquals(1, $result);
 
         //更新
         $sql = 'UPDATE "user" SET name = ? WHERE id = ?';
-        $num = $db->query($sql, ['这是我想要写入的东西123！！',  8]);
+        $num = $db->execute($sql, ['这是我想要写入的东西123！！',  8]);
         var_dump($num);
         self::assertEquals(1, $num);
     }
@@ -84,7 +89,7 @@ class TestSqlite3 extends TestCase
         $db->startTrans();
 
         $sql = 'UPDATE "user" SET "name" = ? WHERE id = 7';
-        $num = $db->query($sql, ["陈峰展1631"]);
+        $num = $db->execute($sql, ["陈峰展1631"]);
         var_dump($num);
         self::assertIsInt($num);
 
@@ -103,7 +108,7 @@ class TestSqlite3 extends TestCase
         $db->startTrans();
 
         $sql = 'UPDATE "user" SET "name" = ? WHERE id = 7';
-        $num = $db->query($sql, ["陈峰展16312"]);
+        $num = $db->execute($sql, ["陈峰展16312"]);
         var_dump($num);
         self::assertIsInt($num);
 

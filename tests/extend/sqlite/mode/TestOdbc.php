@@ -2,7 +2,7 @@
 
 namespace extend\sqlite\mode;
 
-use fize\db\extend\sqlite\mode\Odbc;
+use fize\database\extend\sqlite\mode\Odbc;
 use PHPUnit\Framework\TestCase;
 
 class TestOdbc extends TestCase
@@ -50,23 +50,28 @@ class TestOdbc extends TestCase
     {
         $db = new Odbc('F:\data\sqlite3\gm_test.sqlite3');
 
-        //插入
-        $sql = 'INSERT INTO "user" ("name","sex","add_time") VALUES(?, ?, ?)';
-        $result = $db->query($sql, ['测试2', 5, 123456]);
-        var_dump($result);
-        self::assertEquals($result, 1);
-
         //查询
         $sql = 'SELECT * FROM "user" WHERE name = ?';
         $rows = $db->query($sql, ['测试2']);
         var_dump($rows);
         self::assertIsArray($rows);
+    }
+
+    public function testExecute()
+    {
+        $db = new Odbc('F:\data\sqlite3\gm_test.sqlite3');
+
+        //插入
+        $sql = 'INSERT INTO "user" ("name","sex","add_time") VALUES(?, ?, ?)';
+        $result = $db->execute($sql, ['测试2', 5, 123456]);
+        var_dump($result);
+        self::assertEquals(1, $result);
 
         //更新
         $sql = 'UPDATE "user" SET name = ? WHERE id = ?';
-        $num = $db->query($sql, ['这是我想要写入的东西123！！',  6]);
+        $num = $db->execute($sql, ['这是我想要写入的东西123！！',  6]);
         var_dump($num);
-        self::assertEquals($num, 1);
+        self::assertEquals(1, $num);
     }
 
     public function testStartTrans()
@@ -93,7 +98,7 @@ class TestOdbc extends TestCase
         $sql = 'SELECT * FROM "user" WHERE id = 5';
         $rows = $db->query($sql);
         var_dump($rows[0]);
-        self::assertEquals($rows[0]['name'], '陈峰展1631');
+        self::assertEquals('陈峰展1631', $rows[0]['name']);
     }
 
     public function testRollback()
@@ -112,6 +117,6 @@ class TestOdbc extends TestCase
         $sql = 'SELECT * FROM "user" WHERE id = 5';
         $rows = $db->query($sql);
         var_dump($rows[0]);
-        self::assertEquals($rows[0]['name'], '陈峰展1631');
+        self::assertEquals('陈峰展1631', $rows[0]['name']);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace extend\mysql;
 
-use fize\db\extend\mysql\ModeFactory;
+use fize\database\extend\mysql\ModeFactory;
 use PHPUnit\Framework\TestCase;
 
 class TestModeFactory extends TestCase

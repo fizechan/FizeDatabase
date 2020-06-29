@@ -2,7 +2,7 @@
 
 namespace middleware\driver\odbc;
 
-use fize\db\middleware\driver\odbc\Statement;
+use fize\database\driver\odbc\Statement;
 use PHPUnit\Framework\TestCase;
 
 class TestStatement extends TestCase

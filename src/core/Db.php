@@ -104,17 +104,26 @@ abstract class Db
     /**
      * 返回操作对象
      * @return mixed
+     * @todo 考虑移除
      */
     abstract public function prototype();
 
     /**
-     * 执行一个SQL语句并返回相应结果
+     * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持问号预处理语句
      * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则直接进行循环回调
-     * @return array|int SELECT语句返回数组，其余返回受影响行数。
+     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @return array 返回结果数组
      */
     abstract public function query($sql, array $params = [], callable $callback = null);
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    abstract public function execute($sql, array $params = []);
 
     /**
      * 开始事务
@@ -330,17 +339,13 @@ abstract class Db
      */
     public function where($statements, array $parse = [])
     {
-        /**
-         * @var $Query Query
-         */
-        $Query = '\\' . __NAMESPACE__ . '\\Query';
-
-        $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
-        if (class_exists($class)) {
-            $Query = $class;
-        }
-
         if (is_array($statements)) {  //条件数组
+            $Query = '\\' . __NAMESPACE__ . '\\Query';
+
+            $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
+            if (class_exists($class)) {
+                $Query = $class;
+            }
             /**
              * @var $query Query
              */
@@ -368,17 +373,13 @@ abstract class Db
      */
     public function having($statements, array $parse = [])
     {
-        /**
-         * @var $Query Query
-         */
-        $Query = '\\' . __NAMESPACE__ . '\\Query';
-
-        $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
-        if (class_exists($class)) {
-            $Query = $class;
-        }
-
         if (is_array($statements)) {  //条件数组
+            $Query = '\\' . __NAMESPACE__ . '\\Query';
+
+            $class = '\\' . explode('\\mode\\', static::class)[0] . '\\Query';
+            if (class_exists($class)) {
+                $Query = $class;
+            }
             /**
              * @var $query Query
              */
@@ -648,7 +649,7 @@ abstract class Db
     public function insert(array $data)
     {
         $this->build("INSERT", $data);
-        return $this->query($this->sql, $this->params);
+        return $this->execute($this->sql, $this->params);
     }
 
     /**
@@ -682,7 +683,7 @@ abstract class Db
     public function delete()
     {
         $this->build("DELETE");
-        return $this->query($this->sql, $this->params);
+        return $this->execute($this->sql, $this->params);
     }
 
     /**
@@ -693,12 +694,12 @@ abstract class Db
     public function update($data)
     {
         $this->build('UPDATE', $data);
-        return $this->query($this->sql, $this->params);
+        return $this->execute($this->sql, $this->params);
     }
 
     /**
      * 执行查询，返回结果记录列表
-     * @param bool $cache 是否使用搜索缓存
+     * @param bool $cache 是否使用缓存
      * @return array
      */
     public function select($cache = true)
@@ -715,7 +716,7 @@ abstract class Db
     }
 
     /**
-     * 执行查询，获取单条记录
+     * 获取单条记录
      * @param bool $cache 是否使用搜索缓存
      * @return array 如果无记录则返回null
      */
@@ -729,8 +730,8 @@ abstract class Db
     }
 
     /**
-     * 执行查询，获取单条记录,如果未找到则抛出错误
-     * @param bool $cache 是否使用搜索缓存
+     * 获取单条记录,如果未找到则抛出错误
+     * @param bool $cache 是否使用缓存
      * @return array
      * @throws DataNotFoundException
      */

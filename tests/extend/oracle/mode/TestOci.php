@@ -2,7 +2,7 @@
 
 namespace extend\oracle\mode;
 
-use fize\db\extend\oracle\mode\Oci;
+use fize\database\extend\oracle\mode\Oci;
 use PHPUnit\Framework\TestCase;
 
 class TestOci extends TestCase
