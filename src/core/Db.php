@@ -141,6 +141,8 @@ abstract class Db
     abstract public function rollback();
 
     /**
+     * LIMIT语句
+     *
      * LIMIT语句已是事实标准
      * @param int $rows   要返回的记录数
      * @param int $offset 要设置的偏移量
@@ -347,7 +349,7 @@ abstract class Db
                 $Query = $class;
             }
             /**
-             * @var $query Query
+             * @var Query $query
              */
             $query = new $Query();
             $query->analyze($statements);
@@ -381,7 +383,7 @@ abstract class Db
                 $Query = $class;
             }
             /**
-             * @var $query Query
+             * @var Query $query
              */
             $query = new $Query();
             $query->analyze($statements);
@@ -782,14 +784,14 @@ abstract class Db
 
     /**
      * 使用模拟的 LIMIT 语句进行简易分页,支持链式调用
-     * @param int $index 页码
-     * @param int $prepg 每页记录数量
+     * @param int $page 页码
+     * @param int $size 每页记录数量
      * @return $this
      */
-    public function page($index, $prepg = 10)
+    public function page($page, $size = 10)
     {
-        $rows = $prepg;
-        $offset = ($index - 1) * $prepg;
+        $rows = $size;
+        $offset = ($page - 1) * $size;
         return $this->limit($rows, $offset);
     }
 
@@ -886,31 +888,29 @@ abstract class Db
     }
 
     /**
-     * 完整分页，执行该方法可以获取到分页记录、完整记录数、总页数，可用于分页输出
+     * 完整分页
+     *
+     * 执行该方法可以获取到分页记录、完整记录数、总页数，可用于分页输出
      * @param int $page 页码
-     * @param int $size 每页记录数量，默认每页10个
-     * @return array [记录个数, 总页数、记录数组]
-     * @todo 寻找更好的方案
+     * @param int $size 每页记录数量
+     * @return array [记录个数, 记录数组, 总页数]
      */
     public function paginate($page, $size = 10)
     {
         $sql_temp = $this->build("SELECT", [], false);
-        //var_dump($sql_temp);
         $sql_for_count = substr_replace($sql_temp, "COUNT(*)", 7, strlen($this->field));
         if (!empty($this->order)) {  //消除ORDER BY 语句对COUNT语句的影响问题
             $sql_for_count = str_replace(" ORDER BY {$this->order}", "", $sql_for_count);
         }
-        //var_dump($sql_for_count);
         $rows_for_count = $this->query($sql_for_count, $this->params);
         $count = (int)array_values($rows_for_count[0])[0];  //第一列第一个值
         $this->page($page, $size);
         $this->build("SELECT");
-        //var_dump($this->_sql);
-        $result = $this->query($this->sql, $this->params);
+        $rows = $this->query($this->sql, $this->params);
         return [
-            $count,  //记录个数
-            (int)ceil($count / $size),  //总页数
-            $result  //当前返回的分页记录数组
+            $count,
+            $rows,
+            (int)ceil($count / $size)
         ];
     }
 
@@ -919,7 +919,6 @@ abstract class Db
      * @param array $data_sets 数据集
      * @param array $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入成功的记录数
-     * @todo 非原生方法，待移除
      */
     public function insertAll(array $data_sets, array $fields = null)
     {

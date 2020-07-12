@@ -68,7 +68,7 @@ class Query
     public static function analyze(array $maps)
     {
         /**
-         * @var $query CoreQuery
+         * @var CoreQuery $query
          */
         $query = new self::$class();
         return $query->analyze($maps);
@@ -93,7 +93,7 @@ class Query
 
         for ($i = 1; $i < count($querys); $i++) {
             /**
-             * @var $query2 CoreQuery
+             * @var CoreQuery $query2
              */
             $query2 = $querys[$i];
             if (is_array($querys[$i])) {

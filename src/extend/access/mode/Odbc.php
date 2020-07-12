@@ -12,9 +12,7 @@ use fize\database\middleware\Odbc as Middleware;
  */
 class Odbc extends Db
 {
-    use Middleware {
-        Middleware::query as protected queryOdbc;
-    }
+    use Middleware;
 
     /**
      * 构造

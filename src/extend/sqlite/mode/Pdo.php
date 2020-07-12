@@ -15,7 +15,7 @@ class Pdo extends Db
     use Middleware;
 
     /**
-     * Pdo constructor.
+     * 初始化
      * @param string $filename 数据库文件路径
      */
     public function __construct($filename)

@@ -47,19 +47,12 @@ class Query
      * 设置本对象当前每个条件的组合逻辑
      *
      * 参数 `$logic` :
-     *   不区分大小写，未调用该方法是默认组合逻辑为“AND”,特殊值true表示AND，false表示OR
-     * @param string|bool $logic 组合逻辑
+     *   不区分大小写，未调用该方法是默认组合逻辑为“AND”
+     * @param string $logic 组合逻辑
      * @return $this
-     * @todo 参数 $logic 不再支持 bool 类型
      */
     public function logic($logic)
     {
-        if ($logic === true) {
-            $logic = "AND";
-        }
-        if ($logic === false) {
-            $logic = "OR";
-        }
         $this->logic = $logic;
         return $this;
     }
@@ -298,9 +291,8 @@ class Query
      * @param array|string $values      可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
      * @param string       $premodifier 前置修饰
      * @return $this
-     * @todo 方法名待优化
      */
-    public function isIn($values, $premodifier = '')
+    public function in($values, $premodifier = '')
     {
         if (is_array($values)) {
             $shuld_holder = false;  //是否需要使用占位符
@@ -342,7 +334,7 @@ class Query
      */
     public function notIn($values)
     {
-        return $this->isIn($values, 'NOT');
+        return $this->in($values, 'NOT');
     }
 
     /**
@@ -369,7 +361,6 @@ class Query
     /**
      * 使用“IS NULL”语句设置条件
      * @return $this
-     * @todo 命名待优化
      */
     public function isNull()
     {
@@ -380,7 +371,7 @@ class Query
      * 使用“IS NOT NULL”语句设置条件
      * @return $this
      */
-    public function notNull()
+    public function isNotNull()
     {
         return $this->exp("IS NOT NULL");
     }
@@ -462,7 +453,7 @@ class Query
                     $this->gt($value[1]);
                     break;
                 case "IN":
-                    $this->isIn($value[1]);
+                    $this->in($value[1]);
                     break;
                 case "LIKE":
                     $this->like($value[1]);
@@ -488,7 +479,7 @@ class Query
                     if (isset($value[1]) && !isset($value[2])) {  // is not null支持第二位进行组合逻辑判断
                         $this->logic($value[1]);
                     }
-                    $this->notNull();
+                    $this->isNotNull();
                     break;
                 case "NOT BETWEEN":
                     if ($count == 2) {  // 该种情况下，参数2必须为数组，且硬性规定必须参数数组长度为2，否则废弃

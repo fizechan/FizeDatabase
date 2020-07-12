@@ -103,7 +103,7 @@ abstract class Db extends Base
      * @param bool   $clear  是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
      */
-    public function build($action, array $data = [], $clear = true)
+    protected function build($action, array $data = [], $clear = true)
     {
         $sql = parent::build($action, $data, false);
         if (!empty($this->limit)) {

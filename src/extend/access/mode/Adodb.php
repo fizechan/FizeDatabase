@@ -45,7 +45,10 @@ class Adodb extends Db
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在access中无效
+     *
+     * 参数 `$name`:
+     *   该参数在access中无效
+     * @param string $name 应该返回ID的那个序列对象的名称
      * @return int|string
      */
     public function lastInsertId($name = null)

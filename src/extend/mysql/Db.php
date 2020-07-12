@@ -126,7 +126,7 @@ abstract class Db extends Base
      * @param bool   $clear  是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
      */
-    public function build($action, array $data = [], $clear = true)
+    protected function build($action, array $data = [], $clear = true)
     {
         if ($action == 'REPLACE') {
             $params = [];
@@ -152,19 +152,20 @@ abstract class Db extends Base
     }
 
     /**
-     * 以替换形式添加记录，正确时返回自增ID，错误返回false
+     * 以替换形式添加记录
      * @param array $data 数据
-     * @return int 正确时返回自增ID，错误返回false
+     * @return int 返回自增ID
      */
     public function replace(array $data)
     {
         $this->build("REPLACE", $data);
-        return $this->query($this->sql, $this->params);
+        $this->execute($this->sql, $this->params);
+        return $this->lastInsertId();
     }
 
     /**
      * 清空记录
-     * @return bool 成功时返回true，失败时返回false
+     * @return int 返回受影响记录数
      */
     public function truncate()
     {
@@ -172,7 +173,33 @@ abstract class Db extends Base
             return false; //TRUNCATE不允许有条件语句
         }
         $this->build("TRUNCATE");
-        return $this->query($this->sql) === false ? false : true;
+        return $this->execute($this->sql);
+    }
+
+    /**
+     * 完整分页
+     *
+     * 执行该方法可以获取到分页记录、完整记录数、总页数，可用于分页输出
+     * @param int $page 页码
+     * @param int $size 每页记录数量
+     * @return array [记录个数, 记录数组, 总页数]
+     */
+    public function paginate($page, $size = 10)
+    {
+        $this->page($page, $size);
+        if (empty($this->field)) {
+            $this->field = '*';
+        }
+        $this->field = 'SQL_CALC_FOUND_ROWS ' . $this->field;
+        $this->build("SELECT");
+        $rows = $this->query($this->sql, $this->params);
+        $count = ($this->query("SELECT FOUND_ROWS() AS total"))[0]['total'];
+        $count = (int)$count;
+        return [
+            $count,
+            $rows,
+            (int)ceil($count / $size)
+        ];
     }
 
     /**
@@ -205,7 +232,7 @@ abstract class Db extends Base
      * 批量插入记录
      * @param array $data_sets 数据集
      * @param array $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
-     * @return int 返回插入的记录数，错误返回false
+     * @return int 返回插入的记录数
      */
     public function insertAll(array $data_sets, array $fields = null)
     {
@@ -213,6 +240,6 @@ abstract class Db extends Base
         $sql = "INSERT INTO `{$this->tablePrefix}{$this->tableName}`{$this->parseInsertAllDatas($data_sets, $fields, $params)}";
         $this->sql = $sql;
         $this->params = $params;
-        return $this->query($sql, $params);
+        return $this->execute($sql, $params);
     }
 }

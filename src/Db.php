@@ -15,7 +15,7 @@ class Db
 {
 
     /**
-     * @var CoreDb  DB对象
+     * @var CoreDb DB对象
      */
     protected static $db;
 
@@ -28,7 +28,7 @@ class Db
     public function __construct($type, array $config, $mode = null)
     {
         /**
-         * @var $class ModeFactoryInterface
+         * @var ModeFactoryInterface $class
          */
         $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\ModeFactory';
         self::$db = $class::create($mode, $config);
@@ -45,22 +45,33 @@ class Db
     public static function connect($type, array $config, $mode = null)
     {
         /**
-         * @var $class ModeFactoryInterface
+         * @var ModeFactoryInterface $class
          */
         $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\ModeFactory';
         return $class::create($mode, $config);
     }
 
     /**
-     * 执行一个SQL语句并返回相应结果
-     * @param string   $sql      SQL语句，支持原生的pdo问号预处理
+     * 执行一个SQL查询
+     * @param string   $sql      SQL语句，支持问号预处理
      * @param array    $params   可选的绑定参数
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
-     * @return mixed SELECT语句返回数组，INSERT/REPLACE返回自增ID，其余返回受影响行数。
+     * @return array 返回结果数组
      */
     public static function query($sql, array $params = [], callable $callback = null)
     {
         return self::$db->query($sql, $params, $callback);
+    }
+
+    /**
+     * 执行一个SQL语句
+     * @param string $sql    SQL语句，支持问号预处理语句
+     * @param array  $params 可选的绑定参数
+     * @return int 返回受影响行数
+     */
+    public function execute($sql, array $params = [])
+    {
+        return self::$db->execute($sql, $params);
     }
 
     /**
