@@ -137,8 +137,8 @@ abstract class Db
      * LIMIT语句
      *
      * LIMIT语句已是事实标准
-     * @param int $rows   要返回的记录数
-     * @param int $offset 要设置的偏移量
+     * @param int $rows   记录数
+     * @param int $offset 偏移量
      * @return $this
      */
     abstract public function limit($rows, $offset = null);
@@ -153,7 +153,7 @@ abstract class Db
     /**
      * 安全化值
      *
-     * 由于本身存在SQL注入风险，不在业务逻辑时使用，仅供日志输出参考
+     * 由于本身存在SQL注入风险，不建议在业务逻辑使用，仅供日志输出参考
      * @param mixed $value 要安全化的值
      * @return string
      */

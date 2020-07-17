@@ -2,14 +2,14 @@
 
 namespace fize\database\extend\sqlite;
 
-use fize\database\core\Query as Base;
+use fize\database\core\Query as CoreQuery;
 
 /**
  * 查询器
  *
  * sqlite3查询器，占位符统一为问号
  */
-class Query extends Base
+class Query extends CoreQuery
 {
     use Feature;
 }

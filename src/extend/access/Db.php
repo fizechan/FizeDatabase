@@ -2,7 +2,7 @@
 
 namespace fize\database\extend\access;
 
-use fize\database\core\Db as Base;
+use fize\database\core\Db as CoreDb;
 
 /**
  * 数据库
@@ -10,7 +10,7 @@ use fize\database\core\Db as Base;
  * 使用该类库需要安装access数据库引擎(AccessDatabaseEngine)。
  * 如果使用32位驱动，则IIS程序池还得开启32位支持。
  */
-abstract class Db extends Base
+abstract class Db extends CoreDb
 {
     use Feature;
 

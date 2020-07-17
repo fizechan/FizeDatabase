@@ -4,7 +4,7 @@
 namespace fize\database\extend\oracle;
 
 
-use fize\database\core\Db as Base;
+use fize\database\core\Db as CoreDb;
 
 
 /**
@@ -12,7 +12,7 @@ use fize\database\core\Db as Base;
  *
  * Oracle的ORM模型
  */
-abstract class Db extends Base
+abstract class Db extends CoreDb
 {
     use Feature;
 
