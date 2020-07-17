@@ -44,15 +44,6 @@ trait Adodb
     }
 
     /**
-     * 返回当前使用的数据库对象原型，用于原生操作
-     * @return COM
-     */
-    public function prototype()
-    {
-        return $this->conn;
-    }
-
-    /**
      * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持模拟问号占位符预处理语句
      * @param array    $params   可选的绑定参数

@@ -57,15 +57,6 @@ class Sqlsrv extends Db
     }
 
     /**
-     * 返回当前使用的数据库对象原型，用于原生操作
-     * @return Driver
-     */
-    public function prototype()
-    {
-        return $this->driver;
-    }
-
-    /**
      * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持问号预处理
      * @param array    $params   可选的绑定参数

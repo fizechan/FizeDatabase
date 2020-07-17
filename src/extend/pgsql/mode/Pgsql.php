@@ -40,15 +40,6 @@ class Pgsql extends Db
     }
 
     /**
-     * 返回操作对象
-     * @return Driver
-     */
-    public function prototype()
-    {
-        return $this->driver;
-    }
-
-    /**
      * 执行一个SQL查询
      * @param string   $sql      SQL语句，原$*占位符统一变更为?占位符
      * @param array    $params   可选的绑定参数

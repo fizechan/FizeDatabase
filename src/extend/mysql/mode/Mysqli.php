@@ -76,15 +76,6 @@ class Mysqli extends Db
     }
 
     /**
-     * 返回当前使用的数据库对象原型，用于原生操作
-     * @return SysMysqli
-     */
-    public function prototype()
-    {
-        return $this->driver;
-    }
-
-    /**
      * 多语句查询
      * @notice 非标准用法，不建议使用
      * @param array $querys 要进行查询的多条SQL语句组成的数组

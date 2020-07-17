@@ -110,7 +110,7 @@ class Query
      * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return CoreQuery
      */
-    public static function qAnd(...$querys)
+    public static function and(...$querys)
     {
         return self::qMerge('AND', ...$querys);
     }
@@ -120,7 +120,7 @@ class Query
      * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return CoreQuery
      */
-    public static function qOr(...$querys)
+    public static function or(...$querys)
     {
         return self::qMerge('OR', ...$querys);
     }

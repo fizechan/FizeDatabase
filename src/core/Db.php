@@ -102,13 +102,6 @@ abstract class Db
     }
 
     /**
-     * 返回操作对象
-     * @return mixed
-     * @todo 考虑移除
-     */
-    abstract public function prototype();
-
-    /**
      * 执行一个SQL查询
      * @param string   $sql      SQL语句，支持问号预处理语句
      * @param array    $params   可选的绑定参数
