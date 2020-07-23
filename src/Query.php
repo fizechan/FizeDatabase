@@ -40,6 +40,8 @@ class Query
 
     /**
      * 设定当前操作对象
+     *
+     * @todo 待移除
      * @param string $object 操作对象，通常为字段名
      * @return CoreQuery
      */
@@ -83,7 +85,7 @@ class Query
     public static function qMerge($logic, ...$querys)
     {
         /**
-         * @var $query CoreQuery
+         * @var CoreQuery $query
          */
         $query = $querys[0];
         if (is_array($querys[0])) {

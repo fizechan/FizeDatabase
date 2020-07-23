@@ -20,6 +20,11 @@ class Db
     protected static $db;
 
     /**
+     * @var int 事务层级
+     */
+    protected static $transactionNestingLevel = 0;
+
+    /**
      * 初始化
      * @param string $type   数据库类型
      * @param array  $config 数据库配置项
@@ -79,7 +84,10 @@ class Db
      */
     public static function startTrans()
     {
-        self::$db->startTrans();
+        ++self::$transactionNestingLevel;
+        if (self::$transactionNestingLevel == 1) {
+            self::$db->startTrans();
+        }
     }
 
     /**
@@ -87,7 +95,10 @@ class Db
      */
     public static function commit()
     {
-        self::$db->commit();
+        if (self::$transactionNestingLevel == 1) {
+            self::$db->commit();
+        }
+        --self::$transactionNestingLevel;
     }
 
     /**
@@ -95,11 +106,18 @@ class Db
      */
     public static function rollback()
     {
-        self::$db->rollback();
+        if (self::$transactionNestingLevel == 1) {
+            self::$transactionNestingLevel = 0;
+            self::$db->rollback();
+        } else {
+            --self::$transactionNestingLevel;
+        }
     }
 
     /**
-     * 指定当前要操作的表,支持链式调用
+     * 指定当前要操作的表
+     *
+     * 支持链式调用
      * @param string $name   表名
      * @param string $prefix 表前缀，默认为null表示使用当前前缀
      * @return CoreDb
