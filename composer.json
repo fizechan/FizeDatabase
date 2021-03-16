@@ -17,9 +17,6 @@
     "php": ">=7.0.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~9.1.0"
-  },
-  "suggest": {
     "ext-com_dotnet": "*",
     "ext-iconv": "*",
     "ext-mysqli": "*",
@@ -34,6 +31,7 @@
     "ext-pdo_sqlsrv": "*",
     "ext-pgsql": "*",
     "ext-sqlite3": "*",
-    "ext-sqlsrv": "*"
+    "ext-sqlsrv": "*",
+    "phpunit/phpunit": "~9.1.0"
   }
 }
