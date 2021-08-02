@@ -36,7 +36,7 @@ class Statement
      * 取消预处理对象，但其可以再次使用execute方法运行
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE，如果当前没有预处理对象也返回false。
      */
-    public function cancel()
+    public function cancel(): bool
     {
         if (is_null($this->statement)) {
             return false;
@@ -48,7 +48,7 @@ class Statement
      * 执行当前预处理对象。
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE。
      */
-    public function execute()
+    public function execute(): bool
     {
         return sqlsrv_execute($this->statement);
     }
@@ -57,10 +57,10 @@ class Statement
      * 以数组形式遍历记录集
      * @param callable $func      遍历函数
      * @param int      $fetchType 指定遍历类型
-     * @param int      $row       设置游标类型
+     * @param int|null $row       设置游标类型
      * @param int      $offset    设置偏移量
      */
-    public function fetchArray($func, $fetchType = 2, $row = null, $offset = 0)
+    public function fetchArray(callable $func, int $fetchType = 2, int $row = null, int $offset = 0)
     {
         if (is_null($row)) {
             while ($row = sqlsrv_fetch_array($this->statement, $fetchType)) {
@@ -75,14 +75,14 @@ class Statement
 
     /**
      * 以对象形式遍历记录集
-     * @param callable $func       遍历函数
-     * @param string   $className  指定要生成实例的对象名，如果不指定，则生成其自身对象实例
-     * @param array    $ctorParams 如果对象实例化需要参数，则在此填写
-     * @param int      $row        设置游标类型
-     * @param int      $offset     设置偏移量
+     * @param callable    $func       遍历函数
+     * @param string|null $className  指定要生成实例的对象名，如果不指定，则生成其自身对象实例
+     * @param array       $ctorParams 如果对象实例化需要参数，则在此填写
+     * @param int         $row        设置游标类型
+     * @param int|null    $offset     设置偏移量
      * @todo 只实现了简单的参数带入
      */
-    public function fetchObject($func, $className = null, array $ctorParams = null, $row = 6, $offset = null)
+    public function fetchObject(callable $func, string $className = null, array $ctorParams = null, int $row = 6, int $offset = null)
     {
         while ($obj = sqlsrv_fetch_object($this->statement, $className, $ctorParams, $row, $offset)) {
             $func($obj);
@@ -91,11 +91,11 @@ class Statement
 
     /**
      * 执行该行数后指针指向下一个记录行
-     * @param int $row    设置游标类型
-     * @param int $offset 设置偏移量
+     * @param int|null $row    设置游标类型
+     * @param int|null $offset 设置偏移量
      * @return mixed 成功返回true，失败返回false，没有更多记录时返回null
      */
-    public function fetch($row = null, $offset = null)
+    public function fetch(int $row = null, int $offset = null)
     {
         if (is_null($row)) {
             return sqlsrv_fetch($this->statement);
@@ -108,7 +108,7 @@ class Statement
      * 检索准备好的语句字段的元数据。
      * @return array 失败是返回false
      */
-    public function fieldMetadata()
+    public function fieldMetadata(): array
     {
         return sqlsrv_field_metadata($this->statement);
     }
@@ -117,7 +117,7 @@ class Statement
      * 释放当前预处理语句的所有资源
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE。
      */
-    public function freeStmt()
+    public function freeStmt(): bool
     {
         $result = sqlsrv_free_stmt($this->statement);
         $this->statement = null;
@@ -126,11 +126,11 @@ class Statement
 
     /**
      * 获取当前行的指定字段值
-     * @param int $fieldIndex 字段下标，以0开始。
-     * @param int $getAsType  指定类型。
+     * @param int      $fieldIndex 字段下标，以0开始。
+     * @param int|null $getAsType  指定类型。
      * @return mixed
      */
-    public function getField($fieldIndex, $getAsType = null)
+    public function getField(int $fieldIndex, int $getAsType = null)
     {
         if (is_null($getAsType)) {
             return sqlsrv_get_field($this->statement, $fieldIndex);
@@ -143,7 +143,7 @@ class Statement
      * 判断当前预处理结果是否有记录
      * @return bool
      */
-    public function hasRows()
+    public function hasRows(): bool
     {
         return sqlsrv_has_rows($this->statement);
     }
@@ -161,7 +161,7 @@ class Statement
      * 获取当前记录集的字段个数
      * @return int 如果失败返回false
      */
-    public function numFields()
+    public function numFields(): int
     {
         return sqlsrv_num_fields($this->statement);
     }
@@ -170,7 +170,7 @@ class Statement
      * 获取当前记录集的记录个数
      * @return int 如果失败返回false
      */
-    public function numRows()
+    public function numRows(): int
     {
         return sqlsrv_num_rows($this->statement);
     }
@@ -179,7 +179,7 @@ class Statement
      * 返回当前预处理语句的影响行数。
      * @return int
      */
-    public function rowsAffected()
+    public function rowsAffected(): int
     {
         return sqlsrv_rows_affected($this->statement);
     }
@@ -188,7 +188,7 @@ class Statement
      * 如果绑定参数中含有流式数据，需要以此方法发送数据到数据库服务器。
      * @return bool 成功返回true，失败返回false。
      */
-    public function sendStreamData()
+    public function sendStreamData(): bool
     {
         return sqlsrv_send_stream_data($this->statement);
     }

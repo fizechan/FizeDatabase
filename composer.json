@@ -1,4 +1,7 @@
 {
+  "name": "fize/database",
+  "description": "一个全功能的，易于扩展的数据库类、ORM类。",
+  "license": "MIT",
   "authors": [
     {
       "name": "FizeChan",
@@ -10,13 +13,13 @@
       "fize\\database\\": "src"
     }
   },
-  "description": "一个全功能的，易于扩展的数据库类、ORM类。",
-  "license": "MIT",
-  "name": "fize/database",
   "require": {
     "php": ">=7.0.0"
   },
   "require-dev": {
+    "phpunit/phpunit": "^9.5.0"
+  },
+  "suggest": {
     "ext-com_dotnet": "*",
     "ext-iconv": "*",
     "ext-mysqli": "*",
@@ -31,7 +34,6 @@
     "ext-pdo_sqlsrv": "*",
     "ext-pgsql": "*",
     "ext-sqlite3": "*",
-    "ext-sqlsrv": "*",
-    "phpunit/phpunit": "~9.1.0"
+    "ext-sqlsrv": "*"
   }
 }

@@ -25,14 +25,14 @@ class Oci extends Db
 
     /**
      * 初始化
-     * @param string $username          用户名
-     * @param string $password          密码
-     * @param string $connection_string 连接串
-     * @param string $character_set     编码
-     * @param int    $session_mode      会话模式
-     * @param int    $connect_type      连接模式
+     * @param string      $username          用户名
+     * @param string      $password          密码
+     * @param string|null $connection_string 连接串
+     * @param string|null $character_set     编码
+     * @param int|null    $session_mode      会话模式
+     * @param int         $connect_type      连接模式
      */
-    public function __construct($username, $password, $connection_string = null, $character_set = null, $session_mode = null, $connect_type = 1)
+    public function __construct(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1)
     {
         $this->driver = new Driver($username, $password, $connection_string, $character_set, $session_mode, $connect_type);
     }
@@ -52,7 +52,7 @@ class Oci extends Db
      * @param callable $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         if ($params) {  //将?占位符还原为:$*占位符以方便处理
             $parts = explode('?', $sql);
@@ -89,7 +89,7 @@ class Oci extends Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         if ($params) {  //将?占位符还原为:$*占位符以方便处理
             $parts = explode('?', $sql);
@@ -140,10 +140,10 @@ class Oci extends Db
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在oracle中必须指定
+     * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在oracle中必须指定
      * @return int|string
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
         $sql = "SELECT {$name}.currval FROM dual";
         $stmt = $this->driver->parse($sql);

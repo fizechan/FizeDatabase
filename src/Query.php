@@ -21,18 +21,18 @@ class Query
      * 初始化
      * @param string $db_type 数据库类型
      */
-    public function __construct($db_type)
+    public function __construct(string $db_type)
     {
         self::$class = '\\' . __NAMESPACE__ . '\\extend\\' . $db_type . '\\Query';
     }
 
     /**
      * 获取指定数据库类型的查询器对象
-     * @param string $db_type 数据库类型
-     * @param string $object  要进行判断的对象，一般为字段名
+     * @param string      $db_type 数据库类型
+     * @param string|null $object  要进行判断的对象，一般为字段名
      * @return CoreQuery
      */
-    public static function construct($db_type, $object = null)
+    public static function construct(string $db_type, string $object = null): CoreQuery
     {
         $class = '\\' . __NAMESPACE__ . '\\extend\\' . $db_type . '\\Query';
         return new $class($object);
@@ -41,11 +41,11 @@ class Query
     /**
      * 设定当前操作对象
      *
-     * @todo 待移除
-     * @param string $object 操作对象，通常为字段名
+     * @param string|null $object 操作对象，通常为字段名
      * @return CoreQuery
+     * @deprecated 待移除
      */
-    public static function object($object = null)
+    public static function object(string $object = null): CoreQuery
     {
         return new self::$class($object);
     }
@@ -57,7 +57,7 @@ class Query
      * @param string $field_name 字段名
      * @return CoreQuery
      */
-    public static function field($field_name)
+    public static function field(string $field_name): CoreQuery
     {
         return new self::$class($field_name);
     }
@@ -67,7 +67,7 @@ class Query
      * @param array $maps 一定格式的条件数组
      * @return CoreQuery
      */
-    public static function analyze(array $maps)
+    public static function analyze(array $maps): CoreQuery
     {
         /**
          * @var CoreQuery $query
@@ -82,7 +82,7 @@ class Query
      * @param array  $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return CoreQuery
      */
-    public static function qMerge($logic, ...$querys)
+    public static function qMerge(string $logic, ...$querys): CoreQuery
     {
         /**
          * @var CoreQuery $query
@@ -112,7 +112,7 @@ class Query
      * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return CoreQuery
      */
-    public static function and(...$querys)
+    public static function and(...$querys): CoreQuery
     {
         return self::qMerge('AND', ...$querys);
     }
@@ -122,7 +122,7 @@ class Query
      * @param array $querys 可以是Query对象或者指可以使用analyze()的数组
      * @return CoreQuery
      */
-    public static function or(...$querys)
+    public static function or(...$querys): CoreQuery
     {
         return self::qMerge('OR', ...$querys);
     }

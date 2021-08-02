@@ -18,9 +18,9 @@ class ModeFactory implements ModeFactoryInterface
      * @return Db
      * @throws Exception
      */
-    public static function create($mode, array $config)
+    public static function create(string $mode, array $config): Db
     {
-        $mode = $mode ? $mode : 'pdo';
+        $mode = $mode ?: 'pdo';
         $default_config = [
             'port'         => '5432',
             'charset'      => 'UTF8',
@@ -41,14 +41,14 @@ class ModeFactory implements ModeFactoryInterface
                 $dbname = $config['dbname'];
                 $user = $config['user'];
                 $password = $config['password'];
-                $connection_string = "host={$host} port={$port} dbname={$dbname} user={$user} password={$password}";
+                $connection_string = "host=$host port=$port dbname=$dbname user=$user password=$password";
                 $db = Mode::pgsql($connection_string, $config['pconnect'], $config['connect_type']);
                 break;
             case 'pdo':
                 $db = Mode::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['opts']);
                 break;
             default:
-                throw new Exception("error db mode: {$mode}");
+                throw new Exception("error db mode: $mode");
         }
         $db->prefix($config['prefix']);
         return $db;

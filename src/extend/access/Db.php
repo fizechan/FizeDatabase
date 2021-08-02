@@ -19,7 +19,7 @@ abstract class Db extends CoreDb
      * @param mixed $value 要安全化的值
      * @return string
      */
-    protected function parseValue($value)
+    protected function parseValue($value): string
     {
         if (is_string($value)) {
             $value = "'" . str_replace("'", "''", $value) . "'";
@@ -51,7 +51,7 @@ abstract class Db extends CoreDb
      * @param int $rows 要返回的记录数
      * @return $this
      */
-    public function top($rows)
+    public function top(int $rows): Db
     {
         $this->top = $rows;
         return $this;
@@ -59,11 +59,11 @@ abstract class Db extends CoreDb
 
     /**
      * 模拟LIMIT语句,支持链式调用
-     * @param int $rows   要返回的记录数
-     * @param int $offset 要设置的偏移量
+     * @param int      $rows   要返回的记录数
+     * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit($rows, $offset = null)
+    public function limit(int $rows, int $offset = null): Db
     {
         $this->size = $rows;
         $this->offset = $offset;

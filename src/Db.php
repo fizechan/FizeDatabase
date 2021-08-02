@@ -26,11 +26,11 @@ class Db
 
     /**
      * 初始化
-     * @param string $type   数据库类型
-     * @param array  $config 数据库配置项
-     * @param string $mode   连接模式
+     * @param string      $type   数据库类型
+     * @param array       $config 数据库配置项
+     * @param string|null $mode   连接模式
      */
-    public function __construct($type, array $config, $mode = null)
+    public function __construct(string $type, array $config, string $mode = null)
     {
         /**
          * @var ModeFactoryInterface $class
@@ -42,12 +42,12 @@ class Db
 
     /**
      * 取得一个新的连接
-     * @param string $type   数据库类型
-     * @param array  $config 数据库配置项
-     * @param string $mode   连接模式
+     * @param string      $type   数据库类型
+     * @param array       $config 数据库配置项
+     * @param string|null $mode   连接模式
      * @return CoreDb
      */
-    public static function connect($type, array $config, $mode = null)
+    public static function connect(string $type, array $config, string $mode = null): CoreDb
     {
         /**
          * @var ModeFactoryInterface $class
@@ -63,7 +63,7 @@ class Db
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public static function query($sql, array $params = [], callable $callback = null)
+    public static function query(string $sql, array $params = [], callable $callback = null): array
     {
         return self::$db->query($sql, $params, $callback);
     }
@@ -74,7 +74,7 @@ class Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         return self::$db->execute($sql, $params);
     }
@@ -118,11 +118,11 @@ class Db
      * 指定当前要操作的表
      *
      * 支持链式调用
-     * @param string $name   表名
-     * @param string $prefix 表前缀，默认为null表示使用当前前缀
+     * @param string      $name   表名
+     * @param string|null $prefix 表前缀，默认为null表示使用当前前缀
      * @return CoreDb
      */
-    public static function table($name, $prefix = null)
+    public static function table(string $name, string $prefix = null): CoreDb
     {
         return self::$db->table($name, $prefix);
     }
@@ -134,7 +134,7 @@ class Db
      * @param bool $real 是否返回最终SQL语句而非预处理语句
      * @return string
      */
-    public static function getLastSql($real = false)
+    public static function getLastSql(bool $real): string
     {
         return self::$db->getLastSql($real);
     }

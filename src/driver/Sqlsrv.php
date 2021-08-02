@@ -24,7 +24,7 @@ class Sqlsrv
      * @param array  $connectionInfo 其他信息
      * @throws Exception
      */
-    public function __construct($serverName, array $connectionInfo = null)
+    public function __construct(string $serverName, array $connectionInfo = null)
     {
         $this->conn = self::connect($serverName, $connectionInfo);
         if (!$this->conn) {
@@ -48,7 +48,7 @@ class Sqlsrv
      * 开始一个事务
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE。
      */
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         return sqlsrv_begin_transaction($this->conn);
     }
@@ -57,7 +57,7 @@ class Sqlsrv
      * 返回关于客户端和指定连接的信息。
      * @return array
      */
-    public function clientInfo()
+    public function clientInfo(): array
     {
         return sqlsrv_client_info($this->conn);
     }
@@ -66,7 +66,7 @@ class Sqlsrv
      * 关闭当前数据库连接
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE。
      */
-    public function close()
+    public function close(): bool
     {
         return sqlsrv_close($this->conn);
     }
@@ -75,7 +75,7 @@ class Sqlsrv
      * 提交当前事务
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE。
      */
-    public function commit()
+    public function commit(): bool
     {
         return sqlsrv_commit($this->conn);
     }
@@ -86,7 +86,7 @@ class Sqlsrv
      * @param mixed  $value   设置值。可能的值参照PHP手册
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE。
      */
-    public static function configure($setting, $value)
+    public static function configure(string $setting, $value): bool
     {
         return sqlsrv_configure($setting, $value);
     }
@@ -97,17 +97,17 @@ class Sqlsrv
      * @param array  $connectionInfo 设置项
      * @return resource
      */
-    public static function connect($serverName, array $connectionInfo = null)
+    public static function connect(string $serverName, array $connectionInfo = null)
     {
         return sqlsrv_connect($serverName, $connectionInfo);
     }
 
     /**
      * 获取数据库连接的所有错误，
-     * @param int $errorsOrWarnings 可选值：SQLSRV_ERR_ALL, SQLSRV_ERR_ERRORS, SQLSRV_ERR_WARNINGS.
+     * @param int|null $errorsOrWarnings 可选值：SQLSRV_ERR_ALL, SQLSRV_ERR_ERRORS, SQLSRV_ERR_WARNINGS.
      * @return array 键名包括SQLSTATE、code、message，没有错误时返回null
      */
-    public static function errors($errorsOrWarnings = null)
+    public static function errors(int $errorsOrWarnings = null)
     {
         return sqlsrv_errors($errorsOrWarnings);
     }
@@ -117,7 +117,7 @@ class Sqlsrv
      * @param string $setting 设置名
      * @return mixed
      */
-    public static function getConfig($setting)
+    public static function getConfig(string $setting)
     {
         return sqlsrv_get_config($setting);
     }
@@ -129,7 +129,7 @@ class Sqlsrv
      * @param array  $options 其他相关参数。
      * @return Statement 使用该对象来进行实际查询
      */
-    public function prepare($sql, array $params = null, array $options = null)
+    public function prepare(string $sql, array $params = null, array $options = null): Statement
     {
         if (is_null($options)) {
             $stmt = sqlsrv_prepare($this->conn, $sql, $params);
@@ -146,7 +146,7 @@ class Sqlsrv
      * @param array  $options 其他相关参数。
      * @return Statement 使用该对象来进行实际查询
      */
-    public function query($sql, array $params = null, array $options = null)
+    public function query(string $sql, array $params = null, array $options = null): Statement
     {
         if (is_null($options)) {
             $stmt = sqlsrv_query($this->conn, $sql, $params);
@@ -160,7 +160,7 @@ class Sqlsrv
      * 事务回滚
      * @return bool 成功返回true，失败返回false。
      */
-    public function rollback()
+    public function rollback(): bool
     {
         return sqlsrv_rollback($this->conn);
     }
@@ -169,7 +169,7 @@ class Sqlsrv
      * 获取数据库服务器信息。
      * @return array
      */
-    public function serverInfo()
+    public function serverInfo(): array
     {
         return sqlsrv_server_info($this->conn);
     }

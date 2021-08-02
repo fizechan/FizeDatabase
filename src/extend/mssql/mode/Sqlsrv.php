@@ -29,14 +29,14 @@ class Sqlsrv extends Db
      * @param mixed  $port    数据库服务器端口，选填，默认是1433(默认设置)
      * @param string $charset 指定数据库编码，默认GBK,(不区分大小写)
      */
-    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "GBK")
+    public function __construct(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "GBK")
     {
         $charset = strtoupper($charset);
         $charset_map = [
             'UTF8' => 'UTF-8',
         ];
-        $charset = isset($charset_map[$charset]) ? $charset_map[$charset] : $charset;
-        $server = empty($port) ? $host : "{$host},{$port}";
+        $charset = $charset_map[$charset] ?? $charset;
+        $server = empty($port) ? $host : "$host,$port";
         $config = [
             'UID'      => $user,
             'PWD'      => $pwd,
@@ -63,7 +63,7 @@ class Sqlsrv extends Db
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         $result = $this->driver->query($sql, $params);
         $rows = [];
@@ -83,7 +83,7 @@ class Sqlsrv extends Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         $result = $this->driver->query($sql, $params);
         return $result->rowsAffected();
@@ -115,10 +115,10 @@ class Sqlsrv extends Db
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在mssql中无效
+     * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在mssql中无效
      * @return int|string
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
         $sql = "SELECT @@IDENTITY";
         $result = $this->driver->query($sql);

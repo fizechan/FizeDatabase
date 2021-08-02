@@ -3,9 +3,9 @@
 namespace fize\database\driver;
 
 use Exception;
+use fize\database\driver\oci\Statement;
 use OCI_Collection;
 use OCI_Lob;
-use fize\database\driver\oci\Statement;
 
 /**
  * Oci驱动
@@ -42,14 +42,14 @@ class Oci
 
     /**
      * 构造，创建连接
-     * @param string $username          用户名
-     * @param string $password          密码
-     * @param string $connection_string 连接串
-     * @param string $character_set     编码
-     * @param int    $session_mode      会话模式
-     * @param int    $connect_type      连接模式
+     * @param string      $username          用户名
+     * @param string      $password          密码
+     * @param string|null $connection_string 连接串
+     * @param string|null $character_set     编码
+     * @param int|null    $session_mode      会话模式
+     * @param int         $connect_type      连接模式
      */
-    public function __construct($username, $password, $connection_string = null, $character_set = null, $session_mode = null, $connect_type = 1)
+    public function __construct(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1)
     {
         switch ($connect_type) {
             case self::CONNECT_TYPE_DEFALUT:
@@ -76,7 +76,7 @@ class Oci
      * 返回Oracle客户端库版本
      * @return string
      */
-    public static function clientVersion()
+    public static function clientVersion(): string
     {
         return oci_client_version();
     }
@@ -104,21 +104,21 @@ class Oci
      * 提交未执行的事务处理
      * @return bool
      */
-    public function commit()
+    public function commit(): bool
     {
         return oci_commit($this->connection);
     }
 
     /**
      * 建立一个到 Oracle 服务器的连接
-     * @param string $username          用户名
-     * @param string $password          密码
-     * @param string $connection_string 连接串
-     * @param string $character_set     编码
-     * @param int    $session_mode      会话模式
+     * @param string      $username          用户名
+     * @param string      $password          密码
+     * @param string|null $connection_string 连接串
+     * @param string|null $character_set     编码
+     * @param int|null    $session_mode      会话模式
      * @throws Exception
      */
-    public function connect($username, $password, $connection_string = null, $character_set = null, $session_mode = null)
+    public function connect(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null)
     {
         if ($this->connection) {
             $this->close();
@@ -135,7 +135,7 @@ class Oci
      * 返回上一个错误
      * @return array
      */
-    public function error()
+    public function error(): array
     {
         if (is_null($this->connection)) {
             return oci_error();
@@ -148,7 +148,7 @@ class Oci
      * @param OCI_Lob|resource $descriptor 描述符
      * @return bool
      */
-    public static function freeDescriptor($descriptor)
+    public static function freeDescriptor($descriptor): bool
     {
         return oci_free_descriptor($descriptor);
     }
@@ -157,7 +157,7 @@ class Oci
      * 打开或关闭内部调试输出
      * @param int $onoff 设置 onoff 为 0 关闭调试输出，为 1 则打开。
      */
-    public static function internalDebug($onoff)
+    public static function internalDebug(int $onoff)
     {
         oci_internal_debug($onoff);
     }
@@ -170,7 +170,7 @@ class Oci
      * @return bool 成功时返回 TRUE， 或者在失败时返回 FALSE
      * @todo 测试未通过
      */
-    public static function lobCopy($lob_to, $lob_from, $length = 0)
+    public static function lobCopy(OCI_Lob $lob_to, OCI_Lob $lob_from, int $length = 0): bool
     {
         return oci_lob_copy($lob_to, $lob_from, $length);
     }
@@ -182,31 +182,31 @@ class Oci
      * @return bool
      * @todo 测试未通过
      */
-    public static function lobIsEqual(OCI_Lob $lob1, OCI_Lob $lob2)
+    public static function lobIsEqual(OCI_Lob $lob1, OCI_Lob $lob2): bool
     {
         return oci_lob_is_equal($lob1, $lob2);
     }
 
     /**
      * 分配新的 collection 对象
-     * @param string $tdo    有效的名字类型（大写）。
-     * @param string $schema 指向建立名字对象的架构
+     * @param string      $tdo    有效的名字类型（大写）。
+     * @param string|null $schema 指向建立名字对象的架构
      * @return OCI_Collection 出错时返回false
      */
-    public function newCollection($tdo, $schema = null)
+    public function newCollection(string $tdo, string $schema = null): OCI_Collection
     {
         return oci_new_collection($this->connection, $tdo, $schema);
     }
 
     /**
      * 建定一个到 Oracle 服务器的新连接
-     * @param string $username          用户名
-     * @param string $password          密码
-     * @param string $connection_string 连接串
-     * @param string $character_set     编码
-     * @param int    $session_mode      会话模式
+     * @param string      $username          用户名
+     * @param string      $password          密码
+     * @param string|null $connection_string 连接串
+     * @param string|null $character_set     编码
+     * @param int|null    $session_mode      会话模式
      */
-    public function newConnect($username, $password, $connection_string = null, $character_set = null, $session_mode = null)
+    public function newConnect(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null)
     {
         if ($this->connection) {
             $this->close();
@@ -223,7 +223,7 @@ class Oci
      * 分配并返回一个新的游标
      * @return Statement 返回预处理对象
      */
-    public function newCursor()
+    public function newCursor(): Statement
     {
         $cursor = oci_new_cursor($this->connection);
         return new Statement($cursor);
@@ -234,7 +234,7 @@ class Oci
      * @param int $type 类型
      * @return OCI_Lob|resource
      */
-    public function newDescriptor($type = 50)
+    public function newDescriptor(int $type = 50)
     {
         return oci_new_descriptor($this->connection, $type);
     }
@@ -244,7 +244,7 @@ class Oci
      * @param string $query SQL语句
      * @return Statement 返回预处理对象
      */
-    public function parse($query)
+    public function parse(string $query): Statement
     {
         $statement = oci_parse($this->connection, $query);
         return new Statement($statement);
@@ -257,20 +257,20 @@ class Oci
      * @param string $new_password 新密码
      * @return bool
      */
-    public function passwordChange($username, $old_password, $new_password)
+    public function passwordChange(string $username, string $old_password, string $new_password): bool
     {
         return oci_password_change($this->connection, $username, $old_password, $new_password);
     }
 
     /**
      * 使用一个持久连接连到 Oracle 数据库
-     * @param string $username          用户名
-     * @param string $password          密码
-     * @param string $connection_string 连接串
-     * @param string $character_set     编码
-     * @param int    $session_mode      会话模式
+     * @param string      $username          用户名
+     * @param string      $password          密码
+     * @param string|null $connection_string 连接串
+     * @param string|null $character_set     编码
+     * @param int|null    $session_mode      会话模式
      */
-    public function pconnect($username, $password, $connection_string = null, $character_set = null, $session_mode = null)
+    public function pconnect(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null)
     {
         if ($this->connection) {
             $this->close();
@@ -289,7 +289,7 @@ class Oci
      * @return bool
      * @since PHP7.2
      */
-    public function registerTafCallback($callback_fn)
+    public function registerTafCallback($callback_fn): bool
     {
         return oci_register_taf_callback($this->connection, $callback_fn);
     }
@@ -298,7 +298,7 @@ class Oci
      * 回滚未提交的事务
      * @return bool
      */
-    public function rollback()
+    public function rollback(): bool
     {
         return oci_rollback($this->connection);
     }
@@ -307,7 +307,7 @@ class Oci
      * 返回服务器版本信息
      * @return string
      */
-    public function serverVersion()
+    public function serverVersion(): string
     {
         return oci_server_version($this->connection);
     }
@@ -317,7 +317,7 @@ class Oci
      * @param string $action_name 动作名
      * @return bool
      */
-    public function setAction($action_name)
+    public function setAction(string $action_name): bool
     {
         return oci_set_action($this->connection, $action_name);
     }
@@ -328,7 +328,7 @@ class Oci
      * @return mixed
      * @since Oracle 18以上版本才支持该方法
      */
-    public function setCallTimeout($time_out)
+    public function setCallTimeout(int $time_out)
     {
         return oci_set_call_timeout($this->connection, $time_out);
     }
@@ -338,7 +338,7 @@ class Oci
      * @param string $client_identifier 标识符
      * @return bool
      */
-    public function setClientIdentifier($client_identifier)
+    public function setClientIdentifier(string $client_identifier): bool
     {
         return oci_set_client_identifier($this->connection, $client_identifier);
     }
@@ -348,7 +348,7 @@ class Oci
      * @param string $client_info 客户端信息
      * @return bool
      */
-    public function setClientInfo($client_info)
+    public function setClientInfo(string $client_info): bool
     {
         return oci_set_client_info($this->connection, $client_info);
     }
@@ -359,7 +359,7 @@ class Oci
      * @return bool
      * @since Oracle 12以上版本才支持该方法
      */
-    public function setDbOperation($dbop)
+    public function setDbOperation(string $dbop): bool
     {
         return oci_set_db_operation($this->connection, $dbop);
     }
@@ -369,7 +369,7 @@ class Oci
      * @param string $edition 版本
      * @return bool
      */
-    public static function setEdition($edition)
+    public static function setEdition(string $edition): bool
     {
         return oci_set_edition($edition);
     }
@@ -379,7 +379,7 @@ class Oci
      * @param $module_name
      * @return bool
      */
-    public function setModuleName($module_name)
+    public function setModuleName($module_name): bool
     {
         return oci_set_module_name($this->connection, $module_name);
     }
@@ -389,7 +389,7 @@ class Oci
      * @return bool
      * @since PHP7.2
      */
-    public function unregisterTafCallback()
+    public function unregisterTafCallback(): bool
     {
         return oci_unregister_taf_callback($this->connection);
     }

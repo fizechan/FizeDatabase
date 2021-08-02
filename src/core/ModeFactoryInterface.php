@@ -13,5 +13,5 @@ interface ModeFactoryInterface
      * @param array  $config 参数选项
      * @return Db
      */
-    public static function create($mode, array $config);
+    public static function create(string $mode, array $config);
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace fize\database\extend\oracle;
-
 
 use fize\database\core\Db as CoreDb;
 
@@ -23,16 +21,16 @@ abstract class Db extends CoreDb
 
     /**
      * 设置LIMIT,支持链式调用
-     * @param int $rows   要返回的记录数
-     * @param int $offset 要设置的偏移量
+     * @param int      $rows   要返回的记录数
+     * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit($rows, $offset = null)
+    public function limit(int $rows, int $offset = null)
     {
         if (is_null($offset)) {
             $this->limit = (string)$rows;
         } else {
-            $this->limit = (string)$offset . "," . (string)$rows;
+            $this->limit = $offset . "," . $rows;
         }
         return $this;
     }
@@ -42,7 +40,7 @@ abstract class Db extends CoreDb
      * @param string $table 表名
      * @return $this
      */
-    public function naturalJoin($table)
+    public function naturalJoin(string $table): Db
     {
         return $this->join($table, "NATURAL JOIN");
     }
@@ -52,7 +50,7 @@ abstract class Db extends CoreDb
      * @param string $table 表名
      * @return $this
      */
-    public function naturalLeftJoin($table)
+    public function naturalLeftJoin(string $table): Db
     {
         return $this->join($table, "NATURAL LEFT JOIN");
     }
@@ -62,7 +60,7 @@ abstract class Db extends CoreDb
      * @param string $table 表名
      * @return $this
      */
-    public function naturalLeftOuterJoin($table)
+    public function naturalLeftOuterJoin(string $table): Db
     {
         return $this->join($table, "NATURAL LEFT OUTER JOIN");
     }
@@ -72,7 +70,7 @@ abstract class Db extends CoreDb
      * @param string $table 表名
      * @return $this
      */
-    public function naturalRightJoin($table)
+    public function naturalRightJoin(string $table): Db
     {
         return $this->join($table, "NATURAL RIGHT JOIN");
     }
@@ -82,7 +80,7 @@ abstract class Db extends CoreDb
      * @param string $table 表名
      * @return $this
      */
-    public function naturalRightOuterJoin($table)
+    public function naturalRightOuterJoin(string $table): Db
     {
         return $this->join($table, "NATURAL RIGHT OUTER JOIN");
     }
@@ -103,11 +101,11 @@ abstract class Db extends CoreDb
      * @param bool   $clear  是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
      */
-    protected function build($action, array $data = [], $clear = true)
+    protected function build(string $action, array $data = [], bool $clear = true): string
     {
         $sql = parent::build($action, $data, false);
         if (!empty($this->limit)) {
-            $sql .= " LIMIT {$this->limit}";
+            $sql .= " LIMIT $this->limit";
         }
         $this->sql = $sql;
         if ($clear) {

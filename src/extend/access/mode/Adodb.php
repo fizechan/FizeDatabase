@@ -18,16 +18,16 @@ class Adodb extends Db
     /**
      * 构造时创建Adodb连接
      * @see https://www.connectionstrings.com/ace-oledb-12-0/
-     * @param string $file   数据库文件路径
-     * @param string $pwd    密码
-     * @param string $driver 驱动名
+     * @param string      $file   数据库文件路径
+     * @param string|null $pwd    密码
+     * @param string|null $driver 驱动名
      */
-    public function __construct($file, $pwd = null, $driver = null)
+    public function __construct(string $file, string $pwd = null, string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "Microsoft.ACE.OLEDB.12.0";
         }
-        $dsn = "Provider={$driver};Data Source=" . realpath($file) . ";";
+        $dsn = "Provider=$driver;Data Source=" . realpath($file) . ";";
         if ($pwd) {
             $dsn .= "Jet OLEDB:Database Password=" . $pwd . ";";
         }
@@ -48,10 +48,10 @@ class Adodb extends Db
      *
      * 参数 `$name`:
      *   该参数在access中无效
-     * @param string $name 应该返回ID的那个序列对象的名称
+     * @param string|null $name 应该返回ID的那个序列对象的名称
      * @return int|string
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
         $sql = 'SELECT @@IDENTITY AS id';
         $rows = $this->query($sql);

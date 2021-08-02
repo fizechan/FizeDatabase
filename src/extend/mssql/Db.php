@@ -35,7 +35,7 @@ abstract class Db extends CoreDb
      * @param mixed $value 要安全化的值
      * @return string
      */
-    protected function parseValue($value)
+    protected function parseValue($value): string
     {
         if (is_string($value)) {
             $value = "'" . str_replace("'", "''", $value) . "'";
@@ -50,7 +50,7 @@ abstract class Db extends CoreDb
     /**
      * @param bool $bool 设置是否支持新特性
      */
-    public function newFeature($bool)
+    public function newFeature(bool $bool)
     {
         $this->new_feature = $bool;
     }
@@ -60,7 +60,7 @@ abstract class Db extends CoreDb
      * @param int $rows 要返回的记录数
      * @return $this
      */
-    public function top($rows)
+    public function top(int $rows): Db
     {
         $this->size = $rows;
         return $this;
@@ -68,11 +68,11 @@ abstract class Db extends CoreDb
 
     /**
      * 模拟MySQL的LIMIT语句,支持链式调用
-     * @param int $rows   要返回的记录数
-     * @param int $offset 要设置的偏移量
+     * @param int      $rows   要返回的记录数
+     * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit($rows, $offset = null)
+    public function limit(int $rows, int $offset = null)
     {
         $this->size = $rows;
         $this->offset = $offset;
@@ -81,44 +81,44 @@ abstract class Db extends CoreDb
 
     /**
      * CROSS JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function crossJoin($table, $on = null)
+    public function crossJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "CROSS JOIN", $on);
     }
 
     /**
      * FULL JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function fullJoin($table, $on = null)
+    public function fullJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "FULL JOIN", $on);
     }
 
     /**
      * LEFT OUTER JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function leftOuterJoin($table, $on = null)
+    public function leftOuterJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "LEFT OUTER JOIN", $on);
     }
 
     /**
      * RIGHT OUTER JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function rightOuterJoin($table, $on = null)
+    public function rightOuterJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "RIGHT OUTER JOIN", $on);
     }
@@ -130,7 +130,7 @@ abstract class Db extends CoreDb
      * @param bool   $clear  是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
      */
-    protected function build($action, array $data = [], $clear = true)
+    protected function build(string $action, array $data = [], bool $clear = true): string
     {
         if ($action == 'TRUNCATE') {
             $sql = "TRUNCATE TABLE {$this->formatTable($this->tablePrefix . $this->tableName)}";
@@ -169,8 +169,8 @@ abstract class Db extends CoreDb
 
                         $sql = parent::build($action, $data, false);
                         $top_full = $this->size + $this->offset;
-                        $sql = substr_replace($sql, " TOP {$top_full}", 6, 0);
-                        $sql = "SELECT TOP {$this->size} * FROM ({$sql}) AS _TT_ WHERE _TT_._RN_ > {$this->offset}";
+                        $sql = substr_replace($sql, " TOP $top_full", 6, 0);
+                        $sql = "SELECT TOP $this->size * FROM ($sql) AS _TT_ WHERE _TT_._RN_ > {$this->offset}";
                     }
                     $this->sql = $sql;
                 }
@@ -189,7 +189,7 @@ abstract class Db extends CoreDb
      * @param bool $cache 是否使用搜索缓存，默认true
      * @return array
      */
-    public function select($cache = true)
+    public function select(bool $cache = true): array
     {
         $rows = parent::select($cache);
         if (!$this->new_feature) {
@@ -213,7 +213,7 @@ abstract class Db extends CoreDb
      * @param int $size 每页记录数量，默认每页10个
      * @return array [记录个数, 记录数组, 总页数]
      */
-    public function paginate($page, $size = 10)
+    public function paginate(int $page, int $size = 10): array
     {
         $result = parent::paginate($page, $size);
         if (!$this->new_feature) {

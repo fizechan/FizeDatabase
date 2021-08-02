@@ -16,25 +16,25 @@ class Pdo extends Db
 
     /**
      * Pdo方式构造
-     * @param string $host    服务器地址，必填
-     * @param string $user    用户名，必填
-     * @param string $pwd     用户密码，必填
-     * @param string $dbname  数据库名，必填
-     * @param int    $port    端口号，选填
-     * @param string $charset 指定编码，选填，默认utf8
-     * @param array  $opts    PDO连接的其他选项，选填
+     * @param string   $host    服务器地址，必填
+     * @param string   $user    用户名，必填
+     * @param string   $pwd     用户密码，必填
+     * @param string   $dbname  数据库名，必填
+     * @param int|null $port    端口号，选填
+     * @param string   $charset 指定编码，选填，默认utf8
+     * @param array    $opts    PDO连接的其他选项，选填
      */
-    public function __construct($host, $user, $pwd, $dbname, $port = null, $charset = "utf8", array $opts = [])
+    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [])
     {
-        $dsn = "oci:dbname={$host}";
+        $dsn = "oci:dbname=$host";
         if (!empty($port)) {
-            $dsn .= ":{$port}";
+            $dsn .= ":$port";
         }
-        $dsn .= "/{$dbname}";
+        $dsn .= "/$dbname";
         if (!empty($charset)) {
-            $dsn .= ";charset={$charset}";
+            $dsn .= ";charset=$charset";
         }
-        var_dump($dsn);
+//        var_dump($dsn);
         $this->pdoConstruct($dsn, $user, $pwd, $opts);
     }
 

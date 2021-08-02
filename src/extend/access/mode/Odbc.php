@@ -16,11 +16,11 @@ class Odbc extends Db
 
     /**
      * 构造
-     * @param string $file   Access文件路径
-     * @param string $pwd    用户密码
-     * @param string $driver 指定ODBC驱动名称。
+     * @param string      $file   Access文件路径
+     * @param string|null $pwd    用户密码
+     * @param string|null $driver 指定ODBC驱动名称。
      */
-    public function __construct($file, $pwd = null, $driver = null)
+    public function __construct(string $file, string $pwd = null, string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "Microsoft Access Driver (*.mdb, *.accdb)";
@@ -45,7 +45,7 @@ class Odbc extends Db
      * @param callable $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         $sql = $this->getRealSql($sql, $params);
         $sql = iconv('UTF-8', 'GBK', $sql);
@@ -72,7 +72,7 @@ class Odbc extends Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         $sql = $this->getRealSql($sql, $params);
         $sql = iconv('UTF-8', 'GBK', $sql);
@@ -82,10 +82,10 @@ class Odbc extends Db
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在access中无效
+     * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在access中无效
      * @return int|string
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
         $result = $this->driver->exec("SELECT @@IDENTITY");
         return $result->result(1);

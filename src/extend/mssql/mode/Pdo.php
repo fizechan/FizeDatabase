@@ -2,9 +2,9 @@
 
 namespace fize\database\extend\mssql\mode;
 
-use PDO as SysPDO;
 use fize\database\extend\mssql\Db;
 use fize\database\middleware\Pdo as Middleware;
+use PDO as SysPDO;
 
 /**
  * PDO
@@ -29,13 +29,13 @@ class Pdo extends Db
      * @param string $charset 指定数据库编码，选填，默认GBK
      * @param array  $opts    PDO连接的其他选项，选填
      */
-    public function __construct($host, $user, $pwd, $dbname, $port = "", $charset = "GBK", array $opts = [])
+    public function __construct(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "GBK", array $opts = [])
     {
         $charset = strtoupper($charset);
         $charset_map = [
             'UTF8' => 'UTF-8',
         ];
-        $charset = isset($charset_map[$charset]) ? $charset_map[$charset] : $charset;
+        $charset = $charset_map[$charset] ?? $charset;
         $dsn = "sqlsrv:Server={$host}";
         if (!empty($port)) {
             $dsn .= ",{$port}";

@@ -18,9 +18,9 @@ class ModeFactory implements ModeFactoryInterface
      * @return Db
      * @throws Exception
      */
-    public static function create($mode, array $config)
+    public static function create(string $mode, array $config): Db
     {
-        $mode = $mode ? $mode : 'pdo';
+        $mode = $mode ?: 'pdo';
         $default_config = [
             'port'    => '',
             'charset' => 'utf8',
@@ -73,7 +73,7 @@ class ModeFactory implements ModeFactoryInterface
                 );
                 break;
             default:
-                throw new Exception("error db mode: {$mode}");
+                throw new Exception("error db mode: $mode");
         }
         $db->prefix($config['prefix']);
         return $db;

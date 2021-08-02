@@ -23,11 +23,11 @@ trait Adodb
 
     /**
      * 构造Adodb
-     * @see https://www.connectionstrings.com/
+     * @link https://www.connectionstrings.com/
      * @param string $dsn      DSN字符串
      * @param int    $codepage 编码
      */
-    protected function adodbConstruct($dsn, $codepage)
+    protected function adodbConstruct(string $dsn, int $codepage)
     {
         $this->codepage = $codepage;
         $this->conn = new COM("ADODB.Connection", null, $codepage);
@@ -50,7 +50,7 @@ trait Adodb
      * @param callable $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         $sql = $this->getRealSql($sql, $params);
         $rows = [];
@@ -79,7 +79,7 @@ trait Adodb
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         $sql = $this->getRealSql($sql, $params);
         $ra = 0;

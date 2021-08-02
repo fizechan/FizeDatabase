@@ -18,9 +18,9 @@ class Pdo extends Db
      * 初始化
      * @param string $filename 数据库文件路径
      */
-    public function __construct($filename)
+    public function __construct(string $filename)
     {
-        $dsn = "sqlite:{$filename}";
+        $dsn = "sqlite:$filename";
         $this->pdoConstruct($dsn, '', '');
     }
 

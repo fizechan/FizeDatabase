@@ -21,11 +21,11 @@ class Pgsql extends Db
 
     /**
      * 构造
-     * @param string $connection_string 连接字符串
-     * @param bool   $pconnect          是否使用长连接
-     * @param int    $connect_type      PGSQL_CONNECT_FORCE_NEW使用新连接
+     * @param string   $connection_string 连接字符串
+     * @param bool     $pconnect          是否使用长连接
+     * @param int|null $connect_type      PGSQL_CONNECT_FORCE_NEW使用新连接
      */
-    public function __construct($connection_string, $pconnect = false, $connect_type = null)
+    public function __construct(string $connection_string, bool $pconnect = false, int $connect_type = null)
     {
         $this->driver = new Driver($connection_string, $pconnect, $connect_type);
     }
@@ -46,7 +46,7 @@ class Pgsql extends Db
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         if ($params) {  //将?占位符还原为$*占位符
             $parts = explode('?', $sql);
@@ -81,7 +81,7 @@ class Pgsql extends Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         if ($params) {  //将?占位符还原为$*占位符
             $parts = explode('?', $sql);
@@ -126,12 +126,12 @@ class Pgsql extends Db
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在PostgreSQL中必须指定
+     * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在PostgreSQL中必须指定
      * @return int|string
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
-        $sql = "SELECT currval('{$name}')";
+        $sql = "SELECT currval('$name')";
         $result = $this->driver->query($sql);
         $row = $result->fetchRow();
         return $row[0];

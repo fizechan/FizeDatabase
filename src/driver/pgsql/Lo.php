@@ -26,7 +26,7 @@ class Lo
      * 关闭一个大型对象
      * @return bool
      */
-    public function loClose()
+    public function close(): bool
     {
         return pg_lo_close($this->largeObject);
     }
@@ -35,7 +35,7 @@ class Lo
      * 读入整个大型对象并直接发送给浏览器
      * @return int 读入的字节数
      */
-    public function loReadAll()
+    public function readAll(): int
     {
         return pg_lo_read_all($this->largeObject);
     }
@@ -45,7 +45,7 @@ class Lo
      * @param int $len 读入最多 len 字节的数据
      * @return string
      */
-    public function loRead($len)
+    public function read(int $len): string
     {
         return pg_lo_read($this->largeObject, $len);
     }
@@ -56,7 +56,7 @@ class Lo
      * @param int $whence 参数为 PGSQL_SEEK_SET，PGSQL_SEEK_CUR 或 PGSQL_SEEK_END
      * @return bool
      */
-    public function loSeek($offset, $whence = 1)
+    public function seek(int $offset, int $whence = 1): bool
     {
         return pg_lo_seek($this->largeObject, $offset, $whence);
     }
@@ -65,7 +65,7 @@ class Lo
      * 返回大型对象的当前指针位置
      * @return int
      */
-    public function loTell()
+    public function tell(): int
     {
         return pg_lo_tell($this->largeObject);
     }
@@ -75,7 +75,7 @@ class Lo
      * @param int $size 要截断的字节数
      * @return bool
      */
-    public function loTruncate($size)
+    public function truncate(int $size): bool
     {
         return pg_lo_truncate($this->largeObject, $size);
     }
@@ -85,7 +85,7 @@ class Lo
      * @param string $data 要写入的数据
      * @return int
      */
-    public function loWrite($data)
+    public function write(string $data): int
     {
         return pg_lo_write($this->largeObject, $data);
     }

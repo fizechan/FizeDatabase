@@ -20,16 +20,16 @@ abstract class Db extends CoreDb
 
     /**
      * 设置LIMIT,支持链式调用
-     * @param int $rows   要返回的记录数
-     * @param int $offset 要设置的偏移量
+     * @param int      $rows   要返回的记录数
+     * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit($rows, $offset = null)
+    public function limit(int $rows, int $offset = null): Db
     {
         if (is_null($offset)) {
             $this->limit = (string)$rows;
         } else {
-            $this->limit = (string)$offset . "," . (string)$rows;
+            $this->limit = $offset . "," . $rows;
         }
         return $this;
     }
@@ -41,7 +41,7 @@ abstract class Db extends CoreDb
      * @param bool   $clear  是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
      */
-    protected function build($action, array $data = [], $clear = true)
+    protected function build(string $action, array $data = [], bool $clear = true): string
     {
         if ($action == 'REPLACE') {
             $params = [];
@@ -57,7 +57,7 @@ abstract class Db extends CoreDb
             $sql = parent::build($action, $data, false);
         }
         if (!empty($this->limit)) {
-            $sql .= " LIMIT {$this->limit}";
+            $sql .= " LIMIT $this->limit";
         }
         $this->sql = $sql;
         if ($clear) {

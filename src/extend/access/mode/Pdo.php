@@ -2,10 +2,10 @@
 
 namespace fize\database\extend\access\mode;
 
-use PDO as SysPDO;
 use fize\database\exception\Exception;
 use fize\database\extend\access\Db;
 use fize\database\middleware\Pdo as Middleware;
+use PDO as SysPDO;
 
 /**
  * PDO
@@ -18,11 +18,11 @@ class Pdo extends Db
 
     /**
      * Pdo方式构造必须实例化$this->_pdo
-     * @param string $file   Access文件路径
-     * @param string $pwd    用户密码
-     * @param string $driver 指定ODBC驱动名称。
+     * @param string      $file   Access文件路径
+     * @param string|null $pwd    用户密码
+     * @param string|null $driver 指定ODBC驱动名称。
      */
-    public function __construct($file, $pwd = null, $driver = null)
+    public function __construct(string $file, string $pwd = null, string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "Microsoft Access Driver (*.mdb, *.accdb)";
@@ -50,7 +50,7 @@ class Pdo extends Db
      * @param callable $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         $sql = iconv('UTF-8', 'GBK', $sql);
         array_walk($params, function (&$value) {
@@ -99,7 +99,7 @@ class Pdo extends Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         $sql = iconv('UTF-8', 'GBK', $sql);
         array_walk($params, function (&$value) {
@@ -133,10 +133,10 @@ class Pdo extends Db
      * 返回最后插入行的ID或序列值
      *
      * pdo连接odbc不支持lastInsertId方法，故使用原生查询获取
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在access中无效
+     * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在access中无效
      * @return int|string
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
         $stmt = $this->pdo->query("SELECT @@IDENTITY");
         $row = $stmt->fetch(SysPDO::FETCH_NUM, SysPDO::FETCH_ORI_NEXT);

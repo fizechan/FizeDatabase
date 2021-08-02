@@ -30,7 +30,7 @@ class Statement
      * @return bool
      * @throws DriverException
      */
-    public function binmode($mode)
+    public function binmode(int $mode): bool
     {
         $rst = odbc_binmode($this->statement, $mode);
         if ($rst === false) {
@@ -43,7 +43,7 @@ class Statement
      * 返回结果游标名称
      * @return string
      */
-    public function cursor()
+    public function cursor(): string
     {
         return odbc_cursor($this->statement);
     }
@@ -63,22 +63,22 @@ class Statement
 
     /**
      * 以数组形式遍历结果集
-     * @param int $rownumber 指定要检索的行数
+     * @param int|null $rownumber 指定要检索的行数
      * @return array
      */
-    public function fetchArray($rownumber = null)
+    public function fetchArray(int $rownumber = null): array
     {
         return odbc_fetch_array($this->statement, $rownumber);
     }
 
     /**
      * 遍历结果集到指定数组
-     * @param array $result_array 结果集将添加到该数组
-     * @param int   $rownumber    指定要检索的行数
+     * @param array    $result_array 结果集将添加到该数组
+     * @param int|null $rownumber    指定要检索的行数
      * @return int 返回结果行数
      * @throws DriverException
      */
-    public function fetchInto(array &$result_array, $rownumber = null)
+    public function fetchInto(array &$result_array, int $rownumber = null): int
     {
         $rst = odbc_fetch_into($this->statement, $result_array, $rownumber);
         if ($rst === false) {
@@ -89,20 +89,20 @@ class Statement
 
     /**
      * 以对象形式遍历结果集
-     * @param int $rownumber 指定要检索的行数
+     * @param int|null $rownumber 指定要检索的行数
      * @return object 一个对象表示一个行
      */
-    public function fetchObject($rownumber = null)
+    public function fetchObject(int $rownumber = null)
     {
         return odbc_fetch_object($this->statement, $rownumber);
     }
 
     /**
      * 移动结果集指针，使用该方法后，下次使用odbc_result()将返回下一行的结果
-     * @param int $row_number 指定要检索的行数
+     * @param int|null $row_number 指定要检索的行数
      * @return bool 成功返回true，失败返回false
      */
-    public function fetchRow($row_number = null)
+    public function fetchRow(int $row_number = null): bool
     {
         return odbc_fetch_row($this->statement, $row_number);
     }
@@ -112,7 +112,7 @@ class Statement
      * @param int $field_number 字段下标(从1开始)
      * @return int 失败时返回false
      */
-    public function fieldLen($field_number)
+    public function fieldLen(int $field_number): int
     {
         return odbc_field_len($this->statement, $field_number);
     }
@@ -122,7 +122,7 @@ class Statement
      * @param int $field_number 字段下标(从1开始)
      * @return string 失败时返回false
      */
-    public function fieldName($field_number)
+    public function fieldName(int $field_number): string
     {
         return odbc_field_name($this->statement, $field_number);
     }
@@ -132,7 +132,7 @@ class Statement
      * @param string $field_name 字段名称
      * @return int 失败时返回false
      */
-    public function fieldNum($field_name)
+    public function fieldNum(string $field_name): int
     {
         return odbc_field_num($this->statement, $field_name);
     }
@@ -144,7 +144,7 @@ class Statement
      * @return int 失败时返回false
      * @deprecated 别名方法，建议统一使用fieldLen方法
      */
-    public function fieldPrecision($field_number)
+    public function fieldPrecision(int $field_number): int
     {
         return odbc_field_precision($this->statement, $field_number);
     }
@@ -154,7 +154,7 @@ class Statement
      * @param int $field_number 字段下标(从1开始)
      * @return int 失败时返回false
      */
-    public function fieldScale($field_number)
+    public function fieldScale(int $field_number): int
     {
         return odbc_field_scale($this->statement, $field_number);
     }
@@ -164,7 +164,7 @@ class Statement
      * @param int $field_number 字段下标(从1开始)
      * @return string 失败时返回false
      */
-    public function fieldType($field_number)
+    public function fieldType(int $field_number): string
     {
         return odbc_field_type($this->statement, $field_number);
     }
@@ -173,7 +173,7 @@ class Statement
      * 释放当前结果内存
      * @return bool
      */
-    public function freeResult()
+    public function freeResult(): bool
     {
         $result = odbc_free_result($this->statement);
         $this->statement = null;
@@ -185,7 +185,7 @@ class Statement
      * @param int $length 最长字段长度
      * @return bool
      */
-    public function longreadlen($length)
+    public function longreadlen(int $length): bool
     {
         return odbc_longreadlen($this->statement, $length);
     }
@@ -194,7 +194,7 @@ class Statement
      * 对于多个结果集，将指针移到下个结果集
      * @return bool
      */
-    public function nextResult()
+    public function nextResult(): bool
     {
         return odbc_next_result($this->statement);
     }
@@ -203,7 +203,7 @@ class Statement
      * 返回结果中的列数
      * @return int
      */
-    public function numFields()
+    public function numFields(): int
     {
         return odbc_num_fields($this->statement);
     }
@@ -212,18 +212,18 @@ class Statement
      * 返回结果中的行(记录)数,对于操作，则返回受影响的行数
      * @return int
      */
-    public function numRows()
+    public function numRows(): int
     {
         return odbc_num_rows($this->statement);
     }
 
     /**
      * 将结果以HTML表格形式打印出来。
-     * @param string $format 附加的整体表格格式。
+     * @param string|null $format 附加的整体表格格式。
      * @return int 返回结果集大小，失败返回false
      * @throws DriverException
      */
-    public function resultAll($format = null)
+    public function resultAll(string $format = null): int
     {
         $rst = odbc_result_all($this->statement, $format);
         if ($rst === false) {
@@ -248,7 +248,7 @@ class Statement
      * @param int $param  属性值
      * @return bool
      */
-    public function setoption($option, $param)
+    public function setoption(int $option, int $param): bool
     {
         return odbc_setoption($this->statement, 2, $option, $param);
     }

@@ -3,8 +3,8 @@
 namespace fize\database\extend\sqlite\mode;
 
 use Exception;
-use SQLite3 as SysSQLite3;
 use fize\database\extend\sqlite\Db;
+use SQLite3 as SysSQLite3;
 
 /**
  * Sqlite3
@@ -21,12 +21,12 @@ class Sqlite3 extends Db
 
     /**
      * 构造
-     * @param string $filename       数据库文件路径
-     * @param int    $flags          模式，默认是SQLITE3_OPEN_READWRITE
-     * @param string $encryption_key 加密密钥
-     * @param int    $busy_timeout   超时时间
+     * @param string      $filename       数据库文件路径
+     * @param int         $flags          模式，默认是SQLITE3_OPEN_READWRITE
+     * @param string|null $encryption_key 加密密钥
+     * @param int         $busy_timeout   超时时间
      */
-    public function __construct($filename, $flags = 2, $encryption_key = null, $busy_timeout = 30000)
+    public function __construct(string $filename, int $flags = 2, string $encryption_key = null, int $busy_timeout = 30000)
     {
         $this->driver = new SysSQLite3($filename, $flags, $encryption_key);
         $this->driver->busyTimeout($busy_timeout);
@@ -47,7 +47,7 @@ class Sqlite3 extends Db
      * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         $stmt = $this->driver->prepare($sql);
         if (!$stmt) {
@@ -94,7 +94,7 @@ class Sqlite3 extends Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         $stmt = $this->driver->prepare($sql);
         if (!$stmt) {
@@ -158,10 +158,10 @@ class Sqlite3 extends Db
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称,该参数在sqlite3中无效
-     * @return int|string
+     * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在sqlite3中无效
+     * @return int
      */
-    public function lastInsertId($name = null)
+    public function lastInsertId(string $name = null)
     {
         return $this->driver->lastInsertRowID();
     }

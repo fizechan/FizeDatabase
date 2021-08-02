@@ -29,16 +29,16 @@ abstract class Db extends CoreDb
 
     /**
      * 设置LIMIT,支持链式调用
-     * @param int $rows   要返回的记录数
-     * @param int $offset 要设置的偏移量
+     * @param int      $rows   要返回的记录数
+     * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit($rows, $offset = null)
+    public function limit(int $rows, int $offset = null)
     {
         if (is_null($offset)) {
             $this->limit = (string)$rows;
         } else {
-            $this->limit = (string)$offset . "," . (string)$rows;
+            $this->limit = $offset . "," . $rows;
         }
         return $this;
     }
@@ -50,7 +50,7 @@ abstract class Db extends CoreDb
      * @return $this
      * @todo 写法不是很好，需要改进
      */
-    public function lock($lock = true, array $lock_sqls = null)
+    public function lock(bool $lock = true, array $lock_sqls = null)
     {
         $this->lock = $lock;
         if ($this->lock) {
@@ -66,44 +66,44 @@ abstract class Db extends CoreDb
 
     /**
      * CROSS JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function crossJoin($table, $on = null)
+    public function crossJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "CROSS JOIN", $on);
     }
 
     /**
      * LEFT OUTER JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function leftOuterJoin($table, $on = null)
+    public function leftOuterJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "LEFT OUTER JOIN", $on);
     }
 
     /**
      * RIGHT OUTER JOIN条件,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function rightOuterJoin($table, $on = null)
+    public function rightOuterJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "RIGHT OUTER JOIN", $on);
     }
 
     /**
      * STRAIGHT_JOIN条件，非标准SQL语句，不建议使用,支持链式调用
-     * @param string $table 表名，可将ON条件一起带上
-     * @param string $on    ON条件，建议ON条件单独开来
+     * @param string      $table 表名，可将ON条件一起带上
+     * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function straightJoin($table, $on = null)
+    public function straightJoin(string $table, string $on = null): Db
     {
         return $this->join($table, "STRAIGHT_JOIN", $on);
     }
@@ -126,7 +126,7 @@ abstract class Db extends CoreDb
      * @param bool   $clear  是否清理当前条件，默认true
      * @return string 最后组装的SQL语句
      */
-    protected function build($action, array $data = [], $clear = true)
+    protected function build(string $action, array $data = [], bool $clear = true): string
     {
         if ($action == 'REPLACE') {
             $params = [];
@@ -156,7 +156,7 @@ abstract class Db extends CoreDb
      * @param array $data 数据
      * @return int 返回自增ID
      */
-    public function replace(array $data)
+    public function replace(array $data): int
     {
         $this->build("REPLACE", $data);
         $this->execute($this->sql, $this->params);
@@ -184,7 +184,7 @@ abstract class Db extends CoreDb
      * @param int $size 每页记录数量
      * @return array [记录个数, 记录数组, 总页数]
      */
-    public function paginate($page, $size = 10)
+    public function paginate(int $page, int $size = 10): array
     {
         $this->page($page, $size);
         if (empty($this->field)) {
@@ -209,7 +209,7 @@ abstract class Db extends CoreDb
      * @param array $params    可能要操作的参数数组
      * @return string
      */
-    private function parseInsertAllDatas(array $data_sets, array $fields = [], array &$params = [])
+    private function parseInsertAllDatas(array $data_sets, array $fields = [], array &$params = []): string
     {
         if (empty($fields)) {  //$fields为空时，$data_set各元素必须带键名，且键名顺序、名称都需要一致
             foreach (array_keys($data_sets[0]) as $key) {
@@ -234,7 +234,7 @@ abstract class Db extends CoreDb
      * @param array $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入的记录数
      */
-    public function insertAll(array $data_sets, array $fields = null)
+    public function insertAll(array $data_sets, array $fields = null): int
     {
         $params = [];
         $sql = "INSERT INTO `{$this->tablePrefix}{$this->tableName}`{$this->parseInsertAllDatas($data_sets, $fields, $params)}";

@@ -20,7 +20,7 @@ class ModeFactory implements ModeFactoryInterface
      * @return Db
      * @throws Exception
      */
-    public static function create($mode, array $config)
+    public static function create(string $mode, array $config)
     {
         $mode = $mode ? $mode : 'adodb';
         $default_config = [

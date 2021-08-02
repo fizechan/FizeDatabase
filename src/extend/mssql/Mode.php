@@ -14,30 +14,30 @@ class Mode
 {
 
     /**
-     * @param string $host   服务器地址
-     * @param string $user   用户名
-     * @param string $pwd    用户密码
-     * @param string $dbname 数据库名
-     * @param mixed  $port   端口号，MSSQL默认是1433
-     * @param string $driver 指定ADODB驱动名称。
+     * @param string      $host   服务器地址
+     * @param string      $user   用户名
+     * @param string      $pwd    用户密码
+     * @param string      $dbname 数据库名
+     * @param mixed       $port   端口号，MSSQL默认是1433
+     * @param string|null $driver 指定ADODB驱动名称。
      * @return Adodb
      */
-    public static function adodb($host, $user, $pwd, $dbname, $port = "", $driver = null)
+    public static function adodb(string $host, string $user, string $pwd, string $dbname, $port = "", string $driver = null): Adodb
     {
         return new Adodb($host, $user, $pwd, $dbname, $port, $driver);
     }
 
     /**
      * odbc方式构造
-     * @param string $host   服务器地址
-     * @param string $user   用户名
-     * @param string $pwd    用户密码
-     * @param string $dbname 数据库名
-     * @param mixed  $port   端口号，选填，MSSQL默认是1433
-     * @param string $driver 指定ODBC驱动名称。
+     * @param string      $host   服务器地址
+     * @param string      $user   用户名
+     * @param string      $pwd    用户密码
+     * @param string      $dbname 数据库名
+     * @param mixed       $port   端口号，选填，MSSQL默认是1433
+     * @param string|null $driver 指定ODBC驱动名称。
      * @return Odbc
      */
-    public static function odbc($host, $user, $pwd, $dbname, $port = "", $driver = null)
+    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $driver = null): Odbc
     {
         return new Odbc($host, $user, $pwd, $dbname, $port, $driver);
     }
@@ -54,7 +54,7 @@ class Mode
      * @param string $charset 指定数据库编码，默认GBK,(不区分大小写)
      * @return Sqlsrv
      */
-    public static function sqlsrv($host, $user, $pwd, $dbname, $port = "", $charset = "GBK")
+    public static function sqlsrv(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "GBK"): Sqlsrv
     {
         return new Sqlsrv($host, $user, $pwd, $dbname, $port, $charset);
     }
@@ -72,7 +72,7 @@ class Mode
      * @param array  $opts    PDO连接的其他选项，选填
      * @return Pdo
      */
-    public static function pdo($host, $user, $pwd, $dbname, $port = "", $charset = "GBK", array $opts = [])
+    public static function pdo(string $host, string $user, string $pwd, string $dbname, string $port = "", string $charset = "GBK", array $opts = []): Pdo
     {
         return new Pdo($host, $user, $pwd, $dbname, $port, $charset, $opts);
     }

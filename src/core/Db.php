@@ -108,7 +108,7 @@ abstract class Db
      * @param callable $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    abstract public function query($sql, array $params = [], callable $callback = null);
+    abstract public function query(string $sql, array $params = [], callable $callback = null): array;
 
     /**
      * 执行一个SQL语句
@@ -116,7 +116,7 @@ abstract class Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    abstract public function execute($sql, array $params = []);
+    abstract public function execute(string $sql, array $params = []): int;
 
     /**
      * 开始事务
@@ -137,18 +137,18 @@ abstract class Db
      * LIMIT语句
      *
      * LIMIT语句已是事实标准
-     * @param int $rows   记录数
-     * @param int $offset 偏移量
+     * @param int      $rows   记录数
+     * @param int|null $offset 偏移量
      * @return $this
      */
-    abstract public function limit($rows, $offset = null);
+    abstract public function limit(int $rows, int $offset = null);
 
     /**
      * 返回最后插入行的ID或序列值
-     * @param string $name 应该返回ID的那个序列对象的名称
+     * @param string|null $name 应该返回ID的那个序列对象的名称
      * @return int|string
      */
-    abstract public function lastInsertId($name = null);
+    abstract public function lastInsertId(string $name = null);
 
     /**
      * 安全化值
@@ -157,7 +157,7 @@ abstract class Db
      * @param mixed $value 要安全化的值
      * @return string
      */
-    protected function parseValue($value)
+    protected function parseValue($value): string
     {
         if (is_string($value)) {
             $value = "'" . addcslashes($value, "'") . "'";
@@ -175,7 +175,7 @@ abstract class Db
      * @param array  $params 可选的绑定参数
      * @return string
      */
-    protected function getRealSql($sql, array $params = [])
+    protected function getRealSql(string $sql, array $params = []): string
     {
         if (!$params) {
             return $sql;
@@ -196,7 +196,7 @@ abstract class Db
      * @param bool $real 是否返回最终SQL语句而非预处理语句
      * @return string
      */
-    public function getLastSql($real = false)
+    public function getLastSql(bool $real): string
     {
         if ($real) {
             return $this->getRealSql($this->sql, $this->params);
@@ -210,7 +210,7 @@ abstract class Db
      * @param bool $distinct 为true时表示distinct
      * @return $this
      */
-    public function distinct($distinct = true)
+    public function distinct(bool $distinct = true): Db
     {
         $this->distinct = $distinct;
         return $this;
@@ -225,7 +225,7 @@ abstract class Db
      * @param array|string $fields 要查询的字段
      * @return $this
      */
-    public function field($fields)
+    public function field($fields): Db
     {
         if (is_array($fields)) {
             $parts = [];
@@ -248,7 +248,7 @@ abstract class Db
      * @param string $prefix 前缀
      * @return $this
      */
-    public function prefix($prefix)
+    public function prefix(string $prefix): Db
     {
         $this->tablePrefix = $prefix;
         return $this;
@@ -256,11 +256,11 @@ abstract class Db
 
     /**
      * 指定当前要操作的表
-     * @param string $name   表名
-     * @param string $prefix 表前缀，默认为使用当前前缀
+     * @param string      $name   表名
+     * @param string|null $prefix 表前缀，默认为使用当前前缀
      * @return $this
      */
-    public function table($name, $prefix = null)
+    public function table(string $name, string $prefix = null): Db
     {
         $this->tableName = $name;
         if (!is_null($prefix)) {
@@ -274,7 +274,7 @@ abstract class Db
      * @param string $alias 别名
      * @return $this
      */
-    public function alias($alias)
+    public function alias(string $alias): Db
     {
         $this->alias = $alias;
         return $this;
@@ -285,7 +285,7 @@ abstract class Db
      * @param mixed $fields 要GROUP的字段字符串或则数组
      * @return $this
      */
-    public function group($fields)
+    public function group($fields): Db
     {
         if (is_array($fields)) {
             $fields = array_map([$this, 'formatField'], $fields);
@@ -304,7 +304,7 @@ abstract class Db
      * @param array|string $field_order 字符串原样，如果是数组(推荐)，则形如字段=>排序
      * @return $this
      */
-    public function order($field_order)
+    public function order($field_order): Db
     {
         if (is_array($field_order)) {
             foreach ($field_order as $field => $order) {
@@ -332,7 +332,7 @@ abstract class Db
      * @param array              $parse      如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
      */
-    public function where($statements, array $parse = [])
+    public function where($statements, array $parse = []): Db
     {
         if (is_array($statements)) {  //条件数组
             $Query = '\\' . __NAMESPACE__ . '\\Query';
@@ -366,7 +366,7 @@ abstract class Db
      * @param array              $parse      如果$statements是SQL预处理语句，则可以传递本参数用于预处理替换参数数组
      * @return $this
      */
-    public function having($statements, array $parse = [])
+    public function having($statements, array $parse = []): Db
     {
         if (is_array($statements)) {  //条件数组
             $Query = '\\' . __NAMESPACE__ . '\\Query';
@@ -401,15 +401,15 @@ abstract class Db
      *   类型为数组时，格式为[$table, $alias, $prefix],其中$alias, $prefix为可选值。
      * @param string|array $table 要 JOIN 的表
      * @param string       $type  JOIN 形式,默认为 JOIN
-     * @param string       $on    ON 条件
-     * @param string       $using USING 字段
+     * @param string|null  $on    ON 条件
+     * @param string|null  $using USING 字段
      * @return $this
      */
-    public function join($table, $type = "JOIN", $on = null, $using = null)
+    public function join($table, string $type = "JOIN", string $on = null, string $using = null)
     {
         if (is_array($table)) {
-            $alias = isset($table[1]) ? $table[1] : null;
-            $prefix = isset($table[2]) ? $table[2] : $this->tablePrefix;
+            $alias = $table[1] ?? null;
+            $prefix = $table[2] ?? $this->tablePrefix;
             $table = $table[0];
             if ($alias) {
                 $ttable = "{$this->formatTable($prefix . $table)} AS {$this->formatTable($alias)}";
@@ -419,9 +419,9 @@ abstract class Db
         } else {
             $ttable = $this->formatTable($this->tablePrefix . $table);
         }
-        $this->join .= " {$type} {$ttable}";
+        $this->join .= " $type $ttable";
         if (!is_null($on)) {
-            $this->join .= " ON {$on}";
+            $this->join .= " ON $on";
         }
         if (!is_null($using)) {
             $this->join .= " USING({$this->formatField($using)})";
@@ -432,10 +432,10 @@ abstract class Db
     /**
      * INNER JOIN 条件
      * @param string|array $table 要 INNER JOIN 的表
-     * @param string       $on    ON条件
+     * @param string|null  $on    ON条件
      * @return $this
      */
-    public function innerJoin($table, $on = null)
+    public function innerJoin($table, string $on = null): Db
     {
         return $this->join($table, "INNER JOIN", $on);
     }
@@ -443,10 +443,10 @@ abstract class Db
     /**
      * LEFT JOIN 条件
      * @param string|array $table 要 LEFT JOIN 的表
-     * @param string       $on    ON条件
+     * @param string|null  $on    ON条件
      * @return $this
      */
-    public function leftJoin($table, $on = null)
+    public function leftJoin($table, string $on = null): Db
     {
         return $this->join($table, "LEFT JOIN", $on);
     }
@@ -454,10 +454,10 @@ abstract class Db
     /**
      * RIGHT JOIN 条件
      * @param string|array $table 要 RIGHT JOIN 的表
-     * @param string       $on    ON条件
+     * @param string|null  $on    ON条件
      * @return $this
      */
-    public function rightJoin($table, $on = null)
+    public function rightJoin($table, string $on = null): Db
     {
         return $this->join($table, "RIGHT JOIN", $on);
     }
@@ -471,7 +471,7 @@ abstract class Db
      * @param string $union_type 类型
      * @return $this
      */
-    public function union($sql, $union_type = "UNION")
+    public function union(string $sql, string $union_type = "UNION"): Db
     {
         $this->union .= " {$union_type} {$sql}";
         return $this;
@@ -482,7 +482,7 @@ abstract class Db
      * @param string $sql 要 UNION ALL 的 SQL 语句
      * @return $this
      */
-    public function unionAll($sql)
+    public function unionAll(string $sql): Db
     {
         return $this->union($sql, 'UNION ALL');
     }
@@ -492,7 +492,7 @@ abstract class Db
      * @param string $sql 要 UNION DISTINCT 的 SQL 语句
      * @return $this
      */
-    public function unionDistinct($sql)
+    public function unionDistinct(string $sql): Db
     {
         return $this->union($sql, 'UNION DISTINCT');
     }
@@ -503,7 +503,7 @@ abstract class Db
      * @param array $params 可能要操作的参数数组
      * @return string
      */
-    protected function parseInsertDatas(array $datas, array &$params = [])
+    protected function parseInsertDatas(array $datas, array &$params = []): string
     {
         $fields = []; //字段名
         $holdes = []; //占位符
@@ -525,7 +525,7 @@ abstract class Db
      * @param array $params 可能要操作的参数数组
      * @return string
      */
-    protected function parseUpdateDatas(array $datas, array &$params = [])
+    protected function parseUpdateDatas(array $datas, array &$params = []): string
     {
         $out = "";
         foreach ($datas as $key => $val) {
@@ -580,7 +580,7 @@ abstract class Db
      * @return string 最后组装的 SQL 语句
      * @throws Exception
      */
-    protected function build($action, array $data = [], $clear = true)
+    protected function build(string $action, array $data = [], bool $clear = true): string
     {
         switch ($action) {
             case "DELETE" : //删除
@@ -596,7 +596,7 @@ abstract class Db
                 if (empty($this->field)) {
                     $this->field = "*";
                 }
-                $sql = "SELECT {$this->field} FROM {$this->formatTable($this->tablePrefix. $this->tableName)}";
+                $sql = "SELECT $this->field FROM {$this->formatTable($this->tablePrefix. $this->tableName)}";
                 $this->params = $this->whereParams + $this->havingParams;
                 break;
             case "UPDATE" : //更新
@@ -606,27 +606,27 @@ abstract class Db
                 break;
             default :
                 //仅需要支持DELETE、INSERT、REPLACE、SELECT、UPDATE，防止其他语句进入
-                throw new Exception("Illegal SQL statement: {$action}");
+                throw new Exception("Illegal SQL statement: $action");
         }
         if (in_array($action, ['DELETE', 'SELECT', 'UPDATE'])) {
             if (!empty($this->alias)) {
                 $sql .= " AS {$this->formatField($this->alias)}";
             }
             if (!empty($this->join)) {
-                $sql .= " {$this->join}";
+                $sql .= " $this->join";
             }
             if (!empty($this->where)) {
-                $sql .= " WHERE {$this->where}";
+                $sql .= " WHERE $this->where";
             }
             if (!empty($this->group)) {
-                $sql .= " GROUP BY {$this->group}";
+                $sql .= " GROUP BY $this->group";
             }
             if (!empty($this->having)) {
-                $sql .= " HAVING {$this->having}";
+                $sql .= " HAVING $this->having";
             }
             $sql .= $this->union;
             if (!empty($this->order)) {
-                $sql .= " ORDER BY {$this->order}";
+                $sql .= " ORDER BY $this->order";
             }
         }
         $this->sql = $sql;
@@ -641,7 +641,7 @@ abstract class Db
      * @param array $data 数据
      * @return int 返回受影响行数
      */
-    public function insert(array $data)
+    public function insert(array $data): int
     {
         $this->build("INSERT", $data);
         return $this->execute($this->sql, $this->params);
@@ -649,11 +649,11 @@ abstract class Db
 
     /**
      * 插入记录,并返回最后插入行的 ID 或序列值
-     * @param array  $data 数据
-     * @param string $name 序列名
+     * @param array       $data 数据
+     * @param string|null $name 序列名
      * @return int|string
      */
-    public function insertGetId(array $data, $name = null)
+    public function insertGetId(array $data, string $name = null)
     {
         $this->insert($data);
         return $this->lastInsertId($name);
@@ -675,7 +675,7 @@ abstract class Db
      * 删除记录
      * @return int 返回受影响记录条数
      */
-    public function delete()
+    public function delete(): int
     {
         $this->build("DELETE");
         return $this->execute($this->sql, $this->params);
@@ -686,7 +686,7 @@ abstract class Db
      * @param array $data 要设置的数据
      * @return int 返回受影响记录条数
      */
-    public function update($data)
+    public function update(array $data): int
     {
         $this->build('UPDATE', $data);
         return $this->execute($this->sql, $this->params);
@@ -697,7 +697,7 @@ abstract class Db
      * @param bool $cache 是否使用缓存
      * @return array
      */
-    public function select($cache = true)
+    public function select(bool $cache = true): array
     {
         $this->build("SELECT");
         if ($cache) {
@@ -715,7 +715,7 @@ abstract class Db
      * @param bool $cache 是否使用搜索缓存
      * @return array 如果无记录则返回null
      */
-    public function findOrNull($cache = false)
+    public function findOrNull(bool $cache = false)
     {
         $rows = $this->limit(1)->select($cache);
         if (count($rows) == 0) {
@@ -730,7 +730,7 @@ abstract class Db
      * @return array
      * @throws DataNotFoundException
      */
-    public function find($cache = false)
+    public function find(bool $cache = false): array
     {
         $row = $this->findOrNull($cache);
         if (empty($row)) {
@@ -746,7 +746,7 @@ abstract class Db
      * @param bool   $force   强制转为数字类型
      * @return mixed 如果$force为true时则返回数字类型
      */
-    public function value($field, $default = null, $force = false)
+    public function value(string $field, $default = null, bool $force = false)
     {
         $this->field([$field]);
         $row = $this->findOrNull();
@@ -765,7 +765,7 @@ abstract class Db
      * @param string $field 字段名
      * @return array
      */
-    public function column($field)
+    public function column(string $field): array
     {
         $this->field($field);
         $values = [];
@@ -781,7 +781,7 @@ abstract class Db
      * @param int $size 每页记录数量
      * @return $this
      */
-    public function page($page, $size = 10)
+    public function page(int $page, int $size = 10): Db
     {
         $rows = $size;
         $offset = ($page - 1) * $size;
@@ -793,7 +793,7 @@ abstract class Db
      * @param string $field 字段名
      * @return int
      */
-    public function count($field = "*")
+    public function count(string $field = "*")
     {
         return $this->value("COUNT({$this->formatField($field)})", 0, true);
     }
@@ -803,7 +803,7 @@ abstract class Db
      * @param string $field 字段名
      * @return int
      */
-    public function sum($field)
+    public function sum(string $field)
     {
         $sum = $this->value("SUM({$this->formatField($field)})", 0, true);
         if (is_null($sum)) { //求SUM时，并不希望得到NULL值
@@ -818,7 +818,7 @@ abstract class Db
      * @param bool   $force 强制转为数字类型
      * @return mixed 如果$force为true时真返回数字类型
      */
-    public function min($field, $force = true)
+    public function min(string $field, bool $force = true)
     {
         return $this->value("MIN({$this->formatField($field)})", null, $force);
     }
@@ -829,7 +829,7 @@ abstract class Db
      * @param bool   $force 强制转为数字类型
      * @return mixed 如果$force为true时真返回数字类型
      */
-    public function max($field, $force = true)
+    public function max(string $field, bool $force = true)
     {
         return $this->value("MAX({$this->formatField($field)})", null, $force);
     }
@@ -839,7 +839,7 @@ abstract class Db
      * @param string $field 字段名
      * @return mixed
      */
-    public function avg($field)
+    public function avg(string $field)
     {
         return $this->value("AVG({$this->formatField($field)})", 0, true);
     }
@@ -850,7 +850,7 @@ abstract class Db
      * @param mixed $value 字段值,数组为原样语句写入，其余为值写入
      * @return int 返回受影响记录条数
      */
-    public function setValue($field, $value)
+    public function setValue($field, $value): int
     {
         $data = [$field => $value];
         return $this->update($data);
@@ -862,9 +862,9 @@ abstract class Db
      * @param int    $step  增长值，默认为1
      * @return int 返回受影响记录条数
      */
-    public function setInc($field, $step = 1)
+    public function setInc(string $field, int $step = 1): int
     {
-        $data = [$field => ["{$this->formatField($field)} + {$step}"]];
+        $data = [$field => ["{$this->formatField($field)} + $step"]];
         return $this->update($data);
     }
 
@@ -874,9 +874,9 @@ abstract class Db
      * @param int    $step  增长值，默认为1
      * @return int 返回受影响记录条数
      */
-    public function setDec($field, $step = 1)
+    public function setDec(string $field, int $step = 1): int
     {
-        $data = [$field => ["{$this->formatField($field)} - {$step}"]];
+        $data = [$field => ["{$this->formatField($field)} - $step"]];
         return $this->update($data);
     }
 
@@ -888,12 +888,12 @@ abstract class Db
      * @param int $size 每页记录数量
      * @return array [记录个数, 记录数组, 总页数]
      */
-    public function paginate($page, $size = 10)
+    public function paginate(int $page, int $size = 10): array
     {
         $sql_temp = $this->build("SELECT", [], false);
         $sql_for_count = substr_replace($sql_temp, "COUNT(*)", 7, strlen($this->field));
-        if (!empty($this->order)) {  //消除ORDER BY 语句对COUNT语句的影响问题
-            $sql_for_count = str_replace(" ORDER BY {$this->order}", "", $sql_for_count);
+        if (!empty($this->order)) {  // 消除ORDER BY 语句对COUNT语句的影响问题
+            $sql_for_count = str_replace(" ORDER BY $this->order", "", $sql_for_count);
         }
         $rows_for_count = $this->query($sql_for_count, $this->params);
         $count = (int)array_values($rows_for_count[0])[0];  //第一列第一个值
@@ -913,7 +913,7 @@ abstract class Db
      * @param array $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入成功的记录数
      */
-    public function insertAll(array $data_sets, array $fields = null)
+    public function insertAll(array $data_sets, array $fields = null): int
     {
         if ($fields) {
             $datas = [];

@@ -19,13 +19,13 @@ trait Odbc
     /**
      * 构建ODBC
      * @see https://www.connectionstrings.com/
-     * @param string $dsn         连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
-     * @param string $user        用户名
-     * @param string $pwd         密码
-     * @param int    $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
-     * @param bool   $pconnect    是否使用长链接，默认false
+     * @param string   $dsn         连接的数据库源名称。另外，一个无DSN连接字符串可以使用。
+     * @param string   $user        用户名
+     * @param string   $pwd         密码
+     * @param int|null $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
+     * @param bool     $pconnect    是否使用长链接，默认false
      */
-    protected function odbcConstruct($dsn, $user, $pwd, $cursor_type = null, $pconnect = false)
+    protected function odbcConstruct(string $dsn, string $user, string $pwd, int $cursor_type = null, bool $pconnect = false)
     {
         $this->driver = new SysOdbc($dsn, $user, $pwd, $cursor_type, $pconnect);
     }
@@ -45,7 +45,7 @@ trait Odbc
      * @param callable $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query($sql, array $params = [], callable $callback = null)
+    public function query(string $sql, array $params = [], callable $callback = null): array
     {
         $result = $this->driver->prepare($sql);
         $result->execute($params);
@@ -66,7 +66,7 @@ trait Odbc
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute($sql, array $params = [])
+    public function execute(string $sql, array $params = []): int
     {
         $result = $this->driver->prepare($sql);
         $result->execute($params);

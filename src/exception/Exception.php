@@ -31,7 +31,7 @@ class Exception extends BaseException
      * 返回出错的相关SQL语句
      * @return string
      */
-    public function getSql()
+    public function getSql(): string
     {
         return $this->sql;
     }

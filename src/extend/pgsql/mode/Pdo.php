@@ -16,18 +16,18 @@ class Pdo extends Db
 
     /**
      * PDO方式PostgreSQL数据库模型类
-     * @param string $host   服务器地址
-     * @param string $user   用户名
-     * @param string $pwd    用户密码
-     * @param string $dbname 数据库名
-     * @param int    $port   端口号，选填，PostgreSQL默认是5432
-     * @param array  $opts   PDO连接的其他选项，选填
+     * @param string   $host   服务器地址
+     * @param string   $user   用户名
+     * @param string   $pwd    用户密码
+     * @param string   $dbname 数据库名
+     * @param int|null $port   端口号，选填，PostgreSQL默认是5432
+     * @param array    $opts   PDO连接的其他选项，选填
      */
-    public function __construct($host, $user, $pwd, $dbname, $port = null, array $opts = [])
+    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, array $opts = [])
     {
-        $dsn = "pgsql:host={$host};dbname={$dbname}";
+        $dsn = "pgsql:host=$host;dbname=$dbname";
         if (!empty($port)) {
-            $dsn .= ";port={$port}";
+            $dsn .= ";port=$port";
         }
         $this->pdoConstruct($dsn, $user, $pwd, $opts);
     }

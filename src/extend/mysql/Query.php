@@ -18,7 +18,7 @@ class Query extends CoreQuery
      * @param string $value REGEXP正则字符串
      * @return $this
      */
-    public function regExp($value)
+    public function regExp(string $value): Query
     {
         return $this->condition("REGEXP", $value);
     }
@@ -28,7 +28,7 @@ class Query extends CoreQuery
      * @param string $value NOT REGEXP正则字符串
      * @return $this
      */
-    public function notRegExp($value)
+    public function notRegExp(string $value): Query
     {
         return $this->condition("NOT REGEXP", $value);
     }
@@ -38,7 +38,7 @@ class Query extends CoreQuery
      * @param string $value RLIKE正则字符串
      * @return $this
      */
-    public function rLike($value)
+    public function rLike(string $value): Query
     {
         return $this->condition("RLIKE", $value);
     }
@@ -48,7 +48,7 @@ class Query extends CoreQuery
      * @param string $value NOT RLIKE正则字符串
      * @return $this
      */
-    public function notRLike($value)
+    public function notRLike(string $value): Query
     {
         return $this->condition("NOT RLIKE", $value);
     }
@@ -83,7 +83,7 @@ class Query extends CoreQuery
      * @param mixed $query 可以是Query对象或者指可以使用analyze()的数组
      * @return $this
      */
-    public function qXOr($query)
+    public function qXOr($query): Query
     {
         return $this->qMerge('XOR', $query);
     }

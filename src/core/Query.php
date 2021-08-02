@@ -36,9 +36,9 @@ class Query
 
     /**
      * 构造
-     * @param string $object 要进行判断的对象，一般为字段名
+     * @param string|null $object 要进行判断的对象，一般为字段名
      */
-    public function __construct($object = null)
+    public function __construct(string $object = null)
     {
         $this->object($object);
     }
@@ -51,7 +51,7 @@ class Query
      * @param string $logic 组合逻辑
      * @return $this
      */
-    public function logic($logic)
+    public function logic(string $logic): Query
     {
         $this->logic = $logic;
         return $this;
@@ -63,7 +63,7 @@ class Query
      * @return $this
      * @todo 待移除该方法
      */
-    public function object($object)
+    public function object(string $object): Query
     {
         if (is_string($object)) {
             $this->object = $this->formatField($object);
@@ -79,7 +79,7 @@ class Query
      * @param string $field_name 字段名
      * @return $this
      */
-    public function field($field_name)
+    public function field(string $field_name): Query
     {
         return $this->object($field_name);
     }
@@ -89,7 +89,7 @@ class Query
      * @return string
      * @todo 命名待优化
      */
-    public function sql()
+    public function sql(): string
     {
         return $this->sql;
     }
@@ -99,7 +99,7 @@ class Query
      * @return array
      * @todo 命名待优化
      */
-    public function params()
+    public function params(): array
     {
         return $this->params;
     }
@@ -110,7 +110,7 @@ class Query
      * @param array|string|null $params     要绑定的数组，如果是单个绑定可以直接传入值，不需要绑定请不传递或者传递null
      * @return $this
      */
-    public function exp($expression, $params = null)
+    public function exp(string $expression, $params = null): Query
     {
         if ($this->sql == "") {
             if ($this->object == null) {
@@ -142,7 +142,7 @@ class Query
      * @param array|false|null $params 参数绑定数组，特殊值false表示不绑定参数，null表示自动判断是否绑定
      * @return $this
      */
-    public function condition($judge, $value, $params = null)
+    public function condition(string $judge, $value, $params = null): Query
     {
         if ($params === false) {  // false表示不需要绑定参数
             if (is_string($value)) {
@@ -168,7 +168,7 @@ class Query
      * @param mixed $value 判断值
      * @return $this
      */
-    public function gt($value)
+    public function gt($value): Query
     {
         return $this->condition(">", $value);
     }
@@ -178,7 +178,7 @@ class Query
      * @param mixed $value 判断值
      * @return $this
      */
-    public function egt($value)
+    public function egt($value): Query
     {
         return $this->condition(">=", $value);
     }
@@ -188,7 +188,7 @@ class Query
      * @param mixed $value 判断值
      * @return $this
      */
-    public function lt($value)
+    public function lt($value): Query
     {
         return $this->condition("<", $value);
     }
@@ -198,7 +198,7 @@ class Query
      * @param mixed $value 判断值
      * @return $this
      */
-    public function elt($value)
+    public function elt($value): Query
     {
         return $this->condition("<=", $value);
     }
@@ -208,7 +208,7 @@ class Query
      * @param mixed $value 判断值
      * @return $this
      */
-    public function eq($value)
+    public function eq($value): Query
     {
         return $this->condition("=", $value);
     }
@@ -218,7 +218,7 @@ class Query
      * @param mixed $value 判断值
      * @return $this
      */
-    public function neq($value)
+    public function neq($value): Query
     {
         return $this->condition("<>", $value);
     }
@@ -230,7 +230,7 @@ class Query
      * @param string $premodifier 前置修饰
      * @return $this
      */
-    public function between($value1, $value2, $premodifier = '')
+    public function between($value1, $value2, string $premodifier = ''): Query
     {
         $preg = '/[,=\>\<\'\"\(\)\?\s]/';
         if (preg_match($preg, (string)$value1) || preg_match($preg, (string)$value2)) {
@@ -250,7 +250,7 @@ class Query
      * @param mixed $value2 值2
      * @return $this
      */
-    public function notBetween($value1, $value2)
+    public function notBetween($value1, $value2): Query
     {
         return $this->between($value1, $value2, 'NOT');
     }
@@ -264,7 +264,7 @@ class Query
      * @param string     $premodifier 前置修饰
      * @return $this
      */
-    public function exists($expression, $params = null, $premodifier = '')
+    public function exists(string $expression, array $params = null, string $premodifier = ''): Query
     {
         $object = $this->object;  //暂存当前操作对象
         $this->object = null;  //EXISTS语句不需要object
@@ -281,7 +281,7 @@ class Query
      * @param array|null $params     参数绑定数组
      * @return $this
      */
-    public function notExists($expression, $params = null)
+    public function notExists(string $expression, array $params = null): Query
     {
         return $this->exists($expression, $params, 'NOT');
     }
@@ -292,7 +292,7 @@ class Query
      * @param string       $premodifier 前置修饰
      * @return $this
      */
-    public function in($values, $premodifier = '')
+    public function in($values, string $premodifier = ''): Query
     {
         if (is_array($values)) {
             $shuld_holder = false;  //是否需要使用占位符
@@ -316,13 +316,13 @@ class Query
                     }
                     $mider .= $value;
                 }
-                return $this->exp(trim("{$premodifier} IN ({$mider})"));
+                return $this->exp(trim("$premodifier IN ($mider)"));
             }
         } else {
             if (substr($values, 0, 1) == "(" && substr($values, -1, 1) == ")") {  // 兼容性判断values是否已自带左右括号
-                return $this->exp(trim("{$premodifier} IN {$values}"));
+                return $this->exp(trim("$premodifier IN $values"));
             } else {
-                return $this->exp(trim("{$premodifier} IN ({$values})"));
+                return $this->exp(trim("$premodifier IN ($values)"));
             }
         }
     }
@@ -332,7 +332,7 @@ class Query
      * @param array|string $values 可以传入数组(推荐)，或者IN条件对应字符串(左右括号可选)
      * @return $this
      */
-    public function notIn($values)
+    public function notIn($values): Query
     {
         return $this->in($values, 'NOT');
     }
@@ -343,9 +343,9 @@ class Query
      * @param string $premodifier 前置修饰
      * @return $this
      */
-    public function like($value, $premodifier = '')
+    public function like(string $value, string $premodifier = ''): Query
     {
-        return $this->condition(trim("{$premodifier} LIKE"), $value);
+        return $this->condition(trim("$premodifier LIKE"), $value);
     }
 
     /**
@@ -353,7 +353,7 @@ class Query
      * @param string $value LIKE字符串
      * @return $this
      */
-    public function notLike($value)
+    public function notLike(string $value): Query
     {
         return $this->like($value, 'NOT');
     }
@@ -362,7 +362,7 @@ class Query
      * 使用“IS NULL”语句设置条件
      * @return $this
      */
-    public function isNull()
+    public function isNull(): Query
     {
         return $this->exp("IS NULL");
     }
@@ -371,7 +371,7 @@ class Query
      * 使用“IS NOT NULL”语句设置条件
      * @return $this
      */
-    public function isNotNull()
+    public function isNotNull(): Query
     {
         return $this->exp("IS NOT NULL");
     }
@@ -445,7 +445,7 @@ class Query
                     if (isset($value[3])) {
                         $this->logic($value[3]);
                     }
-                    $params = isset($value[2]) ? $value[2] : null;
+                    $params = $value[2] ?? null;
                     $this->exp($value[1], $params);
                     break;
                 case "GT":
@@ -505,7 +505,7 @@ class Query
                     $this->notLike($value[1]);
                     break;
                 default :  // 默认认为是参数1为完整表达式，参数2为可能需要的绑定参数
-                    $params = isset($value[1]) ? $value[1] : null;
+                    $params = $value[1] ?? null;
                     $this->exp($value[0], $params);
             }
         }
@@ -518,7 +518,7 @@ class Query
      * @return $this
      * @todo 待转移到外部
      */
-    public function analyze(array $maps)
+    public function analyze(array $maps): Query
     {
         foreach ($maps as $key => $value) {
             $this->logic("AND");  //将默认组合逻辑改为AND
@@ -540,16 +540,16 @@ class Query
                     switch (strtoupper(trim($value[0]))) {
                         case "EXISTS":
                             if ($count > 1) {  // EXISTS条件必须再继续带参数，否则废弃
-                                $logic = isset($value[3]) ? $value[3] : "AND";
-                                $params = isset($value[2]) ? $value[2] : null;
+                                $logic = $value[3] ?? "AND";
+                                $params = $value[2] ?? null;
                                 $this->logic($logic);
                                 $this->exists($value[1], $params);
                             }
                             break;
                         case "NOT EXISTS":
                             if ($count > 1) {  // NOT EXISTS条件必须再继续带参数，否则废弃
-                                $logic = isset($value[3]) ? $value[3] : "AND";
-                                $params = isset($value[2]) ? $value[2] : null;
+                                $logic = $value[3] ?? "AND";
+                                $params = $value[2] ?? null;
                                 $this->logic($logic);
                                 $this->notExists($value[1], $params);
                             }
@@ -575,14 +575,14 @@ class Query
      * @return $this
      * @todo 待转移到外部
      */
-    public function qMerge($logic, $query)
+    public function qMerge(string $logic, $query): Query
     {
         if (is_array($query)) {
             $maps = $query;
             $query = new static();
             $query->analyze($maps);
         }
-        $this->sql = "({$this->sql}) {$logic} (" . $query->sql() . ")";
+        $this->sql = "($this->sql) {$logic} (" . $query->sql() . ")";
         $this->params = array_merge($this->params, $query->params());
         return $this;
     }
@@ -594,7 +594,7 @@ class Query
      * @return $this
      * @todo 待转移到外部
      */
-    public function qAnd($query)
+    public function qAnd($query): Query
     {
         return $this->qMerge('AND', $query);
     }
@@ -606,7 +606,7 @@ class Query
      * @return $this
      * @todo 待转移到外部
      */
-    public function qOr($query)
+    public function qOr($query): Query
     {
         return $this->qMerge('OR', $query);
     }

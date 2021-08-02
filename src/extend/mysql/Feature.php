@@ -13,7 +13,7 @@ trait Feature
      * @param string $str 待格式化字符串，原则上$str是否已格式化应是黑盒未知的。
      * @return string
      */
-    protected function formatTable($str)
+    protected function formatTable(string $str): string
     {
         if (strpos($str, '`') === 0) {
             return $str;
@@ -34,7 +34,7 @@ trait Feature
      * @param string $str 待格式化字符串，原则上$str是否已格式化应是黑盒未知的。
      * @return string
      */
-    protected function formatField($str)
+    protected function formatField(string $str): string
     {
         if ($str === '*') {
             return '*';
