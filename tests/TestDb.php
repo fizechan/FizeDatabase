@@ -1,7 +1,8 @@
 <?php
 
+namespace Tests;
 
-use fize\database\Db;
+use Fize\Database\Db;
 use PHPUnit\Framework\TestCase;
 
 class TestDb extends TestCase

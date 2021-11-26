@@ -1,7 +1,7 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use fize\database\Db;
+use Fize\Database\Db;
 
 $config = [
     'host'     => 'localhost',

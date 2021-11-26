@@ -1,8 +1,8 @@
 <?php
 
-namespace fize\database;
+namespace Fize\Database;
 
-use fize\database\core\Query as CoreQuery;
+use Fize\Database\Core\Query as CoreQuery;
 
 /**
  * 查询器

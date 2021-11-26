@@ -10,16 +10,14 @@
   ],
   "autoload": {
     "psr-4": {
-      "fize\\database\\": "src"
+      "Fize\\Database\\": "src"
     }
   },
   "require": {
-    "php": ">=7.0.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^9.5.0"
+    "php": ">=7.1.0"
   },
   "suggest": {
+    "php": ">=7.2.0",
     "ext-com_dotnet": "*",
     "ext-iconv": "*",
     "ext-mysqli": "*",
@@ -35,5 +33,13 @@
     "ext-pgsql": "*",
     "ext-sqlite3": "*",
     "ext-sqlsrv": "*"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5.0"
   }
 }

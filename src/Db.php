@@ -1,10 +1,9 @@
 <?php
 
+namespace Fize\Database;
 
-namespace fize\database;
-
-use fize\database\core\Db as CoreDb;
-use fize\database\core\ModeFactoryInterface;
+use Fize\Database\Core\Db as CoreDb;
+use Fize\Database\Core\ModeFactoryInterface;
 
 /**
  * 数据库
@@ -58,9 +57,9 @@ class Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持问号预处理
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
+     * @param string        $sql      SQL语句，支持问号预处理
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
     public static function query(string $sql, array $params = [], callable $callback = null): array
@@ -134,7 +133,7 @@ class Db
      * @param bool $real 是否返回最终SQL语句而非预处理语句
      * @return string
      */
-    public static function getLastSql(bool $real): string
+    public static function getLastSql(bool $real = false): string
     {
         return self::$db->getLastSql($real);
     }

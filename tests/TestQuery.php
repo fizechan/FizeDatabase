@@ -1,7 +1,8 @@
 <?php
 
+namespace Tests;
 
-use fize\database\Query;
+use Fize\Database\Query;
 use PHPUnit\Framework\TestCase;
 
 class TestQuery extends TestCase
