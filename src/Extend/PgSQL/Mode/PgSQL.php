@@ -3,8 +3,8 @@
 namespace Fize\Database\Extend\PgSQL\Mode;
 
 use Fize\Database\Driver\PgSQL as Driver;
-use Fize\Database\Exception\Exception;
 use Fize\Database\Extend\PgSQL\Db;
+use Fize\Exception\DatabaseException;
 
 /**
  * Pgsql
@@ -59,7 +59,7 @@ class PgSQL extends Db
         $result = $this->driver->queryParams($sql, $params);
 
         if ($result === false) {
-            throw new Exception($this->driver->lastError());
+            throw new DatabaseException($this->driver->lastError());
         }
 
         if ($callback !== null) {
@@ -94,7 +94,7 @@ class PgSQL extends Db
         $result = $this->driver->queryParams($sql, $params);
 
         if ($result === false) {
-            throw new Exception($this->driver->lastError());
+            throw new DatabaseException($this->driver->lastError());
         }
 
         return $result->affectedRows();

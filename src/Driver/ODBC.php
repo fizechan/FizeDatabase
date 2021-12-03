@@ -3,8 +3,8 @@
 namespace Fize\Database\Driver;
 
 use Exception;
-use Fize\Database\Exception\DriverException;
 use Fize\Database\Driver\ODBC\Statement;
+use Fize\Exception\DriverException;
 
 
 /**

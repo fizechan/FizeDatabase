@@ -2,9 +2,9 @@
 
 namespace Fize\Database\Extend\Access\Mode;
 
-use Fize\Database\Exception\Exception;
 use Fize\Database\Extend\Access\Db;
 use Fize\Database\Middleware\PDO as Middleware;
+use Fize\Exception\DatabaseException;
 use PDO as SysPDO;
 
 /**
@@ -63,7 +63,7 @@ class PDO extends Db
 
         if ($stmt === false) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
+            throw new DatabaseException(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
         }
 
         if (!empty($params)) {
@@ -74,7 +74,7 @@ class PDO extends Db
 
         if ($result === false) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
+            throw new DatabaseException(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
         }
 
         $rows = [];
@@ -112,7 +112,7 @@ class PDO extends Db
 
         if ($stmt === false) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
+            throw new DatabaseException(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
         }
 
         if (!empty($params)) {
@@ -123,7 +123,7 @@ class PDO extends Db
 
         if ($result === false) {
             //0为数据库错误代码，1为驱动错误代码，2为错误描述
-            throw new Exception(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
+            throw new DatabaseException(iconv('GBK', 'UTF-8', $this->pdo->errorInfo()[2]), $this->pdo->errorCode());
         }
 
         return $stmt->rowCount();

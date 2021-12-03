@@ -14,7 +14,8 @@
     }
   },
   "require": {
-    "php": ">=7.1.0"
+    "php": ">=7.1.0",
+    "fize/exception": "^2.0.0"
   },
   "suggest": {
     "php": ">=7.2.0",

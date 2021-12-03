@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Driver\ODBC;
 
-use Fize\Database\Exception\DriverException;
+use Fize\Exception\DriverException;
 
 /**
  * ODBC预处理语句

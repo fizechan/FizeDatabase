@@ -3,7 +3,7 @@
 namespace Fize\Database\Middleware;
 
 use COM;
-use Fize\Database\Exception\Exception;
+use Fize\Exception\DatabaseException;
 
 /**
  * ADODB
@@ -81,11 +81,10 @@ trait ADODB
      */
     public function execute(string $sql, array $params = []): int
     {
-        $sql = $this->getRealSql($sql, $params);
         $ra = 0;
-        $rst = $this->conn->Execute($sql, $ra);
+        $rst = $this->conn->Execute($this->getRealSql($sql, $params), $ra);
         if (!$rst) {
-            throw new Exception('执行SQL语句时发生错误', 0, $sql);
+            throw new DatabaseException('执行SQL语句时发生错误', 0, null, $sql, $params);
         }
         return $ra;
     }

@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Middleware;
 
-use Fize\Database\Exception\Exception;
+use Fize\Exception\DatabaseException;
 use PDO as SysPDO;
 use PDOException;
 
@@ -67,7 +67,7 @@ trait PDO
             $stmt->closeCursor();
             return $rows;
         } catch (PDOException $e) {
-            throw new Exception($e->getMessage(), $e->getCode(), $this->getLastSql(true));
+            throw new DatabaseException($e->getMessage(), $e->getCode(), $e, $sql, $params);
         }
     }
 
@@ -88,7 +88,7 @@ trait PDO
             }
             return $stmt->rowCount();
         } catch (PDOException $e) {
-            throw new Exception($e->getMessage(), $e->getCode(), $this->getLastSql(true));
+            throw new DatabaseException($e->getMessage(), $e->getCode(), $e, $sql, $params);
         }
     }
 

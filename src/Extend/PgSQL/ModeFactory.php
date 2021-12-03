@@ -3,7 +3,7 @@
 namespace Fize\Database\Extend\PgSQL;
 
 use Fize\Database\Core\ModeFactoryInterface;
-use Fize\Database\Exception\Exception;
+use Fize\Exception\DatabaseException;
 
 /**
  * 模式工厂
@@ -16,7 +16,7 @@ class ModeFactory implements ModeFactoryInterface
      * @param string $mode   连接模式
      * @param array  $config 数据库参数选项
      * @return Db
-     * @throws Exception
+     * @throws DatabaseException
      */
     public static function create(string $mode, array $config): Db
     {
@@ -48,7 +48,7 @@ class ModeFactory implements ModeFactoryInterface
                 $db = Mode::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['opts']);
                 break;
             default:
-                throw new Exception("error db mode: $mode");
+                throw new DatabaseException("error db mode: $mode");
         }
         $db->prefix($config['prefix']);
         return $db;

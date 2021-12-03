@@ -2,8 +2,8 @@
 
 namespace Fize\Database\Core;
 
-use Fize\Database\Exception\DataNotFoundException;
-use Fize\Database\Exception\Exception;
+use Fize\Exception\DatabaseException;
+use Fize\Exception\DataNotFoundException;
 
 /**
  * 数据库
@@ -578,7 +578,7 @@ abstract class Db
      * @param array  $data   可能需要的数据
      * @param bool   $clear  是否清理当前条件
      * @return string 最后组装的 SQL 语句
-     * @throws Exception
+     * @throws DatabaseException
      */
     protected function build(string $action, array $data = [], bool $clear = true): string
     {
@@ -606,7 +606,7 @@ abstract class Db
                 break;
             default :
                 //仅需要支持DELETE、INSERT、REPLACE、SELECT、UPDATE，防止其他语句进入
-                throw new Exception("Illegal SQL statement: $action");
+                throw new DatabaseException("Illegal SQL statement: $action");
         }
         if (in_array($action, ['DELETE', 'SELECT', 'UPDATE'])) {
             if (!empty($this->alias)) {
@@ -734,7 +734,7 @@ abstract class Db
     {
         $row = $this->findOrNull($cache);
         if (empty($row)) {
-            throw new DataNotFoundException('Recordset Not Found', 0, $this->getLastSql(true));
+            throw new DataNotFoundException('Recordset Not Found');
         }
         return $row;
     }

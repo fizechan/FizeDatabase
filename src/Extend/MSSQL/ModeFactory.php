@@ -5,7 +5,7 @@ namespace Fize\Database\Extend\MSSQL;
 
 
 use Fize\Database\Core\ModeFactoryInterface;
-use Fize\Database\Exception\Exception;
+use Fize\Exception\DatabaseException;
 
 /**
  * 模式工厂
@@ -18,7 +18,7 @@ class ModeFactory implements ModeFactoryInterface
      * @param string $mode   连接模式
      * @param array  $config 参数选项
      * @return Db
-     * @throws Exception
+     * @throws DatabaseException
      */
     public static function create(string $mode, array $config)
     {
@@ -54,7 +54,7 @@ class ModeFactory implements ModeFactoryInterface
                 $db = Mode::sqlsrv($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset']);
                 break;
             default:
-                throw new Exception("error db mode: {$mode}");
+                throw new DatabaseException("error db mode: {$mode}");
         }
         $db->prefix($config['prefix']);
         $db->newFeature($config['new_feature']);
