@@ -1,9 +1,8 @@
 <?php
 
-namespace Fize\Database\Driver;
+namespace Fize\Database\Driver\OCI;
 
 use Exception;
-use Fize\Database\Driver\OCI\Statement;
 use OCI_Collection;
 use OCI_Lob;
 

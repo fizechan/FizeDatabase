@@ -1,9 +1,8 @@
 <?php
 
-namespace Fize\Database\Driver;
+namespace Fize\Database\Driver\ODBC;
 
 use Exception;
-use Fize\Database\Driver\ODBC\Statement;
 use Fize\Exception\DriverException;
 
 

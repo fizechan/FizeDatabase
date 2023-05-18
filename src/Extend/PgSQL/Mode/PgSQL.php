@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Extend\PgSQL\Mode;
 
-use Fize\Database\Driver\PgSQL as Driver;
+use Fize\Database\Driver\PgSQL\PgSQL as Driver;
 use Fize\Database\Extend\PgSQL\Db;
 use Fize\Exception\DatabaseException;
 

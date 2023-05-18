@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Middleware;
 
-use Fize\Database\Driver\ODBC as SysOdbc;
+use Fize\Database\Driver\ODBC\ODBC as SysOdbc;
 
 /**
  * ODBC
