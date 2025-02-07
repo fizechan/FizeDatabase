@@ -1,6 +1,6 @@
 <?php
 
-namespace Fize\Database\Driver\OCI;
+namespace Fize\Database\Extend\Oracle\Driver;
 
 use Exception;
 use OCI_Collection;

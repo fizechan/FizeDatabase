@@ -2,7 +2,7 @@
 
 namespace Tests\Driver\PgSQL;
 
-use Fize\Database\Driver\PgSQL\PgSQL;
+use Fize\Database\Extend\PgSQL\Driver\PgSQL;
 use PHPUnit\Framework\TestCase;
 
 class TestPgSQL extends TestCase

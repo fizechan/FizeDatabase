@@ -2,7 +2,7 @@
 
 namespace Tests\Driver\OCI;
 
-use Fize\Database\Driver\OCI\OCI;
+use Fize\Database\Extend\Oracle\Driver\OCI;
 use PHPUnit\Framework\TestCase;
 
 class TestOCI extends TestCase

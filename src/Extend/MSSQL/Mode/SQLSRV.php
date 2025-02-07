@@ -2,8 +2,8 @@
 
 namespace Fize\Database\Extend\MSSQL\Mode;
 
-use Fize\Database\Driver\SQLSRV\SQLSRV as Driver;
 use Fize\Database\Extend\MSSQL\Db;
+use Fize\Database\Extend\MSSQL\Driver\SQLSRV as Driver;
 
 /**
  * Sqlsrv

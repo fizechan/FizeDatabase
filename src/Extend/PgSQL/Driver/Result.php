@@ -1,6 +1,6 @@
 <?php
 
-namespace Fize\Database\Driver\PgSQL;
+namespace Fize\Database\Extend\PgSQL\Driver;
 
 /**
  * PostgreSQL结果集

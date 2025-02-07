@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Middleware;
 
-use Fize\Database\Driver\ODBC\ODBC as SysOdbc;
+use Fize\Database\Driver\ODBC\ODBC as SysODBC;
 
 /**
  * ODBC
@@ -12,7 +12,7 @@ trait ODBC
 {
     /**
      * 使用的ODBC对象
-     * @var SysOdbc
+     * @var SysODBC
      */
     protected $driver = null;
 
@@ -27,7 +27,7 @@ trait ODBC
      */
     protected function odbcConstruct(string $dsn, string $user, string $pwd, int $cursor_type = null, bool $pconnect = false)
     {
-        $this->driver = new SysOdbc($dsn, $user, $pwd, $cursor_type, $pconnect);
+        $this->driver = new SysODBC($dsn, $user, $pwd, $cursor_type, $pconnect);
     }
 
     /**
