@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Driver\OCI;
+namespace Tests\Extend\Oracle\Driver;
 
 use Fize\Database\Extend\Oracle\Driver\OCI;
 use PHPUnit\Framework\TestCase;

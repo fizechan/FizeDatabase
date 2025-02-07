@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Driver\PgSQL;
+namespace Tests\Extend\PgSQL\Driver;
 
 use Fize\Database\Extend\PgSQL\Driver\PgSQL;
 use PHPUnit\Framework\TestCase;
