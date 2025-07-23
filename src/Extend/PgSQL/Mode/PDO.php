@@ -26,7 +26,7 @@ class PDO extends Db
     public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, array $opts = [])
     {
         $dsn = "pgsql:host=$host;dbname=$dbname";
-        if (!empty($port)) {
+        if (!is_null($port)) {
             $dsn .= ";port=$port";
         }
         $this->pdoConstruct($dsn, $user, $pwd, $opts);
