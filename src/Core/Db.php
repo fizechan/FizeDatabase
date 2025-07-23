@@ -103,9 +103,9 @@ abstract class Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持问号预处理语句
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @param string        $sql      SQL语句，支持问号预处理语句
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
     abstract public function query(string $sql, array $params = [], callable $callback = null): array;
@@ -405,7 +405,7 @@ abstract class Db
      * @param string|null  $using USING 字段
      * @return $this
      */
-    public function join($table, string $type = "JOIN", string $on = null, string $using = null)
+    public function join($table, string $type = "JOIN", string $on = null, string $using = null): Db
     {
         if (is_array($table)) {
             $alias = $table[1] ?? null;
@@ -715,7 +715,7 @@ abstract class Db
      * @param bool $cache 是否使用搜索缓存
      * @return array 如果无记录则返回null
      */
-    public function findOrNull(bool $cache = false)
+    public function findOrNull(bool $cache = false): ?array
     {
         $rows = $this->limit(1)->select($cache);
         if (count($rows) == 0) {

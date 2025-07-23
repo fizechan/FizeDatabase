@@ -567,6 +567,13 @@ class Query
         return $this;
     }
 
+    public static function merge(Query $query1, Query $query2, string $logic): Query
+    {
+        $sql = "({$query1->sql()}) {$logic} ({$query2->sql()})";
+        $params = array_merge($query1->params(), $query2->params());
+        return new static(null, $sql, $params);
+    }
+
     /**
      * 以指定形式组合Query对象,或者指可以使用analyze()的数组
      *
