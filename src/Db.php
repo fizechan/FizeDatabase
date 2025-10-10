@@ -34,7 +34,7 @@ class Db
         /**
          * @var ModeFactoryInterface $class
          */
-        $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\ModeFactory';
+        $class = '\\' . __NAMESPACE__ . '\\Extend\\' . $type . '\\ModeFactory';
         self::$db = $class::create($mode, $config);
         new Query($type);
     }
@@ -51,7 +51,7 @@ class Db
         /**
          * @var ModeFactoryInterface $class
          */
-        $class = '\\' . __NAMESPACE__ . '\\extend\\' . $type . '\\ModeFactory';
+        $class = '\\' . __NAMESPACE__ . '\\Extend\\' . $type . '\\ModeFactory';
         return $class::create($mode, $config);
     }
 

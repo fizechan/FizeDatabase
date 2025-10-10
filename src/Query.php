@@ -23,7 +23,7 @@ class Query
      */
     public function __construct(string $db_type)
     {
-        self::$class = '\\' . __NAMESPACE__ . '\\extend\\' . $db_type . '\\Query';
+        self::$class = '\\' . __NAMESPACE__ . '\\Extend\\' . $db_type . '\\Query';
     }
 
     /**
@@ -34,7 +34,7 @@ class Query
      */
     public static function construct(string $db_type, string $object = null): CoreQuery
     {
-        $class = '\\' . __NAMESPACE__ . '\\extend\\' . $db_type . '\\Query';
+        $class = '\\' . __NAMESPACE__ . '\\Extend\\' . $db_type . '\\Query';
         return new $class($object);
     }
 
