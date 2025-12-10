@@ -2,7 +2,7 @@
 
 namespace Tests\Extend\MSSQL\Mode;
 
-use Fize\Database\Extend\MSSQL\Mode\SQLSRV;
+use Fize\Database\Extend\SQLSRV\Mode\SQLSRV;
 use PHPUnit\Framework\TestCase;
 
 class TestSQLSRV extends TestCase

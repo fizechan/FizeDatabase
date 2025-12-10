@@ -10,7 +10,7 @@ use Fize\Database\Middleware\ODBC as Middleware;
  *
  * ODBC方式Access数据库模型
  */
-class ODBC extends Db
+final class ODBC extends Db
 {
     use Middleware;
 

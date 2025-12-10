@@ -11,7 +11,7 @@ use Fize\Database\Middleware\PDO as Middleware;
  *
  * PDO方式(推荐使用)MySQL数据库模型类
  */
-class PDO extends Db
+final class PDO extends Db
 {
     use Middleware;
 

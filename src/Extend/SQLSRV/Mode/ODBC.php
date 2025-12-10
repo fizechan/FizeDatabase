@@ -1,9 +1,9 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL\Mode;
+namespace Fize\Database\Extend\SQLSRV\Mode;
 
 use Exception;
-use Fize\Database\Extend\MSSQL\Db;
+use Fize\Database\Extend\SQLSRV\Db;
 use Fize\Database\Middleware\ODBC as Middleware;
 
 /**
@@ -11,7 +11,7 @@ use Fize\Database\Middleware\ODBC as Middleware;
  *
  * ODBC模式MSSQL数据库模型类
  */
-class ODBC extends Db
+final class ODBC extends Db
 {
     use Middleware;
 

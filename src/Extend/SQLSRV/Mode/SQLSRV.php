@@ -1,9 +1,9 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL\Mode;
+namespace Fize\Database\Extend\SQLSRV\Mode;
 
-use Fize\Database\Extend\MSSQL\Db;
-use Fize\Database\Extend\MSSQL\Driver\SQLSRV as Driver;
+use Fize\Database\Extend\SQLSRV\Db;
+use Fize\Database\Extend\SQLSRV\Driver\SQLSRV as Driver;
 
 /**
  * Sqlsrv
@@ -12,7 +12,7 @@ use Fize\Database\Extend\MSSQL\Driver\SQLSRV as Driver;
  * php_sqlsrv.dll需要本地客户端支持，不同版本使用的客户端不同，可以在错误信息中获取相关资料。
  * php_sqlsrv.dll由微软官方提供技术支持，推荐使用。
  */
-class SQLSRV extends Db
+final class SQLSRV extends Db
 {
 
     /**

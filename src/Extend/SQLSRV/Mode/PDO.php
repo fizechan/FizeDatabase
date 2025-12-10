@@ -1,8 +1,8 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL\Mode;
+namespace Fize\Database\Extend\SQLSRV\Mode;
 
-use Fize\Database\Extend\MSSQL\Db;
+use Fize\Database\Extend\SQLSRV\Db;
 use Fize\Database\Middleware\PDO as Middleware;
 use PDO as SysPDO;
 
@@ -15,7 +15,7 @@ use PDO as SysPDO;
  * @see https://docs.microsoft.com/en-us/sql/connect/php/system-requirements-for-the-php-sql-driver
  * @see https://www.microsoft.com/en-us/download/details.aspx?id=55642
  */
-class PDO extends Db
+final class PDO extends Db
 {
     use Middleware;
 

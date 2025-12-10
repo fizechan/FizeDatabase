@@ -12,7 +12,7 @@ use PDO as SysPDO;
  *
  * (推荐使用)PDO方式ACCESS数据库模型
  */
-class PDO extends Db
+final class PDO extends Db
 {
     use Middleware;
 

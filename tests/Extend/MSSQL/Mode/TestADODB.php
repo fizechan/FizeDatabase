@@ -2,7 +2,7 @@
 
 namespace Tests\Extend\MSSQL\Mode;
 
-use Fize\Database\Extend\MSSQL\Mode\ADODB;
+use Fize\Database\Extend\SQLSRV\Mode\ADODB;
 use PHPUnit\Framework\TestCase;
 
 class TestADODB extends TestCase

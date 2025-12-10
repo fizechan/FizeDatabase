@@ -10,7 +10,7 @@ use Fize\Database\Extend\Oracle\Driver\OCI as Driver;
  *
  * Oci方式Oracle数据库模型类
  */
-class OCI extends Db
+final class OCI extends Db
 {
 
     /**

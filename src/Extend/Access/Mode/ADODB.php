@@ -10,7 +10,7 @@ use Fize\Database\Middleware\ADODB as Middleware;
  *
  * (推荐使用)ADODB方式连接access数据库
  */
-class ADODB extends Db
+final class ADODB extends Db
 {
 
     use Middleware;

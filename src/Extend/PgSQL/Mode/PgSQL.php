@@ -11,7 +11,7 @@ use Fize\Exception\DatabaseException;
  *
  * PGSQL原生方式PostgreSQL数据库模型类
  */
-class PgSQL extends Db
+final class PgSQL extends Db
 {
 
     /**

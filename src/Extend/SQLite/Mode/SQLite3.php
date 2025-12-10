@@ -11,7 +11,7 @@ use SQLite3 as SysSQLite3;
  *
  * SQLite3数据库模型类
  */
-class SQLite3 extends Db
+final class SQLite3 extends Db
 {
 
     /**

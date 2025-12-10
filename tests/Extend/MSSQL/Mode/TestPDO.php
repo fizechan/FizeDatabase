@@ -2,7 +2,7 @@
 
 namespace Tests\Extend\MSSQL\Mode;
 
-use Fize\Database\Extend\MSSQL\Mode\PDO;
+use Fize\Database\Extend\SQLSRV\Mode\PDO;
 use PHPUnit\Framework\TestCase;
 
 class TestPDO extends TestCase

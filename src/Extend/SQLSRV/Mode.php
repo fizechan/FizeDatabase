@@ -1,11 +1,11 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL;
+namespace Fize\Database\Extend\SQLSRV;
 
-use Fize\Database\Extend\MSSQL\Mode\ADODB;
-use Fize\Database\Extend\MSSQL\Mode\ODBC;
-use Fize\Database\Extend\MSSQL\Mode\PDO;
-use Fize\Database\Extend\MSSQL\Mode\SQLSRV;
+use Fize\Database\Extend\SQLSRV\Mode\ADODB;
+use Fize\Database\Extend\SQLSRV\Mode\ODBC;
+use Fize\Database\Extend\SQLSRV\Mode\PDO;
+use Fize\Database\Extend\SQLSRV\Mode\SQLSRV;
 
 /**
  * 模式

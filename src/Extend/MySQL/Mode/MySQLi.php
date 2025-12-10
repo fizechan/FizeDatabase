@@ -11,7 +11,7 @@ use mysqli as SysMysqli;
  *
  * MySQLi方式MySQL数据库模型类
  */
-class MySQLi extends Db
+final class MySQLi extends Db
 {
 
     /**

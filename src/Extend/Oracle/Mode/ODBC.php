@@ -12,7 +12,7 @@ use Fize\Database\Middleware\ODBC as Middleware;
  * 注意ODBC返回的类型都为字符串格式(null除外)
  * @todo 未测试通过，暂无法使用
  */
-class ODBC extends Db
+final class ODBC extends Db
 {
     use Middleware;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL\Driver;
+namespace Fize\Database\Extend\SQLSRV\Driver;
 
 use Exception;
 

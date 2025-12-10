@@ -1,6 +1,6 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL;
+namespace Fize\Database\Extend\SQLSRV;
 
 use Fize\Database\Core\Query as CoreQuery;
 

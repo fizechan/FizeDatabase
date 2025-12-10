@@ -10,7 +10,7 @@ use Fize\Database\Middleware\ODBC as Middleware;
  *
  * ODBC方式PostgreSQL数据库模型类
  */
-class ODBC extends Db
+final class ODBC extends Db
 {
     use Middleware;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fize\Database\Extend\MSSQL;
+namespace Fize\Database\Extend\SQLSRV;
 
 /**
  * 特征项

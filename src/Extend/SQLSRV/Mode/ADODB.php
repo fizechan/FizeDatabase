@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Fize\Database\Extend\MSSQL\Mode;
+namespace Fize\Database\Extend\SQLSRV\Mode;
 
-use Fize\Database\Extend\MSSQL\Db;
+use Fize\Database\Extend\SQLSRV\Db;
 use Fize\Database\Middleware\ADODB as Middleware;
 
 /**
@@ -11,7 +11,7 @@ use Fize\Database\Middleware\ADODB as Middleware;
  *
  * ADODB方式连接MSSQL数据库
  */
-class ADODB extends Db
+final class ADODB extends Db
 {
     use Middleware;
 

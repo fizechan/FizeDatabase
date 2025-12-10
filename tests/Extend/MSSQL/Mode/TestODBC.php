@@ -2,7 +2,7 @@
 
 namespace Tests\Extend\MSSQL\Mode;
 
-use Fize\Database\Extend\MSSQL\Mode\ODBC;
+use Fize\Database\Extend\SQLSRV\Mode\ODBC;
 use PHPUnit\Framework\TestCase;
 
 class TestODBC extends TestCase

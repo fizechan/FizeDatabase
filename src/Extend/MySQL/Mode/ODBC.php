@@ -12,7 +12,7 @@ use Fize\Database\Middleware\ODBC as Middleware;
  * ODBC方式MySQL数据库模型类
  * 注意ODBC返回的类型都为字符串格式(null除外)
  */
-class ODBC extends Db
+final class ODBC extends Db
 {
     use Middleware;
 
