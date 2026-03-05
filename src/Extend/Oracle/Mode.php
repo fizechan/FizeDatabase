@@ -2,9 +2,9 @@
 
 namespace Fize\Database\Extend\Oracle;
 
-use Fize\Database\Extend\Oracle\mode\OCI;
-use Fize\Database\Extend\Oracle\mode\ODBC;
-use Fize\Database\Extend\Oracle\mode\PDO;
+use Fize\Database\Extend\Oracle\mode\OCIMode;
+use Fize\Database\Extend\Oracle\mode\ODBCMode;
+use Fize\Database\Extend\Oracle\mode\PDOMode;
 
 /**
  * 模式
@@ -22,11 +22,11 @@ class Mode
      * @param string|null $character_set     编码
      * @param int|null    $session_mode      会话模式
      * @param int         $connect_type      连接模式
-     * @return OCI
+     * @return OCIMode
      */
-    public static function oci(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1): OCI
+    public static function oci(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1): OCIMode
     {
-        return new OCI($username, $password, $connection_string, $character_set, $session_mode, $connect_type);
+        return new OCIMode($username, $password, $connection_string, $character_set, $session_mode, $connect_type);
     }
 
     /**
@@ -37,11 +37,11 @@ class Mode
      * @param mixed       $port    端口号，选填，Oracle默认是1521
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
-     * @return ODBC
+     * @return ODBCMode
      */
-    public static function odbc(string $user, string $pwd, string $sid, $port = "", string $charset = "utf8", string $driver = null): ODBC
+    public static function odbc(string $user, string $pwd, string $sid, $port = "", string $charset = "utf8", string $driver = null): ODBCMode
     {
-        return new ODBC($user, $pwd, $sid, $port, $charset, $driver);
+        return new ODBCMode($user, $pwd, $sid, $port, $charset, $driver);
     }
 
     /**
@@ -53,10 +53,10 @@ class Mode
      * @param int|null $port    端口
      * @param string   $charset 编码
      * @param array    $opts    其他选项
-     * @return PDO
+     * @return PDOMode
      */
-    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = []): PDO
+    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = []): PDOMode
     {
-        return new PDO($host, $user, $pwd, $dbname, $port, $charset, $opts);
+        return new PDOMode($host, $user, $pwd, $dbname, $port, $charset, $opts);
     }
 }

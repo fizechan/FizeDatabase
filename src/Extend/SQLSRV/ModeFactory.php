@@ -40,15 +40,7 @@ class ModeFactory implements ModeFactoryInterface
                 $db = Mode::odbc($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['driver']);
                 break;
             case 'pdo':
-                $db = Mode::pdo(
-                    $config['host'],
-                    $config['user'],
-                    $config['password'],
-                    $config['dbname'],
-                    $config['port'],
-                    $config['charset'],
-                    $config['opts']
-                );
+                $db = Mode::pdo($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset'], $config['opts']);
                 break;
             case 'sqlsrv':
                 $db = Mode::sqlsrv($config['host'], $config['user'], $config['password'], $config['dbname'], $config['port'], $config['charset']);

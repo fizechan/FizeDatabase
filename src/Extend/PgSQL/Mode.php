@@ -2,9 +2,9 @@
 
 namespace Fize\Database\Extend\PgSQL;
 
-use Fize\Database\Extend\PgSQL\Mode\ODBC;
-use Fize\Database\Extend\PgSQL\Mode\PDO;
-use Fize\Database\Extend\PgSQL\Mode\PgSQL;
+use Fize\Database\Extend\PgSQL\Mode\ODBCMode;
+use Fize\Database\Extend\PgSQL\Mode\PDOMode;
+use Fize\Database\Extend\PgSQL\Mode\PgSQLMode;
 
 /**
  * 模式
@@ -22,11 +22,11 @@ class Mode
      * @param string      $dbname 数据库名
      * @param string|int  $port   端口号，选填，PostgreSQL默认是5432
      * @param string|null $driver 指定ODBC驱动名称。
-     * @return ODBC
+     * @return ODBCMode
      */
-    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $driver = null): ODBC
+    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $driver = null): ODBCMode
     {
-        return new ODBC($host, $user, $pwd, $dbname, $port, $driver);
+        return new ODBCMode($host, $user, $pwd, $dbname, $port, $driver);
     }
 
     /**
@@ -37,11 +37,11 @@ class Mode
      * @param string   $dbname 数据库名
      * @param int|null $port   端口号，选填，PostgreSQL默认是5432
      * @param array    $opts   PDO连接的其他选项，选填
-     * @return PDO
+     * @return PDOMode
      */
-    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, array $opts = []): PDO
+    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, array $opts = []): PDOMode
     {
-        return new PDO($host, $user, $pwd, $dbname, $port, $opts);
+        return new PDOMode($host, $user, $pwd, $dbname, $port, $opts);
     }
 
     /**
@@ -49,10 +49,10 @@ class Mode
      * @param string   $connection_string 连接字符串
      * @param bool     $pconnect          是否使用长连接
      * @param int|null $connect_type      PGSQL_CONNECT_FORCE_NEW使用新连接
-     * @return PgSQL
+     * @return PgSQLMode
      */
-    public static function pgsql(string $connection_string, bool $pconnect = false, int $connect_type = null): PgSQL
+    public static function pgsql(string $connection_string, bool $pconnect = false, int $connect_type = null): PgSQLMode
     {
-        return new PgSQL($connection_string, $pconnect, $connect_type);
+        return new PgSQLMode($connection_string, $pconnect, $connect_type);
     }
 }

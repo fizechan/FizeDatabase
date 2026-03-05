@@ -2,9 +2,9 @@
 
 namespace Fize\Database\Extend\Access;
 
-use Fize\Database\Extend\Access\Mode\ADODB;
-use Fize\Database\Extend\Access\Mode\ODBC;
-use Fize\Database\Extend\Access\Mode\PDO;
+use Fize\Database\Extend\Access\Mode\ADODBMode;
+use Fize\Database\Extend\Access\Mode\ODBCMode;
+use Fize\Database\Extend\Access\Mode\PDOMode;
 
 /**
  * 模式
@@ -17,11 +17,11 @@ class Mode
      * @param string      $file   Access文件路径
      * @param string|null $pwd    用户密码
      * @param string|null $driver 指定ODBC驱动名称。
-     * @return ADODB
+     * @return ADODBMode
      */
-    public static function adodb(string $file, string $pwd = null, string $driver = null): ADODB
+    public static function adodb(string $file, string $pwd = null, string $driver = null): ADODBMode
     {
-        return new ADODB($file, $pwd, $driver);
+        return new ADODBMode($file, $pwd, $driver);
     }
 
     /**
@@ -29,11 +29,11 @@ class Mode
      * @param string      $file   Access文件路径
      * @param string|null $pwd    用户密码
      * @param string|null $driver 指定ODBC驱动名称。
-     * @return ODBC
+     * @return ODBCMode
      */
-    public static function odbc(string $file, string $pwd = null, string $driver = null): ODBC
+    public static function odbc(string $file, string $pwd = null, string $driver = null): ODBCMode
     {
-        return new ODBC($file, $pwd, $driver);
+        return new ODBCMode($file, $pwd, $driver);
     }
 
     /**
@@ -41,10 +41,10 @@ class Mode
      * @param string      $file   Access文件路径
      * @param string|null $pwd    用户密码
      * @param string|null $driver 指定ODBC驱动名称。
-     * @return PDO
+     * @return PDOMode
      */
-    public static function pdo(string $file, string $pwd = null, string $driver = null): PDO
+    public static function pdo(string $file, string $pwd = null, string $driver = null): PDOMode
     {
-        return new PDO($file, $pwd, $driver);
+        return new PDOMode($file, $pwd, $driver);
     }
 }

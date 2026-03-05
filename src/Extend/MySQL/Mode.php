@@ -2,9 +2,9 @@
 
 namespace Fize\Database\Extend\MySQL;
 
-use Fize\Database\Extend\MySQL\Mode\ODBC;
-use Fize\Database\Extend\MySQL\Mode\MySQLi;
-use Fize\Database\Extend\MySQL\Mode\PDO;
+use Fize\Database\Extend\MySQL\Mode\MySQLiMode;
+use Fize\Database\Extend\MySQL\Mode\ODBCMode;
+use Fize\Database\Extend\MySQL\Mode\PDOMode;
 
 /**
  * 模式
@@ -28,11 +28,11 @@ class Mode
      * @param string|null $socket  指定应使用的套接字或命名管道，选填，默认不指定
      * @param array       $ssl_set 设置SSL选项，选填，为数组参数，其下有参数ENABLE、KEY、CERT、CA、CAPATH、CIPHER，如果ENABLE为true，则其余参数都需要填写
      * @param int|null    $flags   设置连接参数，选填，如MYSQLI_CLIENT_SSL等
-     * @return MySQLi
+     * @return MySQLiMode
      */
-    public static function mysqli(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", array $opts = [], bool $real = true, string $socket = null, array $ssl_set = [], int $flags = null): MySQLi
+    public static function mysqli(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", array $opts = [], bool $real = true, string $socket = null, array $ssl_set = [], int $flags = null): MySQLiMode
     {
-        return new MySQLi($host, $user, $pwd, $dbname, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
+        return new MySQLiMode($host, $user, $pwd, $dbname, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
     }
 
     /**
@@ -45,11 +45,11 @@ class Mode
      * @param mixed       $port    端口号，选填，MySQL默认是3306
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
-     * @return ODBC
+     * @return ODBCMode
      */
-    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", string $driver = null): ODBC
+    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", string $driver = null): ODBCMode
     {
-        return new ODBC($host, $user, $pwd, $dbname, $port, $charset, $driver);
+        return new ODBCMode($host, $user, $pwd, $dbname, $port, $charset, $driver);
     }
 
     /**
@@ -64,10 +64,10 @@ class Mode
      * @param string      $charset 指定编码，选填，默认utf8
      * @param array       $opts    PDO连接的其他选项，选填
      * @param string|null $socket  指定应使用的套接字或命名管道,windows不可用，选填，默认不指定
-     * @return PDO
+     * @return PDOMode
      */
-    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], string $socket = null): PDO
+    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], string $socket = null): PDOMode
     {
-        return new PDO($host, $user, $pwd, $dbname, $port, $charset, $opts, $socket);
+        return new PDOMode($host, $user, $pwd, $dbname, $port, $charset, $opts, $socket);
     }
 }
