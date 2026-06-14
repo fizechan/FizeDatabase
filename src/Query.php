@@ -32,7 +32,7 @@ class Query
      * @param string|null $object  要进行判断的对象，一般为字段名
      * @return CoreQuery
      */
-    public static function construct(string $db_type, string $object = null): CoreQuery
+    public static function construct(string $db_type, ?string $object = null): CoreQuery
     {
         $class = '\\' . __NAMESPACE__ . '\\Extend\\' . $db_type . '\\Query';
         return new $class($object);
@@ -45,7 +45,7 @@ class Query
      * @return CoreQuery
      * @deprecated 待移除
      */
-    public static function object(string $object = null): CoreQuery
+    public static function object(?string $object = null): CoreQuery
     {
         return new self::$class($object);
     }
