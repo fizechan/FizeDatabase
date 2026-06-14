@@ -22,11 +22,11 @@ final class ODBCMode extends Db
      * @param string      $user    用户名
      * @param string      $pwd     用户密码
      * @param string      $dbname  数据库名
-     * @param mixed       $port    端口号，选填，MySQL默认是3306
+     * @param int|null    $port    端口号，选填，MySQL默认是3306
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
      */
-    public function __construct(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", string $driver = null)
+    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "{MySQL ODBC 8.0 ANSI Driver}";

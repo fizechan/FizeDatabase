@@ -14,7 +14,7 @@ class TestModeFactory extends TestCase
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '123456',
-            'dbname'   => 'gm_test'
+            'dbname'   => 'fz_test'
         ];
         $db = ModeFactory::create('pdo', $config);
         var_dump($db);

@@ -22,8 +22,8 @@ class ModeFactory implements ModeFactoryInterface
     {
         $mode = $mode ?: 'pdo';
         $default_config = [
-            'port'    => '',
-            'charset' => 'utf8',
+            'port'    => null,
+            'charset' => 'utf8mb4',
             'prefix'  => '',
             'opts'    => [],
             'real'    => true,

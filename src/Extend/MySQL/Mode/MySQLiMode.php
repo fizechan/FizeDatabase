@@ -30,7 +30,7 @@ final class MySQLiMode extends Db
      * @param string   $user    用户名
      * @param string   $pwd     用户密码
      * @param string   $dbname  指定数据库
-     * @param mixed    $port    端口号，MySQL默认是3306
+     * @param int|null $port    端口号，MySQL默认是3306
      * @param string   $charset 指定编码，选填，默认utf8
      * @param array    $opts    设置MYSQL连接选项
      * @param bool     $real    是否使用real方式，默认true
@@ -39,7 +39,7 @@ final class MySQLiMode extends Db
      * @param int|null $flags   设置连接参数，选填，如MYSQLI_CLIENT_SSL等
      * @throws Exception
      */
-    public function __construct(string $host, string $user, string $pwd, $dbname, $port = "", string $charset = "utf8", array $opts = [], bool $real = true, $socket = null, array $ssl_set = [], int $flags = null)
+    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], bool $real = true, $socket = null, array $ssl_set = [], int $flags = null)
     {
         $port = (int)$port;  //mysqli有对类型进行了检查
         if ($real) {

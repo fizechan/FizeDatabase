@@ -21,7 +21,7 @@ class Mode
      * @param string      $user    用户名
      * @param string      $pwd     用户密码
      * @param string      $dbname  指定数据库
-     * @param mixed       $port    端口号，MySQL默认是3306
+     * @param int|null    $port    端口号，MySQL默认是3306
      * @param string      $charset 指定编码，选填，默认utf8
      * @param array       $opts    设置MYSQL连接选项
      * @param bool        $real    是否使用real方式，默认true
@@ -30,7 +30,7 @@ class Mode
      * @param int|null    $flags   设置连接参数，选填，如MYSQLI_CLIENT_SSL等
      * @return MySQLiMode
      */
-    public static function mysqli(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", array $opts = [], bool $real = true, string $socket = null, array $ssl_set = [], int $flags = null): MySQLiMode
+    public static function mysqli(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], bool $real = true, string $socket = null, array $ssl_set = [], int $flags = null): MySQLiMode
     {
         return new MySQLiMode($host, $user, $pwd, $dbname, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
     }
@@ -42,12 +42,12 @@ class Mode
      * @param string      $user    用户名
      * @param string      $pwd     用户密码
      * @param string      $dbname  数据库名
-     * @param mixed       $port    端口号，选填，MySQL默认是3306
+     * @param int|null    $port    端口号，选填，MySQL默认是3306
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
      * @return ODBCMode
      */
-    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $charset = "utf8", string $driver = null): ODBCMode
+    public static function odbc(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", string $driver = null): ODBCMode
     {
         return new ODBCMode($host, $user, $pwd, $dbname, $port, $charset, $driver);
     }
