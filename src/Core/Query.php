@@ -59,11 +59,11 @@ class Query
 
     /**
      * 设定当前操作对象
-     * @param string $object 操作对象，通常为字段名
+     * @param string|null $object 操作对象，通常为字段名
      * @return $this
      * @todo 待移除该方法
      */
-    public function object(string $object): Query
+    public function object(?string $object = null): Query
     {
         if (is_string($object)) {
             $this->object = $this->formatField($object);
