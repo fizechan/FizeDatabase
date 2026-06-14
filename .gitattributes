@@ -1,5 +1,6 @@
+/.qoder/ export-ignore
+/tests/ export-ignore
+/examples/ export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 .phpunit.result.cache export-ignore
-/tests/ export-ignore
-/examples/ export-ignore
