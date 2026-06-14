@@ -38,7 +38,7 @@ class Query
      * 构造
      * @param string|null $object 要进行判断的对象，一般为字段名
      */
-    public function __construct(string $object = null)
+    public function __construct(?string $object = null)
     {
         $this->object($object);
     }
