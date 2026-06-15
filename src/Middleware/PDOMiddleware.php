@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Middleware;
 
-use Fize\Exception\DatabaseException;
+use Fize\Exception\DatabaseException\DatabaseSQLException;
 use PDO;
 use PDOException;
 
@@ -73,7 +73,7 @@ trait PDOMiddleware
                 $message = sprintf('PDO error: %s (%d)', $message, $code);
                 $code = 0;
             }
-            throw new DatabaseException($message, $code, $e, $sql, $params);
+            throw new DatabaseSQLException($sql, $params, $message, $code, $e);
         }
     }
 
@@ -100,7 +100,7 @@ trait PDOMiddleware
                 $message = sprintf('PDO error: %s (%d)', $message, $code);
                 $code = 0;
             }
-            throw new DatabaseException($message, $code, $e, $sql, $params);
+            throw new DatabaseSQLException($sql, $params, $message, $code, $e);
         }
     }
 

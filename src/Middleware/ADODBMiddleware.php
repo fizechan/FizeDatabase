@@ -3,7 +3,7 @@
 namespace Fize\Database\Middleware;
 
 use COM;
-use Fize\Exception\DatabaseException;
+use Fize\Exception\DatabaseException\DatabaseSQLException;
 
 /**
  * ADODB中间层
@@ -84,7 +84,7 @@ trait ADODBMiddleware
         $ra = 0;
         $rst = $this->conn->Execute($this->getRealSql($sql, $params), $ra);
         if (!$rst) {
-            throw new DatabaseException('执行SQL语句时发生错误', 0, null, $sql, $params);
+            throw new DatabaseSQLException($sql, $params, '执行SQL语句时发生错误', 0, null);
         }
         return $ra;
     }
