@@ -67,7 +67,13 @@ trait PDOMiddleware
             $stmt->closeCursor();
             return $rows;
         } catch (PDOException $e) {
-            throw new DatabaseException($e->getMessage(), $e->getCode(), $e, $sql, $params);
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            if (!is_int($code)) {  // PDOException的错误码不是int类型，做兼容处理。
+                $message = sprintf('PDO error: %s (%d)', $message, $code);
+                $code = 0;
+            }
+            throw new DatabaseException($message, $code, $e, $sql, $params);
         }
     }
 
@@ -88,7 +94,13 @@ trait PDOMiddleware
             }
             return $stmt->rowCount();
         } catch (PDOException $e) {
-            throw new DatabaseException($e->getMessage(), $e->getCode(), $e, $sql, $params);
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            if (!is_int($code)) {  // PDOException的错误码不是int类型，做兼容处理。
+                $message = sprintf('PDO error: %s (%d)', $message, $code);
+                $code = 0;
+            }
+            throw new DatabaseException($message, $code, $e, $sql, $params);
         }
     }
 
