@@ -2,7 +2,7 @@
 
 namespace Fize\Database\Middleware;
 
-use Fize\Database\Driver\ODBC\ODBC;
+use Fize\Database\Middleware\Driver\ODBC\ODBC;
 
 /**
  * ODBC中间层

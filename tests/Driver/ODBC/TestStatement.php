@@ -2,7 +2,6 @@
 
 namespace Tests\Driver\ODBC;
 
-use Fize\Database\Driver\ODBC\Statement;
 use PHPUnit\Framework\TestCase;
 
 class TestStatement extends TestCase
