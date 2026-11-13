@@ -653,7 +653,7 @@ abstract class Db
      * @param string|null $name 序列名
      * @return int|string
      */
-    public function insertGetId(array $data, string $name = null)
+    public function insertGetId(array $data, ?string $name = null)
     {
         $this->insert($data);
         return $this->lastInsertId($name);
