@@ -26,7 +26,7 @@ final class ODBCMode extends Db
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
      */
-    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", string $driver = null)
+    public function __construct(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", ?string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "{MySQL ODBC 8.0 ANSI Driver}";
@@ -52,7 +52,7 @@ final class ODBCMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在mysql中无效
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $result = $this->driver->exec("SELECT @@IDENTITY");
         return $result->result(1);

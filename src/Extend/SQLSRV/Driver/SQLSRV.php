@@ -19,11 +19,11 @@ class SQLSRV
 
     /**
      * MSSQL constructor.
-     * @param string $serverName     服务器,它可以包含一个端口号，则写法如{name},{port}
-     * @param array  $connectionInfo 其他信息
+     * @param string     $serverName     服务器,它可以包含一个端口号，则写法如{name},{port}
+     * @param array|null $connectionInfo 其他信息
      * @throws Exception
      */
-    public function __construct(string $serverName, array $connectionInfo = null)
+    public function __construct(string $serverName, ?array $connectionInfo = null)
     {
         $this->conn = self::connect($serverName, $connectionInfo);
         if (!$this->conn) {
@@ -106,7 +106,7 @@ class SQLSRV
      * @param int|null $errorsOrWarnings 可选值：SQLSRV_ERR_ALL, SQLSRV_ERR_ERRORS, SQLSRV_ERR_WARNINGS.
      * @return array 键名包括SQLSTATE、code、message，没有错误时返回null
      */
-    public static function errors(int $errorsOrWarnings = null)
+    public static function errors(?int $errorsOrWarnings = null)
     {
         return sqlsrv_errors($errorsOrWarnings);
     }
@@ -123,12 +123,12 @@ class SQLSRV
 
     /**
      * 设置一个预处理语句
-     * @param string $sql     预处理SQL语句，支持问号占位符。
-     * @param array  $params  可选的绑定参数
-     * @param array  $options 其他相关参数。
+     * @param string     $sql     预处理SQL语句，支持问号占位符。
+     * @param array|null $params  可选的绑定参数
+     * @param array|null $options 其他相关参数。
      * @return Statement 使用该对象来进行实际查询
      */
-    public function prepare(string $sql, array $params = null, array $options = null): Statement
+    public function prepare(string $sql, ?array $params = null, ?array $options = null): Statement
     {
         if (is_null($options)) {
             $stmt = sqlsrv_prepare($this->conn, $sql, $params);
@@ -140,12 +140,12 @@ class SQLSRV
 
     /**
      * 设置一个预处理语句，并执行。
-     * @param string $sql     预处理SQL语句，支持问号占位符。
-     * @param array  $params  可选的绑定参数
-     * @param array  $options 其他相关参数。
+     * @param string     $sql     预处理SQL语句，支持问号占位符。
+     * @param array|null $params  可选的绑定参数
+     * @param array|null $options 其他相关参数。
      * @return Statement 使用该对象来进行实际查询
      */
-    public function query(string $sql, array $params = null, array $options = null): Statement
+    public function query(string $sql, ?array $params = null, ?array $options = null): Statement
     {
         if (is_null($options)) {
             $stmt = sqlsrv_query($this->conn, $sql, $params);

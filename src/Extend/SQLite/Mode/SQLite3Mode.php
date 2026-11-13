@@ -26,7 +26,7 @@ final class SQLite3Mode extends Db
      * @param string|null $encryption_key 加密密钥
      * @param int         $busy_timeout   超时时间
      */
-    public function __construct(string $filename, int $flags = 2, string $encryption_key = null, int $busy_timeout = 30000)
+    public function __construct(string $filename, int $flags = 2, ?string $encryption_key = null, int $busy_timeout = 30000)
     {
         $this->driver = new SQLite3($filename, $flags, $encryption_key);
         $this->driver->busyTimeout($busy_timeout);
@@ -42,12 +42,12 @@ final class SQLite3Mode extends Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持原生的问号预处理
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
+     * @param string        $sql      SQL语句，支持原生的问号预处理
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         $stmt = $this->driver->prepare($sql);
         if (!$stmt) {
@@ -161,7 +161,7 @@ final class SQLite3Mode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在sqlite3中无效
      * @return int
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         return $this->driver->lastInsertRowID();
     }

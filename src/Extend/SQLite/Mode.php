@@ -25,7 +25,7 @@ class Mode
      * @param string|null $driver      指定ODBC驱动
      * @return ODBCMode
      */
-    public static function odbc(string $filename, int $long_names = 0, int $time_out = 1000, int $no_txn = 0, string $sync_pragma = "NORMAL", int $step_api = 0, string $driver = null): ODBCMode
+    public static function odbc(string $filename, int $long_names = 0, int $time_out = 1000, int $no_txn = 0, string $sync_pragma = "NORMAL", int $step_api = 0, ?string $driver = null): ODBCMode
     {
         return new ODBCMode($filename, $long_names, $time_out, $no_txn, $sync_pragma, $step_api, $driver);
     }
@@ -48,7 +48,7 @@ class Mode
      * @param int         $busy_timeout   超时时间
      * @return SQLite3Mode
      */
-    public static function sqlite3(string $filename, int $flags = 2, string $encryption_key = null, int $busy_timeout = 30000): SQLite3Mode
+    public static function sqlite3(string $filename, int $flags = 2, ?string $encryption_key = null, int $busy_timeout = 30000): SQLite3Mode
     {
         return new SQLite3Mode($filename, $flags, $encryption_key, $busy_timeout);
     }

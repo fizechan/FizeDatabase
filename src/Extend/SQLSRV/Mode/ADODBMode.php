@@ -21,10 +21,10 @@ final class ADODBMode extends Db
      * @param string      $user   用户名
      * @param string      $pwd    用户密码
      * @param string      $dbname 数据库名
-     * @param mixed       $port   端口号，选填，MSSQL默认是1433
+     * @param int|null    $port   端口号，选填，MSSQL默认是1433
      * @param string|null $driver 指定ADODB驱动名称。
      */
-    public function __construct(string $host, string $user, string $pwd, string $dbname, $port = "", string $driver = null)
+    public function __construct(string $host, string $user, string $pwd, string $dbname, ?int $port = null, ?string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "SQLNCLI11";  //速度快
@@ -52,7 +52,7 @@ final class ADODBMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在access中无效
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $sql = 'SELECT @@IDENTITY AS id';
         $rows = $this->query($sql);

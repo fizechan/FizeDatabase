@@ -25,7 +25,7 @@ final class PgSQLMode extends Db
      * @param bool     $pconnect          是否使用长连接
      * @param int|null $connect_type      PGSQL_CONNECT_FORCE_NEW使用新连接
      */
-    public function __construct(string $connection_string, bool $pconnect = false, int $connect_type = null)
+    public function __construct(string $connection_string, bool $pconnect = false, ?int $connect_type = null)
     {
         $this->driver = new PgSQL($connection_string, $pconnect, $connect_type);
     }
@@ -41,12 +41,12 @@ final class PgSQLMode extends Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，原$*占位符统一变更为?占位符
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
+     * @param string        $sql      SQL语句，原$*占位符统一变更为?占位符
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         if ($params) {  //将?占位符还原为$*占位符
             $parts = explode('?', $sql);
@@ -129,7 +129,7 @@ final class PgSQLMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在PostgreSQL中必须指定
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $sql = "SELECT currval('$name')";
         $result = $this->driver->query($sql);

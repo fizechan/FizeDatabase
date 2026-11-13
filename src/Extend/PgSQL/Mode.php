@@ -20,11 +20,11 @@ class Mode
      * @param string      $user   用户名
      * @param string      $pwd    用户密码
      * @param string      $dbname 数据库名
-     * @param string|int  $port   端口号，选填，PostgreSQL默认是5432
+     * @param int|null    $port   端口号，选填，PostgreSQL默认是5432
      * @param string|null $driver 指定ODBC驱动名称。
      * @return ODBCMode
      */
-    public static function odbc(string $host, string $user, string $pwd, string $dbname, $port = "", string $driver = null): ODBCMode
+    public static function odbc(string $host, string $user, string $pwd, string $dbname, ?int $port = null, ?string $driver = null): ODBCMode
     {
         return new ODBCMode($host, $user, $pwd, $dbname, $port, $driver);
     }
@@ -39,7 +39,7 @@ class Mode
      * @param array    $opts   PDO连接的其他选项，选填
      * @return PDOMode
      */
-    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, array $opts = []): PDOMode
+    public static function pdo(string $host, string $user, string $pwd, string $dbname, ?int $port = null, array $opts = []): PDOMode
     {
         return new PDOMode($host, $user, $pwd, $dbname, $port, $opts);
     }
@@ -51,7 +51,7 @@ class Mode
      * @param int|null $connect_type      PGSQL_CONNECT_FORCE_NEW使用新连接
      * @return PgSQLMode
      */
-    public static function pgsql(string $connection_string, bool $pconnect = false, int $connect_type = null): PgSQLMode
+    public static function pgsql(string $connection_string, bool $pconnect = false, ?int $connect_type = null): PgSQLMode
     {
         return new PgSQLMode($connection_string, $pconnect, $connect_type);
     }

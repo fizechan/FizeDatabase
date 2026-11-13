@@ -21,7 +21,7 @@ final class ADODBMode extends Db
      * @param string|null $pwd    密码
      * @param string|null $driver 驱动名
      */
-    public function __construct(string $file, string $pwd = null, string $driver = null)
+    public function __construct(string $file, ?string $pwd = null, ?string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "Microsoft.ACE.OLEDB.12.0";
@@ -50,7 +50,7 @@ final class ADODBMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $sql = 'SELECT @@IDENTITY AS id';
         $rows = $this->query($sql);

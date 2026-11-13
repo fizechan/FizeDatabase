@@ -26,7 +26,7 @@ final class PDOMode extends Db
      * @param array       $opts    PDO连接的其他选项，选填
      * @param string|null $socket  指定应使用的套接字或命名管道,windows不可用，选填，默认不指定
      */
-    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], string $socket = null)
+    public function __construct(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", array $opts = [], ?string $socket = null)
     {
         $dsn = "mysql:host=$host;dbname=$dbname";
         if (!empty($port)) {

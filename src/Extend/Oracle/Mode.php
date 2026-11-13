@@ -24,7 +24,7 @@ class Mode
      * @param int         $connect_type      连接模式
      * @return OCIMode
      */
-    public static function oci(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1): OCIMode
+    public static function oci(string $username, string $password, ?string $connection_string = null, ?string $character_set = null, ?int $session_mode = null, int $connect_type = 1): OCIMode
     {
         return new OCIMode($username, $password, $connection_string, $character_set, $session_mode, $connect_type);
     }
@@ -34,12 +34,12 @@ class Mode
      * @param string      $user    用户名
      * @param string      $pwd     用户密码
      * @param string      $sid     连接串
-     * @param mixed       $port    端口号，选填，Oracle默认是1521
+     * @param int|null    $port    端口号，选填，Oracle默认是1521
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
      * @return ODBCMode
      */
-    public static function odbc(string $user, string $pwd, string $sid, $port = "", string $charset = "utf8", string $driver = null): ODBCMode
+    public static function odbc(string $user, string $pwd, string $sid, ?int $port = null, string $charset = "utf8", ?string $driver = null): ODBCMode
     {
         return new ODBCMode($user, $pwd, $sid, $port, $charset, $driver);
     }

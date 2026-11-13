@@ -23,7 +23,7 @@ class Statement
      * @param resource $statement 预处理语句资源对象
      * @param int|null $mode      执行模式
      */
-    public function __construct(&$statement, int $mode = null)
+    public function __construct(&$statement, ?int $mode = null)
     {
         $this->statement = $statement;
         if (!is_null($mode)) {
@@ -91,7 +91,7 @@ class Statement
      * @param int|null $type        列类型
      * @return bool
      */
-    public function defineByName(string $column_name, &$variable, int $type = null): bool
+    public function defineByName(string $column_name, &$variable, ?int $type = null): bool
     {
         if (is_null($type)) {
             return oci_define_by_name($this->statement, $column_name, $variable);
@@ -104,7 +104,7 @@ class Statement
      * @param int|null $mode 执行模式
      * @return bool
      */
-    public function execute(int $mode = null): bool
+    public function execute(?int $mode = null): bool
     {
         $mode = is_null($mode) ? $this->mode : $mode;
         return oci_execute($this->statement, $mode);

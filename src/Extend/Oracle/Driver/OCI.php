@@ -48,7 +48,7 @@ class OCI
      * @param int|null    $session_mode      会话模式
      * @param int         $connect_type      连接模式
      */
-    public function __construct(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1)
+    public function __construct(string $username, string $password, ?string $connection_string = null, ?string $character_set = null, ?int $session_mode = null, int $connect_type = 1)
     {
         switch ($connect_type) {
             case self::CONNECT_TYPE_DEFALUT:
@@ -117,7 +117,7 @@ class OCI
      * @param int|null    $session_mode      会话模式
      * @throws Exception
      */
-    public function connect(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null)
+    public function connect(string $username, string $password, ?string $connection_string = null, ?string $character_set = null, ?int $session_mode = null)
     {
         if ($this->connection) {
             $this->close();
@@ -192,7 +192,7 @@ class OCI
      * @param string|null $schema 指向建立名字对象的架构
      * @return OCI_Collection 出错时返回false
      */
-    public function newCollection(string $tdo, string $schema = null): OCI_Collection
+    public function newCollection(string $tdo, ?string $schema = null): OCI_Collection
     {
         return oci_new_collection($this->connection, $tdo, $schema);
     }
@@ -205,7 +205,7 @@ class OCI
      * @param string|null $character_set     编码
      * @param int|null    $session_mode      会话模式
      */
-    public function newConnect(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null)
+    public function newConnect(string $username, string $password, ?string $connection_string = null, ?string $character_set = null, ?int $session_mode = null)
     {
         if ($this->connection) {
             $this->close();
@@ -269,7 +269,7 @@ class OCI
      * @param string|null $character_set     编码
      * @param int|null    $session_mode      会话模式
      */
-    public function pconnect(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null)
+    public function pconnect(string $username, string $password, ?string $connection_string = null, ?string $character_set = null, ?int $session_mode = null)
     {
         if ($this->connection) {
             $this->close();

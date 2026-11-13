@@ -3,7 +3,7 @@
 namespace Fize\Database\Core;
 
 use Fize\Exception\DatabaseException;
-use Fize\Exception\DataNotFoundException;
+use Fize\Exception\NotFoundException\DataNotFoundException;
 
 /**
  * 数据库
@@ -108,7 +108,7 @@ abstract class Db
      * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    abstract public function query(string $sql, array $params = [], callable $callback = null): array;
+    abstract public function query(string $sql, array $params = [], ?callable $callback = null): array;
 
     /**
      * 执行一个SQL语句
@@ -141,14 +141,14 @@ abstract class Db
      * @param int|null $offset 偏移量
      * @return $this
      */
-    abstract public function limit(int $rows, int $offset = null);
+    abstract public function limit(int $rows, ?int $offset = null);
 
     /**
      * 返回最后插入行的ID或序列值
      * @param string|null $name 应该返回ID的那个序列对象的名称
      * @return int|string
      */
-    abstract public function lastInsertId(string $name = null);
+    abstract public function lastInsertId(?string $name = null);
 
     /**
      * 安全化值
@@ -260,7 +260,7 @@ abstract class Db
      * @param string|null $prefix 表前缀，默认为使用当前前缀
      * @return $this
      */
-    public function table(string $name, string $prefix = null): Db
+    public function table(string $name, ?string $prefix = null): Db
     {
         $this->tableName = $name;
         if (!is_null($prefix)) {
@@ -405,7 +405,7 @@ abstract class Db
      * @param string|null  $using USING 字段
      * @return $this
      */
-    public function join($table, string $type = "JOIN", string $on = null, string $using = null): Db
+    public function join($table, string $type = "JOIN", ?string $on = null, ?string $using = null): Db
     {
         if (is_array($table)) {
             $alias = $table[1] ?? null;
@@ -435,7 +435,7 @@ abstract class Db
      * @param string|null  $on    ON条件
      * @return $this
      */
-    public function innerJoin($table, string $on = null): Db
+    public function innerJoin($table, ?string $on = null): Db
     {
         return $this->join($table, "INNER JOIN", $on);
     }
@@ -446,7 +446,7 @@ abstract class Db
      * @param string|null  $on    ON条件
      * @return $this
      */
-    public function leftJoin($table, string $on = null): Db
+    public function leftJoin($table, ?string $on = null): Db
     {
         return $this->join($table, "LEFT JOIN", $on);
     }
@@ -457,7 +457,7 @@ abstract class Db
      * @param string|null  $on    ON条件
      * @return $this
      */
-    public function rightJoin($table, string $on = null): Db
+    public function rightJoin($table, ?string $on = null): Db
     {
         return $this->join($table, "RIGHT JOIN", $on);
     }
@@ -909,11 +909,11 @@ abstract class Db
 
     /**
      * 批量插入记录
-     * @param array $data_sets 数据集
-     * @param array $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
+     * @param array      $data_sets 数据集
+     * @param array|null $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入成功的记录数
      */
-    public function insertAll(array $data_sets, array $fields = null): int
+    public function insertAll(array $data_sets, ?array $fields = null): int
     {
         if ($fields) {
             $datas = [];

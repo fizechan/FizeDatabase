@@ -26,20 +26,20 @@ final class MySQLiMode extends Db
 
     /**
      * 构造
-     * @param string   $host    服务器地址
-     * @param string   $user    用户名
-     * @param string   $pwd     用户密码
-     * @param string   $dbname  指定数据库
-     * @param int|null $port    端口号，MySQL默认是3306
-     * @param string   $charset 指定编码，选填，默认utf8
-     * @param array    $opts    设置MYSQL连接选项
-     * @param bool     $real    是否使用real方式，默认true
-     * @param string   $socket  指定应使用的套接字或命名管道，选填，默认不指定
-     * @param array    $ssl_set 设置SSL选项，选填，为数组参数，其下有参数ENABLE、KEY、CERT、CA、CAPATH、CIPHER，如果ENABLE为true，则其余参数都需要填写
-     * @param int|null $flags   设置连接参数，选填，如MYSQLI_CLIENT_SSL等
+     * @param string      $host    服务器地址
+     * @param string      $user    用户名
+     * @param string      $pwd     用户密码
+     * @param string      $dbname  指定数据库
+     * @param int|null    $port    端口号，MySQL默认是3306
+     * @param string      $charset 指定编码，选填，默认utf8
+     * @param array       $opts    设置MYSQL连接选项
+     * @param bool        $real    是否使用real方式，默认true
+     * @param string|null $socket  指定应使用的套接字或命名管道，选填，默认不指定
+     * @param array       $ssl_set 设置SSL选项，选填，为数组参数，其下有参数ENABLE、KEY、CERT、CA、CAPATH、CIPHER，如果ENABLE为true，则其余参数都需要填写
+     * @param int|null    $flags   设置连接参数，选填，如MYSQLI_CLIENT_SSL等
      * @throws Exception
      */
-    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], bool $real = true, $socket = null, array $ssl_set = [], int $flags = null)
+    public function __construct(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", array $opts = [], bool $real = true, ?string $socket = null, array $ssl_set = [], ?int $flags = null)
     {
         $port = (int)$port;  //mysqli有对类型进行了检查
         if ($real) {
@@ -107,12 +107,12 @@ final class MySQLiMode extends Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持原生的mysqli问号占位符预处理
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @param string        $sql      SQL语句，支持原生的mysqli问号占位符预处理
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         $stmt = $this->driver->prepare($sql);
 
@@ -243,7 +243,7 @@ final class MySQLiMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在mysql中无效
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         return $this->lastInsertId;
     }

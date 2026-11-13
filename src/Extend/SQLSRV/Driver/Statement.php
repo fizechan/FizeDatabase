@@ -60,7 +60,7 @@ class Statement
      * @param int|null $row       设置游标类型
      * @param int      $offset    设置偏移量
      */
-    public function fetchArray(callable $func, int $fetchType = 2, int $row = null, int $offset = 0)
+    public function fetchArray(callable $func, int $fetchType = 2, ?int $row = null, int $offset = 0)
     {
         if (is_null($row)) {
             while ($row = sqlsrv_fetch_array($this->statement, $fetchType)) {
@@ -77,12 +77,12 @@ class Statement
      * 以对象形式遍历记录集
      * @param callable    $func       遍历函数
      * @param string|null $className  指定要生成实例的对象名，如果不指定，则生成其自身对象实例
-     * @param array       $ctorParams 如果对象实例化需要参数，则在此填写
+     * @param array|null  $ctorParams 如果对象实例化需要参数，则在此填写
      * @param int         $row        设置游标类型
      * @param int|null    $offset     设置偏移量
      * @todo 只实现了简单的参数带入
      */
-    public function fetchObject(callable $func, string $className = null, array $ctorParams = null, int $row = 6, int $offset = null)
+    public function fetchObject(callable $func, string $className = null, ?array $ctorParams = null, int $row = 6, ?int $offset = null)
     {
         while ($obj = sqlsrv_fetch_object($this->statement, $className, $ctorParams, $row, $offset)) {
             $func($obj);
@@ -93,9 +93,9 @@ class Statement
      * 执行该行数后指针指向下一个记录行
      * @param int|null $row    设置游标类型
      * @param int|null $offset 设置偏移量
-     * @return mixed 成功返回true，失败返回false，没有更多记录时返回null
+     * @return bool|null 成功返回true，失败返回false，没有更多记录时返回null
      */
-    public function fetch(int $row = null, int $offset = null)
+    public function fetch(int $row = null, int $offset = null): ?bool
     {
         if (is_null($row)) {
             return sqlsrv_fetch($this->statement);

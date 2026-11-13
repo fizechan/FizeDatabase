@@ -29,7 +29,7 @@ class Db
      * @param array       $config 数据库配置项
      * @param string|null $mode   连接模式
      */
-    public function __construct(string $type, array $config, string $mode = null)
+    public function __construct(string $type, array $config, ?string $mode = null)
     {
         /**
          * @var ModeFactoryInterface $class
@@ -46,7 +46,7 @@ class Db
      * @param string|null $mode   连接模式
      * @return CoreDb
      */
-    public static function connect(string $type, array $config, string $mode = null): CoreDb
+    public static function connect(string $type, array $config, ?string $mode = null): CoreDb
     {
         /**
          * @var ModeFactoryInterface $class
@@ -62,7 +62,7 @@ class Db
      * @param callable|null $callback 如果定义该记录集回调函数则不返回数组而直接进行循环回调
      * @return array 返回结果数组
      */
-    public static function query(string $sql, array $params = [], callable $callback = null): array
+    public static function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         return self::$db->query($sql, $params, $callback);
     }
@@ -121,7 +121,7 @@ class Db
      * @param string|null $prefix 表前缀，默认为null表示使用当前前缀
      * @return CoreDb
      */
-    public static function table(string $name, string $prefix = null): CoreDb
+    public static function table(string $name, ?string $prefix = null): CoreDb
     {
         return self::$db->table($name, $prefix);
     }

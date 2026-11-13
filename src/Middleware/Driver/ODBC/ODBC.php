@@ -30,7 +30,7 @@ class ODBC
      * @param bool     $pconnect    是否使用长链接，默认false
      * @throws DriverException
      */
-    public function __construct(string $dsn, string $user, string $pwd, int $cursor_type = null, bool $pconnect = false)
+    public function __construct(string $dsn, string $user, string $pwd, ?int $cursor_type = null, bool $pconnect = false)
     {
         try {
             if ($pconnect) {
@@ -120,7 +120,7 @@ class ODBC
      * @return Statement
      * @throws DriverException
      */
-    public function columns(string $qualifier = null, string $schema = null, string $table_name = null, string $column_name = null): Statement
+    public function columns(?string $qualifier = null, ?string $schema = null, ?string $table_name = null, ?string $column_name = null): Statement
     {
         $rst = odbc_columns($this->connection, $qualifier, $schema, $table_name, $column_name);
         if ($rst === false) {
@@ -163,7 +163,7 @@ class ODBC
      * @return Statement
      * @throws DriverException
      */
-    public function exec(string $query_string, int $flags = null): Statement
+    public function exec(string $query_string, ?int $flags = null): Statement
     {
         $rst = odbc_exec($this->connection, $query_string, $flags);
         if ($rst === false) {
@@ -197,7 +197,7 @@ class ODBC
      * @param int|null $data_type 数据类型，可用于将信息限制为单个数据类型。
      * @return Statement 返回结果集，错误时返回false
      */
-    public function gettypeinfo(int $data_type = null): Statement
+    public function gettypeinfo(?int $data_type = null): Statement
     {
         $rst = odbc_gettypeinfo($this->connection, $data_type);
         return new Statement($rst);
@@ -240,7 +240,7 @@ class ODBC
      * @return Statement 结果集
      * @deprecated 非常见用法，不建议使用
      */
-    public function procedurecolumns(string $qualifier = null, string $owner = null, string $proc = null, string $column = null): Statement
+    public function procedurecolumns(?string $qualifier = null, ?string $owner = null, ?string $proc = null, ?string $column = null): Statement
     {
         $rst = odbc_procedurecolumns($this->connection, $qualifier, $owner, $proc, $column);
         return new Statement($rst);
@@ -254,7 +254,7 @@ class ODBC
      * @return Statement 结果集
      * @deprecated 非常见用法，不建议使用
      */
-    public function procedures(string $qualifier = null, string $owner = null, string $name = null): Statement
+    public function procedures(?string $qualifier = null, ?string $owner = null, ?string $name = null): Statement
     {
         $rst = odbc_procedures($this->connection, $qualifier, $owner, $name);
         return new Statement($rst);
@@ -332,7 +332,7 @@ class ODBC
      * @param string|null $types     指定类型，"'TABLE','VIEW'" or "TABLE, VIEW"
      * @return Statement 结果集
      */
-    public function tables(string $qualifier = null, string $owner = null, string $name = null, string $types = null): Statement
+    public function tables(?string $qualifier = null, ?string $owner = null, ?string $name = null, ?string $types = null): Statement
     {
         $rst = odbc_tables($this->connection, $qualifier, $owner, $name, $types);
         return new Statement($rst);

@@ -33,7 +33,7 @@ abstract class Db extends CoreDb
      * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit(int $rows, int $offset = null)
+    public function limit(int $rows, ?int $offset = null)
     {
         if (is_null($offset)) {
             $this->limit = (string)$rows;
@@ -45,12 +45,12 @@ abstract class Db extends CoreDb
 
     /**
      * 指定查询lock
-     * @param bool  $lock      是否启用LOCK语句
-     * @param array $lock_sqls 表锁定语句快，支持多个，默认为启用当前表的写锁定
+     * @param bool       $lock      是否启用LOCK语句
+     * @param array|null $lock_sqls 表锁定语句快，支持多个，默认为启用当前表的写锁定
      * @return $this
      * @todo 写法不是很好，需要改进
      */
-    public function lock(bool $lock = true, array $lock_sqls = null)
+    public function lock(bool $lock = true, ?array $lock_sqls = null)
     {
         $this->lock = $lock;
         if ($this->lock) {
@@ -70,7 +70,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function crossJoin(string $table, string $on = null): Db
+    public function crossJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "CROSS JOIN", $on);
     }
@@ -81,7 +81,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function leftOuterJoin(string $table, string $on = null): Db
+    public function leftOuterJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "LEFT OUTER JOIN", $on);
     }
@@ -92,7 +92,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function rightOuterJoin(string $table, string $on = null): Db
+    public function rightOuterJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "RIGHT OUTER JOIN", $on);
     }
@@ -103,7 +103,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function straightJoin(string $table, string $on = null): Db
+    public function straightJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "STRAIGHT_JOIN", $on);
     }
@@ -230,11 +230,11 @@ abstract class Db extends CoreDb
 
     /**
      * 批量插入记录
-     * @param array $data_sets 数据集
-     * @param array $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
+     * @param array      $data_sets 数据集
+     * @param array|null $fields    可选参数$fields用于指定要插入的字段名数组，这样参数$data_set的元素数组就可以不需要指定键名，方便输入
      * @return int 返回插入的记录数
      */
-    public function insertAll(array $data_sets, array $fields = null): int
+    public function insertAll(array $data_sets, ?array $fields = null): int
     {
         $params = [];
         $sql = "INSERT INTO `{$this->tablePrefix}{$this->tableName}`{$this->parseInsertAllDatas($data_sets, $fields, $params)}";

@@ -66,7 +66,7 @@ class Statement
      * @param int|null $rownumber 指定要检索的行数
      * @return array
      */
-    public function fetchArray(int $rownumber = null): array
+    public function fetchArray(?int $rownumber = null): array
     {
         return odbc_fetch_array($this->statement, $rownumber);
     }
@@ -78,7 +78,7 @@ class Statement
      * @return int 返回结果行数
      * @throws DriverException
      */
-    public function fetchInto(array &$result_array, int $rownumber = null): int
+    public function fetchInto(array &$result_array, ?int $rownumber = null): int
     {
         $rst = odbc_fetch_into($this->statement, $result_array, $rownumber);
         if ($rst === false) {
@@ -92,7 +92,7 @@ class Statement
      * @param int|null $rownumber 指定要检索的行数
      * @return object 一个对象表示一个行
      */
-    public function fetchObject(int $rownumber = null)
+    public function fetchObject(?int $rownumber = null)
     {
         return odbc_fetch_object($this->statement, $rownumber);
     }
@@ -102,7 +102,7 @@ class Statement
      * @param int|null $row_number 指定要检索的行数
      * @return bool 成功返回true，失败返回false
      */
-    public function fetchRow(int $row_number = null): bool
+    public function fetchRow(?int $row_number = null): bool
     {
         return odbc_fetch_row($this->statement, $row_number);
     }
@@ -223,7 +223,7 @@ class Statement
      * @return int 返回结果集大小，失败返回false
      * @throws DriverException
      */
-    public function resultAll(string $format = null): int
+    public function resultAll(?string $format = null): int
     {
         $rst = odbc_result_all($this->statement, $format);
         if ($rst === false) {

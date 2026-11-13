@@ -24,7 +24,7 @@ abstract class Db extends CoreDb
      * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit(int $rows, int $offset = null): Db
+    public function limit(int $rows, ?int $offset = null): Db
     {
         if (is_null($offset)) {
             $this->limit = (string)$rows;

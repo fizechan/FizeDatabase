@@ -19,7 +19,7 @@ class Mode
      * @param string|null $driver 指定ODBC驱动名称。
      * @return ADODBMode
      */
-    public static function adodb(string $file, string $pwd = null, string $driver = null): ADODBMode
+    public static function adodb(string $file, ?string $pwd = null, ?string $driver = null): ADODBMode
     {
         return new ADODBMode($file, $pwd, $driver);
     }
@@ -31,7 +31,7 @@ class Mode
      * @param string|null $driver 指定ODBC驱动名称。
      * @return ODBCMode
      */
-    public static function odbc(string $file, string $pwd = null, string $driver = null): ODBCMode
+    public static function odbc(string $file, ?string $pwd = null, ?string $driver = null): ODBCMode
     {
         return new ODBCMode($file, $pwd, $driver);
     }
@@ -43,7 +43,7 @@ class Mode
      * @param string|null $driver 指定ODBC驱动名称。
      * @return PDOMode
      */
-    public static function pdo(string $file, string $pwd = null, string $driver = null): PDOMode
+    public static function pdo(string $file, ?string $pwd = null, ?string $driver = null): PDOMode
     {
         return new PDOMode($file, $pwd, $driver);
     }

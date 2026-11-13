@@ -24,7 +24,7 @@ final class PDOMode extends Db
      * @param string   $charset 指定编码，选填，默认utf8
      * @param array    $opts    PDO连接的其他选项，选填
      */
-    public function __construct(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [])
+    public function __construct(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", array $opts = [])
     {
         $dsn = "oci:dbname=$host";
         if (!empty($port)) {

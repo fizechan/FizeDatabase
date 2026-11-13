@@ -25,7 +25,7 @@ final class ODBCMode extends Db
      * @param int         $step_api    参数StepAPI
      * @param string|null $driver      指定ODBC驱动
      */
-    public function __construct(string $filename, int $long_names = 0, int $time_out = 1000, int $no_txn = 0, string $sync_pragma = "NORMAL", int $step_api = 0, string $driver = null)
+    public function __construct(string $filename, int $long_names = 0, int $time_out = 1000, int $no_txn = 0, string $sync_pragma = "NORMAL", int $step_api = 0, ?string $driver = null)
     {
         if (is_null($driver)) {  //默认驱动名
             $driver = "SQLite3 ODBC Driver";
@@ -48,7 +48,7 @@ final class ODBCMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在sqlite3中无效
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $result = $this->driver->exec("SELECT LAST_INSERT_ROWID()");
         return $result->result(1);

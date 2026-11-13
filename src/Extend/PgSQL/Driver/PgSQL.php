@@ -19,7 +19,7 @@ class PgSQL
      * @param bool     $pconnect          是否使用长连接
      * @param int|null $connect_type      PGSQL_CONNECT_FORCE_NEW使用新连接
      */
-    public function __construct(string $connection_string, bool $pconnect = false, int $connect_type = null)
+    public function __construct(string $connection_string, bool $pconnect = false, ?int $connect_type = null)
     {
         if ($pconnect) {
             $this->pconnect($connection_string, $connect_type);
@@ -140,7 +140,7 @@ class PgSQL
      * @param string|null $null_as    NULL值的替代
      * @return bool
      */
-    public function copyFrom(string $table_name, array $rows, string $delimiter = null, string $null_as = null): bool
+    public function copyFrom(string $table_name, array $rows, ?string $delimiter = null, ?string $null_as = null): bool
     {
         if (!is_null($null_as)) {
             return pg_copy_from($this->connection, $table_name, $rows, $delimiter, $null_as);
@@ -158,7 +158,7 @@ class PgSQL
      * @param string|null $null_as    NULL值的替代
      * @return array
      */
-    public function copyTo(string $table_name, string $delimiter = null, string $null_as = null): array
+    public function copyTo(string $table_name, ?string $delimiter = null, ?string $null_as = null): array
     {
         if (!is_null($null_as)) {
             return pg_copy_to($this->connection, $table_name, $delimiter, $null_as);
@@ -269,7 +269,7 @@ class PgSQL
      * @param int|null $result_type 返回类型
      * @return array 通告消息
      */
-    public function getNotify(int $result_type = null): array
+    public function getNotify(?int $result_type = null): array
     {
         if (!is_null($result_type)) {
             return pg_get_notify($this->connection, $result_type);
@@ -432,7 +432,7 @@ class PgSQL
      * @param string   $connection_string 连接字符串
      * @param int|null $connect_type      PGSQL_CONNECT_FORCE_NEW强制新连接
      */
-    protected function pconnect(string $connection_string, int $connect_type = null)
+    protected function pconnect(string $connection_string, ?int $connect_type = null)
     {
         $this->connection = pg_pconnect($connection_string, $connect_type);
     }

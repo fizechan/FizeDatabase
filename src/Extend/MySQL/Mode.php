@@ -30,7 +30,7 @@ class Mode
      * @param int|null    $flags   设置连接参数，选填，如MYSQLI_CLIENT_SSL等
      * @return MySQLiMode
      */
-    public static function mysqli(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], bool $real = true, string $socket = null, array $ssl_set = [], int $flags = null): MySQLiMode
+    public static function mysqli(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", array $opts = [], bool $real = true, ?string $socket = null, array $ssl_set = [], ?int $flags = null): MySQLiMode
     {
         return new MySQLiMode($host, $user, $pwd, $dbname, $port, $charset, $opts, $real, $socket, $ssl_set, $flags);
     }
@@ -47,7 +47,7 @@ class Mode
      * @param string|null $driver  指定ODBC驱动名称。
      * @return ODBCMode
      */
-    public static function odbc(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", string $driver = null): ODBCMode
+    public static function odbc(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", ?string $driver = null): ODBCMode
     {
         return new ODBCMode($host, $user, $pwd, $dbname, $port, $charset, $driver);
     }
@@ -66,7 +66,7 @@ class Mode
      * @param string|null $socket  指定应使用的套接字或命名管道,windows不可用，选填，默认不指定
      * @return PDOMode
      */
-    public static function pdo(string $host, string $user, string $pwd, string $dbname, int $port = null, string $charset = "utf8", array $opts = [], string $socket = null): PDOMode
+    public static function pdo(string $host, string $user, string $pwd, string $dbname, ?int $port = null, string $charset = "utf8", array $opts = [], ?string $socket = null): PDOMode
     {
         return new PDOMode($host, $user, $pwd, $dbname, $port, $charset, $opts, $socket);
     }

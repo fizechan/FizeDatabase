@@ -65,7 +65,7 @@ class Result
      * @param int      $result_type 常量PGSQL_ASSOC，PGSQL_NUM 和 PGSQL_BOTH
      * @return array
      */
-    public function fetchArray(int $row = null, int $result_type = 3): array
+    public function fetchArray(?int $row = null, int $result_type = 3): array
     {
         return pg_fetch_array($this->result, $row, $result_type);
     }
@@ -75,7 +75,7 @@ class Result
      * @param int|null $row 要从结果资源中检索的列号(从零开始)
      * @return array
      */
-    public function fetchAssoc(int $row = null): array
+    public function fetchAssoc(?int $row = null): array
     {
         return pg_fetch_assoc($this->result, $row);
     }
@@ -85,7 +85,7 @@ class Result
      * @param int|null $row 要从结果资源中检索的列号(从零开始)
      * @return object
      */
-    public function fetchObject(int $row = null)
+    public function fetchObject(?int $row = null)
     {
         return pg_fetch_object($this->result, $row);
     }
@@ -106,7 +106,7 @@ class Result
      * @param int|null $row 要从结果资源中检索的列号(从零开始),未指定则为下一行
      * @return array
      */
-    public function fetchRow(int $row = null)
+    public function fetchRow(?int $row = null)
     {
         return pg_fetch_row($this->result, $row);
     }

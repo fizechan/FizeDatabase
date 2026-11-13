@@ -22,7 +22,7 @@ final class PDOMode extends Db
      * @param string|null $pwd    用户密码
      * @param string|null $driver 指定ODBC驱动名称。
      */
-    public function __construct(string $file, string $pwd = null, string $driver = null)
+    public function __construct(string $file, ?string $pwd = null, ?string $driver = null)
     {
         if (is_null($driver)) {
             $driver = "Microsoft Access Driver (*.mdb, *.accdb)";
@@ -45,12 +45,12 @@ final class PDOMode extends Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持原生的pdo问号预处理
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @param string        $sql      SQL语句，支持原生的pdo问号预处理
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         $sql = iconv('UTF-8', 'GBK', $sql);
         array_walk($params, function (&$value) {
@@ -136,10 +136,10 @@ final class PDOMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在access中无效
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $stmt = $this->pdo->query("SELECT @@IDENTITY");
-        $row = $stmt->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT);
+        $row = $stmt->fetch(PDO::FETCH_NUM);
         return $row[0];
     }
 }

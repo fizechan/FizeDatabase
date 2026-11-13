@@ -32,7 +32,7 @@ final class OCIMode extends Db
      * @param int|null    $session_mode      会话模式
      * @param int         $connect_type      连接模式
      */
-    public function __construct(string $username, string $password, string $connection_string = null, string $character_set = null, int $session_mode = null, int $connect_type = 1)
+    public function __construct(string $username, string $password, ?string $connection_string = null, ?string $character_set = null, ?int $session_mode = null, int $connect_type = 1)
     {
         $this->driver = new OCI($username, $password, $connection_string, $character_set, $session_mode, $connect_type);
     }
@@ -47,12 +47,12 @@ final class OCIMode extends Db
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持原生的:value预处理
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @param string        $sql      SQL语句，支持原生的:value预处理
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         if ($params) {  //将?占位符还原为:$*占位符以方便处理
             $parts = explode('?', $sql);
@@ -143,7 +143,7 @@ final class OCIMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在oracle中必须指定
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $sql = "SELECT {$name}.currval FROM dual";
         $stmt = $this->driver->parse($sql);

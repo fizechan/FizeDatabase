@@ -72,7 +72,7 @@ abstract class Db extends CoreDb
      * @param int|null $offset 要设置的偏移量
      * @return $this
      */
-    public function limit(int $rows, int $offset = null)
+    public function limit(int $rows, ?int $offset = null)
     {
         $this->size = $rows;
         $this->offset = $offset;
@@ -85,7 +85,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function crossJoin(string $table, string $on = null): Db
+    public function crossJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "CROSS JOIN", $on);
     }
@@ -96,7 +96,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function fullJoin(string $table, string $on = null): Db
+    public function fullJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "FULL JOIN", $on);
     }
@@ -107,7 +107,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function leftOuterJoin(string $table, string $on = null): Db
+    public function leftOuterJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "LEFT OUTER JOIN", $on);
     }
@@ -118,7 +118,7 @@ abstract class Db extends CoreDb
      * @param string|null $on    ON条件，建议ON条件单独开来
      * @return $this
      */
-    public function rightOuterJoin(string $table, string $on = null): Db
+    public function rightOuterJoin(string $table, ?string $on = null): Db
     {
         return $this->join($table, "RIGHT OUTER JOIN", $on);
     }

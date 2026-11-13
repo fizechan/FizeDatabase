@@ -25,7 +25,7 @@ trait ODBCMiddleware
      * @param int|null $cursor_type 可选SQL_CUR_USE_IF_NEEDED | SQL_CUR_USE_ODBC | SQL_CUR_USE_DRIVER
      * @param bool     $pconnect    是否使用长链接，默认false
      */
-    protected function odbcConstruct(string $dsn, string $user, string $pwd, int $cursor_type = null, bool $pconnect = false)
+    protected function odbcConstruct(string $dsn, string $user, string $pwd, ?int $cursor_type = null, bool $pconnect = false)
     {
         $this->driver = new ODBC($dsn, $user, $pwd, $cursor_type, $pconnect);
     }
@@ -40,12 +40,12 @@ trait ODBCMiddleware
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持原生的ODBC问号预处理
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @param string        $sql      SQL语句，支持原生的ODBC问号预处理
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         $result = $this->driver->prepare($sql);
         $result->execute($params);

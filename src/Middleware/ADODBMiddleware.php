@@ -45,12 +45,12 @@ trait ADODBMiddleware
 
     /**
      * 执行一个SQL查询
-     * @param string   $sql      SQL语句，支持模拟问号占位符预处理语句
-     * @param array    $params   可选的绑定参数
-     * @param callable $callback 如果定义该记录集回调函数则进行循环回调
+     * @param string        $sql      SQL语句，支持模拟问号占位符预处理语句
+     * @param array         $params   可选的绑定参数
+     * @param callable|null $callback 如果定义该记录集回调函数则进行循环回调
      * @return array 返回结果数组
      */
-    public function query(string $sql, array $params = [], callable $callback = null): array
+    public function query(string $sql, array $params = [], ?callable $callback = null): array
     {
         $sql = $this->getRealSql($sql, $params);
         $rows = [];

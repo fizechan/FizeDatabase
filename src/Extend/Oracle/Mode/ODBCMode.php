@@ -21,11 +21,11 @@ final class ODBCMode extends Db
      * @param string      $user    用户名
      * @param string      $pwd     用户密码
      * @param string      $sid     连接串
-     * @param mixed       $port    端口号，选填，Oracle默认是1521
+     * @param int|null    $port    端口号，选填，Oracle默认是1521
      * @param string      $charset 指定编码，选填，默认utf8
      * @param string|null $driver  指定ODBC驱动名称。
      */
-    public function __construct(string $user, string $pwd, string $sid, $port = "", string $charset = "utf8", string $driver = null)
+    public function __construct(string $user, string $pwd, string $sid, ?int $port = null, string $charset = "utf8", ?string $driver = null)
     {
         if (is_null($driver)) {  //默认驱动名
             //$driver = "{Oracle in OraClient11g_home1}";
@@ -54,7 +54,7 @@ final class ODBCMode extends Db
      * @param string|null $name 应该返回ID的那个序列对象的名称,该参数在oracle中必须指定
      * @return int|string
      */
-    public function lastInsertId(string $name = null)
+    public function lastInsertId(?string $name = null)
     {
         $sql = "SELECT $name.currval FROM dual";
         $stmt = $this->driver->exec($sql);
