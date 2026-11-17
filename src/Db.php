@@ -73,7 +73,7 @@ class Db
      * @param array  $params 可选的绑定参数
      * @return int 返回受影响行数
      */
-    public function execute(string $sql, array $params = []): int
+    public static function execute(string $sql, array $params = []): int
     {
         return self::$db->execute($sql, $params);
     }
