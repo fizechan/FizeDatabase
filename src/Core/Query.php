@@ -264,7 +264,7 @@ class Query
      * @param string     $premodifier 前置修饰
      * @return $this
      */
-    public function exists(string $expression, array $params = null, string $premodifier = ''): Query
+    public function exists(string $expression, ?array $params = null, string $premodifier = ''): Query
     {
         $object = $this->object;  //暂存当前操作对象
         $this->object = null;  //EXISTS语句不需要object
@@ -281,7 +281,7 @@ class Query
      * @param array|null $params     参数绑定数组
      * @return $this
      */
-    public function notExists(string $expression, array $params = null): Query
+    public function notExists(string $expression, ?array $params = null): Query
     {
         return $this->exists($expression, $params, 'NOT');
     }
